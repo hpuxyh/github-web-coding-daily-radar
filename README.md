@@ -24,6 +24,7 @@ npm run build
 
 生成结果会写到：
 
+- `data/repo_history.json`
 - `output/latest.md`
 - `output/latest.json`
 - `output/YYYY-MM-DD/github-web-coding-daily.md`
@@ -33,6 +34,7 @@ npm run build
 - `public/daily/index.json`
 
 其中 `public/daily/` 会被提交到 GitHub，用来支撑网页上的日期切换。
+`data/repo_history.json` 也会提交到 GitHub，用来给下一次日更计算“今天新增 stars / forks / issue”等增量数据。脚本不会默认截断这个历史文件；如果历史文件缺失，会尝试从已经保存的 `public/daily/YYYY-MM-DD.json` 反向补回快照。
 
 ## 自动刷新
 
@@ -49,7 +51,7 @@ npm run build
 2. 写入当天 JSON 快照。
 3. 更新 `radar.html` 和 `public/radar.html` 里的内嵌数据。
 4. 构建检查。
-5. 如果有变化，提交回 `main`。
+5. 提交 `data/repo_history.json`、当天日报 JSON、页面内嵌数据和 README 图片资源回 `main`。
 
 `deploy-pages.yml` 会在 `main` 更新后部署 GitHub Pages。当前也可以直接把 `dist/` 推到 `gh-pages` 分支发布静态页面。
 
@@ -84,3 +86,10 @@ npm run dev
 - 参与讨论：看 issue、fork、最近更新和公开协作痕迹。
 
 同一个项目只进入最匹配的一个榜单，避免每天页面里重复出现。
+
+历史数据会保存在两个地方：
+
+- `data/repo_history.json`：给脚本下一次运行时计算增量，记录每个项目每天的 stars、forks、open issues 和最近 push 时间。
+- `public/daily/YYYY-MM-DD.json`：给网页按日期读取，每天一个完整日报快照；`public/daily/index.json` 记录所有可选日期，`public/daily/latest.json` 指向最新一天。
+
+这样即使本地目录丢了，只要 GitHub 仓库还在，下一次 checkout 后也能继续从仓库历史算每日增量。

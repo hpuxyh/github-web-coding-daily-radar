@@ -4,7 +4,9 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .coverage
-/data/
+/data/*
+!/data/
+!/data/repo_history.json
 output/
 logs/
 node_modules/

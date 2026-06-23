@@ -40,7 +40,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add radar.html public/radar.html public/daily public/assets/readme-images
+          git add data/repo_history.json radar.html public/radar.html public/daily public/assets/readme-images
           if git diff --cached --quiet; then
             echo "No daily changes to commit."
           else

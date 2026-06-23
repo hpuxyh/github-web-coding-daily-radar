@@ -1677,7 +1677,7 @@ def update_history(path: Path, history: dict[str, Any], repos: list[dict[str, An
         snapshots = [item for item in snapshots if item.get("date") != date_key]
         snapshots.append(snapshot)
         snapshots.sort(key=lambda item: item["date"])
-        all_repos[repo["full_name"]] = snapshots[-120:]
+        all_repos[repo["full_name"]] = snapshots
 
     payload = {
         "updated_at": dt.datetime.utcnow().replace(microsecond=0).isoformat() + "Z",
@@ -2264,9 +2264,68 @@ def bootstrap_history_from_payload(history: dict[str, Any], payload: dict[str, A
                 "stars": safe_int(repo.get("stars")),
                 "forks": safe_int(repo.get("forks")),
                 "open_issues": safe_int(repo.get("open_issues")),
+                "pushed_at": repo.get("pushed_at"),
             }
         )
+        snapshots.sort(key=lambda item: item["date"])
         added += 1
+    return added
+
+
+def history_snapshot_dates(history: dict[str, Any]) -> set[str]:
+    dates: set[str] = set()
+    for snapshots in history.get("repos", {}).values():
+        if not isinstance(snapshots, list):
+            continue
+        for snapshot in snapshots:
+            date_text = str(snapshot.get("date") or "").strip()
+            if date_text:
+                dates.add(date_text)
+    return dates
+
+
+def daily_archive_payload_paths(archive_dir: Path, known_dates: set[str]) -> list[Path]:
+    index_path = archive_dir / "index.json"
+    paths: list[Path] = []
+    if index_path.exists():
+        index = load_daily_archive_index(index_path)
+        for entry in index.get("dates") or []:
+            date_text = str(entry.get("date") or "").strip()
+            if not date_text or date_text in known_dates:
+                continue
+            rel_path = str(entry.get("path") or f"{date_text}.json").strip()
+            path = archive_dir / rel_path
+            if path.exists():
+                paths.append(path)
+        return paths
+
+    for path in sorted(archive_dir.glob("*.json")):
+        if path.name in {"index.json", "latest.json"}:
+            continue
+        date_text = path.stem
+        if date_text not in known_dates:
+            paths.append(path)
+    return paths
+
+
+def bootstrap_history_from_daily_archive(history: dict[str, Any], archive_dir: Path = PUBLIC_DAILY_DIR) -> int:
+    if not archive_dir.exists():
+        return 0
+
+    added = 0
+    known_dates = history_snapshot_dates(history)
+    for path in daily_archive_payload_paths(archive_dir, known_dates):
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError) as exc:
+            print(f"[warn] 跳过无法读取的日报快照 {path}: {exc}", file=sys.stderr)
+            continue
+        if not isinstance(payload, dict):
+            continue
+        added += bootstrap_history_from_payload(history, payload)
+        date_text = str(payload.get("date") or path.stem).strip()
+        if date_text:
+            known_dates.add(date_text)
     return added
 
 
@@ -2761,6 +2820,9 @@ def run(args: argparse.Namespace) -> int:
     )
 
     history = load_history(paths.data_path)
+    archived = bootstrap_history_from_daily_archive(history, PUBLIC_DAILY_DIR)
+    if archived:
+        print(f"Bootstrapped history from daily archive: {archived} snapshots")
     embedded_payload = load_embedded_radar_payload(PROJECT_ROOT / "radar.html")
     if embedded_payload and not history.get("repos"):
         bootstrapped = bootstrap_history_from_payload(history, embedded_payload)
