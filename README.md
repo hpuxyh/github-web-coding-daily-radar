@@ -36,7 +36,14 @@ npm run build
 
 ## 自动刷新
 
-`.github/workflows/daily-radar.yml` 会每天 01:10 UTC 运行一次，也就是北京时间 09:10 左右：
+每日刷新逻辑已经写好，模板放在 `docs/workflows/`：
+
+- `docs/workflows/daily-radar.yml`
+- `docs/workflows/deploy-pages.yml`
+
+要在 GitHub 上真正启用 Actions，需要把这两个文件复制到 `.github/workflows/`。注意：GitHub 要求创建或更新 workflow 文件的 token 带 `workflow` scope；普通 Git 凭据可能会被拒绝。
+
+`daily-radar.yml` 会每天 01:10 UTC 运行一次，也就是北京时间 09:10 左右：
 
 1. 抓取当天 GitHub 项目。
 2. 写入当天 JSON 快照。
@@ -44,7 +51,7 @@ npm run build
 4. 构建检查。
 5. 如果有变化，提交回 `main`。
 
-`.github/workflows/deploy-pages.yml` 会在 `main` 更新后部署 GitHub Pages。
+`deploy-pages.yml` 会在 `main` 更新后部署 GitHub Pages。当前也可以直接把 `dist/` 推到 `gh-pages` 分支发布静态页面。
 
 ## 配置
 
