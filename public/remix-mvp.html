@@ -1,0 +1,2169 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="把现成网页和小工具整理成普通人能直接修改、预览、发布的产品起点。"
+    />
+    <title>普通人的产品起步器</title>
+    <style>
+      :root {
+        color: #172033;
+        background: #f4f7fb;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        min-width: 320px;
+        margin: 0;
+        padding-top: 65px;
+        background: #f4f7fb;
+        overflow-x: hidden;
+      }
+
+      button,
+      input,
+      textarea,
+      select {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .topbar {
+        position: fixed;
+        z-index: 20;
+        top: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 14px 5vw;
+        border-bottom: 1px solid rgba(42, 67, 90, 0.12);
+        background: rgba(248, 252, 255, 0.88);
+        backdrop-filter: blur(18px);
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 860;
+      }
+
+      .brand-mark {
+        display: inline-grid;
+        width: 36px;
+        height: 36px;
+        place-items: center;
+        border-radius: 8px;
+        background: #172033;
+        color: #ffffff;
+        font-size: 0.8rem;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .nav a,
+      .nav button {
+        min-height: 36px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 12px;
+        border: 0;
+        border-radius: 8px;
+        background: transparent;
+        color: #526174;
+        font-size: 0.92rem;
+        font-weight: 760;
+      }
+
+      .nav a:hover,
+      .nav button:hover,
+      .nav button.active {
+        background: rgba(47, 128, 237, 0.1);
+        color: #1769c2;
+      }
+
+      .nav button.active {
+        font-weight: 900;
+      }
+
+      .hero {
+        min-height: auto;
+        display: flex;
+        align-items: center;
+        padding: 56px 5vw 44px;
+        background-image:
+          linear-gradient(
+            90deg,
+            rgba(247, 251, 255, 0.98) 0%,
+            rgba(247, 251, 255, 0.92) 40%,
+            rgba(247, 251, 255, 0.56) 72%,
+            rgba(247, 251, 255, 0.16) 100%
+          ),
+          linear-gradient(
+            180deg,
+            rgba(247, 251, 255, 0.08) 0%,
+            rgba(247, 251, 255, 0.96) 100%
+          ),
+          url("assets/portfolio-hero.png");
+        background-position: center right;
+        background-size: cover;
+      }
+
+      .hero-inner {
+        width: min(1180px, 100%);
+        display: grid;
+        grid-template-columns: minmax(0, 760px);
+        align-items: center;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        min-height: 34px;
+        align-items: center;
+        padding: 0 12px;
+        border: 1px solid rgba(47, 128, 237, 0.24);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.78);
+        color: #1769c2;
+        font-size: 0.88rem;
+        font-weight: 850;
+      }
+
+      h1 {
+        max-width: 720px;
+        margin-top: 18px;
+        color: #172033;
+        font-size: clamp(2.35rem, 5.2vw, 4.25rem);
+        line-height: 1;
+        letter-spacing: 0;
+        overflow-wrap: anywhere;
+      }
+
+      .hero-lead {
+        max-width: 560px;
+        margin-top: 18px;
+        color: #243044;
+        font-size: clamp(1.02rem, 1.6vw, 1.24rem);
+        line-height: 1.56;
+        font-weight: 850;
+      }
+
+      .hero-note {
+        max-width: 610px;
+        margin-top: 12px;
+        color: #526174;
+        font-size: 0.98rem;
+        line-height: 1.7;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 22px;
+      }
+
+      .button {
+        min-height: 46px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 0 18px;
+        border: 1px solid rgba(31, 45, 64, 0.14);
+        border-radius: 8px;
+        background: #ffffff;
+        color: #1d2a3b;
+        font-weight: 850;
+        box-shadow: 0 14px 30px rgba(31, 45, 64, 0.08);
+      }
+
+      .button.primary {
+        border-color: #172033;
+        background: #172033;
+        color: #ffffff;
+      }
+
+      .button:hover {
+        transform: translateY(-1px);
+      }
+
+      .section {
+        padding: 64px 5vw;
+      }
+
+      .section[hidden] {
+        display: none;
+      }
+
+      .tab-panel {
+        scroll-margin-top: 84px;
+      }
+
+      .section.alt {
+        background: #ffffff;
+      }
+
+      .section-inner {
+        width: min(1180px, 100%);
+        margin: 0 auto;
+      }
+
+      .section-heading {
+        max-width: 720px;
+        margin-bottom: 24px;
+      }
+
+      [data-panel="library"] {
+        padding-top: 56px;
+      }
+
+      .section-heading span {
+        display: inline-flex;
+        min-height: 28px;
+        align-items: center;
+        padding: 0 10px;
+        border-radius: 8px;
+        background: #e8f3fb;
+        color: #1769c2;
+        font-size: 0.78rem;
+        font-weight: 850;
+      }
+
+      .section-heading h2 {
+        margin-top: 0;
+        color: #172033;
+        font-size: clamp(1.8rem, 3.2vw, 2.8rem);
+        line-height: 1.08;
+        letter-spacing: 0;
+      }
+
+      .section-heading p {
+        margin-top: 14px;
+        color: #526174;
+        font-size: 1.06rem;
+        line-height: 1.75;
+      }
+
+      .idea-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .idea-card {
+        min-height: 190px;
+        display: grid;
+        align-content: space-between;
+        gap: 16px;
+        padding: 18px;
+        border: 1px solid rgba(31, 45, 64, 0.1);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .idea-card strong {
+        color: #172033;
+        font-size: 1.08rem;
+      }
+
+      .idea-card p {
+        margin-top: 8px;
+        color: #526174;
+        font-size: 0.94rem;
+        line-height: 1.55;
+      }
+
+      .idea-card button,
+      .idea-card a {
+        width: fit-content;
+        min-height: 34px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 11px;
+        border: 1px solid rgba(23, 105, 194, 0.16);
+        border-radius: 8px;
+        background: #eef7ff;
+        color: #1769c2;
+        font-weight: 850;
+      }
+
+      .source-strip {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 16px;
+        align-items: center;
+        margin-top: 16px;
+        padding: 18px;
+        border: 1px solid rgba(31, 45, 64, 0.1);
+        border-radius: 8px;
+        background: #f8fbfd;
+      }
+
+      .source-strip strong {
+        display: block;
+        color: #172033;
+        font-size: 1.05rem;
+      }
+
+      .source-strip p {
+        margin-top: 6px;
+        color: #526174;
+        line-height: 1.62;
+      }
+
+      .app-layout {
+        display: grid;
+        grid-template-columns: 360px minmax(0, 1fr);
+        gap: 16px;
+        align-items: start;
+      }
+
+      .tool-panel,
+      .detail-panel,
+      .showcase-panel,
+      .form-panel {
+        border: 1px solid rgba(38, 59, 82, 0.1);
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 12px 30px rgba(39, 58, 77, 0.05);
+      }
+
+      .tool-panel {
+        padding: 0;
+        overflow: hidden;
+      }
+
+      .filter-bar {
+        display: none;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 12px;
+      }
+
+      .chip-button,
+      .project-button,
+      .pack-tab,
+      .edit-button,
+      .demo-button {
+        border: 1px solid rgba(31, 45, 64, 0.12);
+        border-radius: 8px;
+        background: #ffffff;
+        color: #243044;
+      }
+
+      .chip-button {
+        min-height: 32px;
+        padding: 0 10px;
+        font-size: 0.84rem;
+        font-weight: 760;
+      }
+
+      .chip-button.active {
+        border-color: #1769c2;
+        background: #1769c2;
+        color: #ffffff;
+      }
+
+      .project-list {
+        display: grid;
+        gap: 0;
+      }
+
+      .project-button {
+        width: 100%;
+        min-height: auto;
+        padding: 18px;
+        border: 0;
+        border-left: 3px solid transparent;
+        border-radius: 0;
+        text-align: left;
+      }
+
+      .project-button + .project-button {
+        border-top: 1px solid rgba(31, 45, 64, 0.1);
+      }
+
+      .project-button.active {
+        border-left-color: #1769c2;
+        background: #f5f9ff;
+      }
+
+      .project-row-head {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .project-index {
+        min-width: 32px;
+        color: #1769c2;
+        font-size: 0.86rem;
+        font-weight: 850;
+      }
+
+      .score {
+        min-width: 42px;
+        min-height: 26px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        background: #172033;
+        color: #ffffff;
+        font-size: 0.78rem;
+        font-weight: 850;
+      }
+
+      .project-button h3 {
+        margin-top: 0;
+        font-size: 1.08rem;
+        line-height: 1.3;
+      }
+
+      .project-button p {
+        margin-top: 6px;
+        color: #526174;
+        font-size: 0.92rem;
+        line-height: 1.48;
+      }
+
+      .source-line {
+        display: none;
+        margin-top: 8px;
+        color: #607084;
+        font-size: 0.84rem;
+        font-weight: 820;
+        line-height: 1.45;
+      }
+
+      .tag-row {
+        display: none;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 10px;
+      }
+
+      .tag-row span,
+      .pill {
+        display: inline-flex;
+        min-height: 26px;
+        align-items: center;
+        padding: 0 8px;
+        border-radius: 8px;
+        background: #eef7ef;
+        color: #26734d;
+        font-size: 0.78rem;
+        font-weight: 800;
+      }
+
+      .detail-panel {
+        min-height: auto;
+        overflow: hidden;
+      }
+
+      .detail-head {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 18px;
+        align-items: end;
+        padding: 22px;
+        border-bottom: 1px solid rgba(31, 45, 64, 0.1);
+        background: #ffffff;
+        color: #172033;
+      }
+
+      .detail-head h2 {
+        margin-top: 0;
+        font-size: 1.72rem;
+        line-height: 1.18;
+      }
+
+      .detail-head p {
+        max-width: 620px;
+        margin-top: 8px;
+        color: #526174;
+        font-size: 0.98rem;
+        line-height: 1.62;
+      }
+
+      .detail-body {
+        padding: 0;
+      }
+
+      .detail-quick {
+        display: none;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .detail-quick span {
+        min-height: 30px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 10px;
+        border-radius: 8px;
+        background: #f4f8fb;
+        color: #435269;
+        font-size: 0.84rem;
+        font-weight: 850;
+      }
+
+      .simple-pack-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 300px;
+        gap: 16px;
+        margin-top: 0;
+        padding: 18px 22px 22px;
+      }
+
+      .tiny-preview {
+        min-height: 360px;
+        padding: 16px;
+        border: 1px solid rgba(31, 45, 64, 0.1);
+        border-radius: 8px;
+        background: #f8fbfd;
+      }
+
+      .tiny-preview h4,
+      .simple-change-card h4 {
+        margin: 0;
+        color: #172033;
+        font-size: 1rem;
+      }
+
+      .preview-shot {
+        aspect-ratio: 1 / 1;
+        margin-top: 12px;
+        overflow: hidden;
+        border: 1px solid rgba(31, 45, 64, 0.12);
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 12px 28px rgba(31, 45, 64, 0.08);
+      }
+
+      .preview-shot img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+        object-position: top center;
+      }
+
+      .tiny-browser {
+        display: grid;
+        grid-template-columns: 0.72fr 1.28fr;
+        min-height: 310px;
+        margin-top: 12px;
+        overflow: hidden;
+        border: 1px solid rgba(31, 45, 64, 0.12);
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 12px 28px rgba(31, 45, 64, 0.08);
+      }
+
+      .tiny-side,
+      .tiny-main {
+        padding: 18px;
+      }
+
+      .tiny-side {
+        display: grid;
+        align-content: center;
+        justify-items: center;
+        gap: 10px;
+        border-right: 1px solid rgba(31, 45, 64, 0.12);
+        text-align: center;
+      }
+
+      .tiny-avatar {
+        width: 62px;
+        height: 62px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: #ffffff;
+        box-shadow: 0 6px 18px rgba(31, 45, 64, 0.12);
+      }
+
+      .tiny-avatar::before {
+        content: "";
+        width: 30px;
+        height: 30px;
+        border: 3px solid #111111;
+        border-radius: 8px;
+      }
+
+      .tiny-side strong,
+      .tiny-main strong {
+        color: #111827;
+      }
+
+      .tiny-side span,
+      .tiny-main p,
+      .simple-change-card p {
+        color: #607084;
+        font-size: 0.88rem;
+        line-height: 1.58;
+      }
+
+      .tiny-nav {
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        color: #172033;
+        font-size: 0.78rem;
+        font-weight: 850;
+      }
+
+      .tiny-main {
+        display: grid;
+        align-content: center;
+        gap: 10px;
+        text-align: center;
+      }
+
+      .tiny-title {
+        font-size: clamp(1.7rem, 3vw, 2.7rem);
+        line-height: 1.12;
+        font-weight: 950;
+      }
+
+      .tiny-cards {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 4px;
+      }
+
+      .tiny-cards span {
+        min-height: 48px;
+        display: grid;
+        place-items: center;
+        padding: 8px;
+        border: 1px solid rgba(31, 45, 64, 0.1);
+        border-radius: 8px;
+        color: #1769c2;
+        font-size: 0.76rem;
+        font-weight: 850;
+      }
+
+      .simple-change-list {
+        display: grid;
+        align-content: start;
+        gap: 0;
+      }
+
+      .simple-change-card {
+        padding: 16px;
+        border: 1px solid rgba(31, 45, 64, 0.1);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .simple-change-card.featured {
+        border-color: rgba(23, 105, 194, 0.22);
+        border-left: 3px solid #1769c2;
+        background: #f7fbff;
+      }
+
+      .mini-info-card {
+        margin-top: 10px;
+        padding: 14px;
+        border: 1px solid rgba(31, 45, 64, 0.1);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .mini-info-card h4 {
+        margin: 0;
+        color: #172033;
+        font-size: 0.95rem;
+      }
+
+      .mini-info-card p {
+        margin-top: 10px;
+        color: #607084;
+        font-size: 0.88rem;
+        line-height: 1.58;
+      }
+
+      .prompt-list,
+      .change-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .simple-change-card .pack-actions {
+        margin-top: 14px;
+      }
+
+      .prompt-list span,
+      .change-tags span {
+        min-height: 28px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 9px;
+        border-radius: 8px;
+        background: #eef7ff;
+        color: #1769c2;
+        font-size: 0.8rem;
+        font-weight: 850;
+      }
+
+      .pack-tabs {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin: 0;
+        padding: 14px 22px;
+        border-bottom: 1px solid rgba(31, 45, 64, 0.1);
+        background: #fbfcfe;
+      }
+
+      .pack-tab {
+        min-height: 32px;
+        padding: 0 10px;
+        text-align: left;
+        border-color: transparent;
+        background: transparent;
+        color: #607084;
+      }
+
+      .pack-tab.active {
+        border-color: #172033;
+        background: #172033;
+        color: #ffffff;
+      }
+
+      .pack-tab strong {
+        display: block;
+        font-size: 0.86rem;
+      }
+
+      .pack-tab span {
+        display: none;
+        margin-top: 4px;
+        color: #607084;
+        font-size: 0.78rem;
+      }
+
+      .hot-radar-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+        gap: 16px;
+        align-items: stretch;
+      }
+
+      .hot-radar-main,
+      .hot-radar-list {
+        border: 1px solid rgba(31, 45, 64, 0.1);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .hot-radar-main {
+        display: grid;
+        align-content: space-between;
+        min-height: 360px;
+        padding: 22px;
+      }
+
+      .hot-radar-label {
+        display: inline-flex;
+        width: fit-content;
+        min-height: 30px;
+        align-items: center;
+        padding: 0 10px;
+        border-radius: 8px;
+        background: #eaf8f0;
+        color: #25734d;
+        font-size: 0.8rem;
+        font-weight: 880;
+      }
+
+      .hot-radar-main h3 {
+        max-width: 520px;
+        margin-top: 18px;
+        color: #172033;
+        font-size: clamp(1.7rem, 3vw, 2.5rem);
+        line-height: 1.08;
+      }
+
+      .hot-radar-main p {
+        max-width: 560px;
+        margin-top: 14px;
+        color: #526174;
+        font-size: 1rem;
+        line-height: 1.7;
+      }
+
+      .hot-stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin-top: 24px;
+      }
+
+      .hot-stats span {
+        min-height: 68px;
+        display: grid;
+        align-content: center;
+        gap: 5px;
+        padding: 10px;
+        border: 1px solid rgba(31, 45, 64, 0.1);
+        border-radius: 8px;
+        background: #f8fbfd;
+        color: #607084;
+        font-size: 0.8rem;
+        font-weight: 760;
+      }
+
+      .hot-stats strong {
+        color: #172033;
+        font-size: 1.25rem;
+        line-height: 1;
+      }
+
+      .hot-radar-list {
+        display: grid;
+        gap: 0;
+        overflow: hidden;
+      }
+
+      .hot-radar-item {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 14px;
+        align-items: start;
+        min-height: 94px;
+        padding: 16px;
+        border-bottom: 1px solid rgba(31, 45, 64, 0.1);
+      }
+
+      .hot-radar-item:last-child {
+        border-bottom: 0;
+      }
+
+      .hot-radar-item small {
+        color: #1769c2;
+        font-size: 0.78rem;
+        font-weight: 880;
+      }
+
+      .hot-radar-item strong {
+        display: block;
+        margin-top: 5px;
+        color: #172033;
+        font-size: 1.02rem;
+      }
+
+      .hot-radar-item p {
+        margin-top: 6px;
+        color: #607084;
+        font-size: 0.9rem;
+        line-height: 1.52;
+      }
+
+      .hot-score {
+        min-width: 76px;
+        display: grid;
+        gap: 3px;
+        justify-items: end;
+        color: #607084;
+        font-size: 0.75rem;
+        font-weight: 760;
+      }
+
+      .hot-score strong {
+        margin: 0;
+        font-size: 1.02rem;
+      }
+
+      .pack-detail {
+        margin-top: 0;
+        padding-top: 0;
+        border-top: 0;
+      }
+
+      .pack-title-row {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 14px;
+      }
+
+      .pack-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-start;
+      }
+
+      .workshop-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
+        gap: 16px;
+        align-items: stretch;
+      }
+
+      .product-preview,
+      .chat-panel {
+        border: 1px solid rgba(31, 45, 64, 0.1);
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 12px 30px rgba(39, 58, 77, 0.05);
+      }
+
+      .product-preview {
+        overflow: hidden;
+      }
+
+      .preview-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 18px;
+        border-bottom: 1px solid rgba(31, 45, 64, 0.1);
+      }
+
+      .preview-top strong {
+        color: #172033;
+      }
+
+      .preview-top span {
+        color: #607084;
+        font-size: 0.9rem;
+      }
+
+      .preview-stage {
+        padding: 28px;
+        background: linear-gradient(135deg, #fbfdff, #edf6ff);
+      }
+
+      .mock-page {
+        min-height: 360px;
+        padding: 28px;
+        border: 1px solid rgba(31, 45, 64, 0.1);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.88);
+      }
+
+      .mock-page h3 {
+        max-width: 520px;
+        color: #172033;
+        font-size: clamp(1.9rem, 3.4vw, 3.2rem);
+        line-height: 1.04;
+      }
+
+      .mock-page p {
+        max-width: 560px;
+        margin-top: 14px;
+        color: #526174;
+        line-height: 1.65;
+      }
+
+      .mock-cards {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 10px;
+        margin-top: 26px;
+      }
+
+      .mock-cards span {
+        min-height: 110px;
+        display: grid;
+        align-content: center;
+        gap: 6px;
+        padding: 14px;
+        border: 1px solid rgba(31, 45, 64, 0.1);
+        border-radius: 8px;
+        background: #ffffff;
+        color: #607084;
+        font-size: 0.88rem;
+      }
+
+      .mock-cards strong {
+        color: #172033;
+        font-size: 1rem;
+      }
+
+      .chat-panel {
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+        overflow: hidden;
+      }
+
+      .chat-head,
+      .chat-actions {
+        padding: 18px;
+        border-bottom: 1px solid rgba(31, 45, 64, 0.1);
+      }
+
+      .chat-actions {
+        border-top: 1px solid rgba(31, 45, 64, 0.1);
+        border-bottom: 0;
+      }
+
+      .chat-head h3 {
+        color: #172033;
+        font-size: 1.2rem;
+      }
+
+      .chat-head p {
+        margin-top: 6px;
+        color: #526174;
+        line-height: 1.55;
+      }
+
+      .chat-body {
+        display: grid;
+        align-content: start;
+        gap: 10px;
+        padding: 18px;
+        background: #f8fbfd;
+      }
+
+      .chat-bubble {
+        max-width: 92%;
+        padding: 12px 14px;
+        border-radius: 8px;
+        color: #172033;
+        line-height: 1.55;
+      }
+
+      .chat-bubble.user {
+        justify-self: end;
+        background: #172033;
+        color: #ffffff;
+      }
+
+      .chat-bubble.ai {
+        justify-self: start;
+        border: 1px solid rgba(31, 45, 64, 0.1);
+        background: #ffffff;
+      }
+
+      .chat-input {
+        min-height: 48px;
+        padding: 12px 14px;
+        border: 1px solid rgba(31, 45, 64, 0.12);
+        border-radius: 8px;
+        background: #ffffff;
+        color: #607084;
+      }
+
+      .pack-title-row h3 {
+        font-size: 1.56rem;
+        line-height: 1.25;
+      }
+
+      .edit-button {
+        min-height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 12px;
+        border-color: #1769c2;
+        background: #1769c2;
+        border-radius: 8px;
+        color: #ffffff;
+        font-weight: 850;
+      }
+
+      .demo-button {
+        min-height: 36px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 12px;
+        background: #ffffff;
+        color: #1769c2;
+        font-weight: 850;
+      }
+
+      .workflow {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .step,
+      .why-card {
+        min-height: 180px;
+        padding: 18px;
+        border: 1px solid rgba(31, 45, 64, 0.1);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .step strong {
+        display: inline-grid;
+        width: 32px;
+        height: 32px;
+        place-items: center;
+        border-radius: 8px;
+        background: #1769c2;
+        color: #ffffff;
+      }
+
+      .step h3 {
+        margin-top: 14px;
+        font-size: 1.12rem;
+      }
+
+      .step p {
+        margin-top: 9px;
+        color: #526174;
+        line-height: 1.62;
+      }
+
+      .why-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .why-card strong {
+        color: #172033;
+        font-size: 1.08rem;
+      }
+
+      .why-card p {
+        margin-top: 10px;
+        color: #526174;
+        line-height: 1.62;
+      }
+
+      .compact-actions {
+        margin-top: 18px;
+      }
+
+      .showcase-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+        gap: 18px;
+        align-items: start;
+      }
+
+      .form-panel,
+      .showcase-panel {
+        padding: 20px;
+      }
+
+      form {
+        display: grid;
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      label {
+        display: grid;
+        gap: 6px;
+        color: #243044;
+        font-size: 0.92rem;
+        font-weight: 800;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        border: 1px solid rgba(31, 45, 64, 0.16);
+        border-radius: 8px;
+        background: #ffffff;
+        color: #172033;
+      }
+
+      input,
+      select {
+        min-height: 42px;
+        padding: 0 12px;
+      }
+
+      textarea {
+        min-height: 96px;
+        padding: 10px 12px;
+        resize: vertical;
+      }
+
+      .submit-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .notice {
+        color: #607084;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      .work-list {
+        display: grid;
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .work-item {
+        display: grid;
+        grid-template-columns: 96px minmax(0, 1fr);
+        gap: 14px;
+        padding: 14px;
+        border: 1px solid rgba(31, 45, 64, 0.1);
+        border-radius: 8px;
+        background: #f8fbfd;
+      }
+
+      .work-shot {
+        width: 96px;
+        min-height: 84px;
+        display: grid;
+        place-items: center;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #ffdf6e, #72e6bd 46%, #7cc7ff);
+        color: #172033;
+        font-weight: 900;
+      }
+
+      .work-item h3 {
+        font-size: 1.08rem;
+      }
+
+      .work-item p {
+        margin-top: 8px;
+        color: #526174;
+        line-height: 1.58;
+      }
+
+      .work-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .work-meta span,
+      .work-meta a {
+        display: inline-flex;
+        min-height: 26px;
+        align-items: center;
+        padding: 0 8px;
+        border-radius: 8px;
+        background: #eef3f8;
+        color: #435269;
+        font-size: 0.78rem;
+        font-weight: 820;
+      }
+
+      .work-meta a {
+        background: #e8f3fb;
+        color: #1769c2;
+      }
+
+      footer {
+        padding: 30px 5vw 44px;
+        background: #132034;
+        color: rgba(255, 255, 255, 0.72);
+      }
+
+      footer div {
+        width: min(1180px, 100%);
+        margin: 0 auto;
+      }
+
+      @media (max-width: 980px) {
+        .nav {
+          display: none;
+        }
+
+        .hero {
+          min-height: auto;
+          padding-top: 58px;
+          background-position: center;
+        }
+
+        .hero-inner {
+          grid-template-columns: 1fr;
+          gap: 24px;
+        }
+
+        .app-layout,
+        .simple-pack-layout,
+        .tiny-browser,
+        .workflow,
+        .idea-grid,
+        .source-strip,
+        .workshop-layout,
+        .mock-cards,
+        .hot-radar-layout,
+        .hot-stats,
+        .why-grid,
+        .showcase-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .tiny-side {
+          border-right: 0;
+          border-bottom: 1px solid rgba(31, 45, 64, 0.12);
+        }
+
+        .pack-tabs {
+          grid-template-columns: 1fr;
+        }
+
+        .detail-panel {
+          min-height: auto;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .hero {
+          padding: 38px 5vw 34px;
+        }
+
+        h1 {
+          font-size: clamp(2.1rem, 11vw, 2.85rem);
+          line-height: 1.06;
+          word-break: break-all;
+        }
+
+        .hero-lead {
+          overflow-wrap: anywhere;
+        }
+
+        .section {
+          padding: 54px 5vw;
+        }
+
+        .actions,
+        .submit-row {
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .button,
+        .edit-button,
+        .demo-button {
+          width: 100%;
+        }
+
+        .pack-actions {
+          width: 100%;
+        }
+
+        .work-item {
+          grid-template-columns: 1fr;
+        }
+
+        .work-shot {
+          width: 100%;
+          min-height: 94px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="./">
+        <span class="brand-mark">改</span>
+        <span>普通人的产品起步器</span>
+      </a>
+      <nav class="nav" aria-label="页面模块" role="tablist">
+        <button class="active" type="button" data-tab="hot" role="tab" aria-selected="true">灵感库</button>
+        <button type="button" data-tab="library" role="tab" aria-selected="false">模板库</button>
+        <button type="button" data-tab="workshop" role="tab" aria-selected="false">改造台</button>
+        <button type="button" data-tab="showcase" role="tab" aria-selected="false">晒作品</button>
+        <button type="button" data-tab="why" role="tab" aria-selected="false">为什么做</button>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-inner">
+          <div>
+            <span class="eyebrow">给完全小白的 Web Coding 入口</span>
+            <h1>把现成网页，<br />改成你的产品。</h1>
+            <p class="hero-lead">
+              不用懂 GitHub，不用先学代码。先选一个想法，再让 AI 帮你改成能发布的网页工具。
+            </p>
+            <p class="hero-note">
+              素材可以来自开源项目、真实网页、常见 App 功能和热门产品形态；用户只负责说清楚自己想做什么。
+            </p>
+            <div class="actions">
+              <button class="button primary" type="button" data-open-tab="hot">先看能做什么</button>
+              <a class="button" href="./remix-editor.html?project=portfolio-page&pack=0">直接试改</a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="section alt tab-panel" id="panel-library" data-panel="library" role="tabpanel" hidden>
+        <div class="section-inner">
+          <div class="section-heading">
+            <h2>再选一个能改的模板。</h2>
+            <p>
+              这里展示的不是技术项目列表，而是已经整理好的产品起点：能预览、能对话修改、能保存成自己的版本。
+            </p>
+          </div>
+
+          <div class="app-layout">
+            <aside class="tool-panel" aria-label="适合改造的网页模板列表">
+              <div class="filter-bar" id="filterBar"></div>
+              <div class="project-list" id="projectList"></div>
+            </aside>
+            <section class="detail-panel" id="detailPanel" aria-live="polite"></section>
+          </div>
+        </div>
+      </section>
+
+      <section class="section tab-panel" id="panel-hot" data-panel="hot" role="tabpanel">
+        <div class="section-inner">
+          <div class="section-heading">
+            <h2>先选你想做成什么。</h2>
+            <p>
+              普通用户不需要先理解项目来源，只要先选一个目标。我们负责把合适的网页、工具和产品形态整理成能改的模板。
+            </p>
+          </div>
+
+          <div class="idea-grid" aria-label="可改造成的产品方向">
+            <article class="idea-card">
+              <div>
+                <strong>个人主页</strong>
+                <p>把别人的小站换成自己的名字、介绍、作品和联系方式。</p>
+              </div>
+              <button type="button" data-idea-project="portfolio-page" data-idea-pack="0">用这个开始</button>
+            </article>
+            <article class="idea-card">
+              <div>
+                <strong>AI 工具榜单</strong>
+                <p>把个人页或看板改成工具合集，适合做自己的推荐页。</p>
+              </div>
+              <button type="button" data-idea-project="portfolio-page" data-idea-pack="2">做工具榜单</button>
+            </article>
+            <article class="idea-card">
+              <div>
+                <strong>小红书选题工具</strong>
+                <p>把卡片页改成选题、标题、爆点和素材状态的整理工具。</p>
+              </div>
+              <button type="button" data-idea-project="ai-profile-page" data-idea-pack="2">做内容工具</button>
+            </article>
+            <article class="idea-card">
+              <div>
+                <strong>餐厅选择器</strong>
+                <p>把转盘小工具改成“今天去哪吃”“送什么礼物”这种生活工具。</p>
+              </div>
+              <button type="button" data-idea-project="choice-tool" data-idea-pack="0">做选择器</button>
+            </article>
+            <article class="idea-card">
+              <div>
+                <strong>作品集</strong>
+                <p>把主页改成作品展示页，适合学生、设计师、创作者和接单用户。</p>
+              </div>
+              <button type="button" data-idea-project="portfolio-page" data-idea-pack="1">做作品集</button>
+            </article>
+            <article class="idea-card">
+              <div>
+                <strong>服务介绍页</strong>
+                <p>把 AI 个人主页改成接单页，说明你能帮别人做什么。</p>
+              </div>
+              <button type="button" data-idea-project="ai-profile-page" data-idea-pack="1">做服务页</button>
+            </article>
+            <article class="idea-card">
+              <div>
+                <strong>活动页</strong>
+                <p>把普通页面改成活动介绍、报名入口和分享页。</p>
+              </div>
+              <button type="button" data-idea-project="portfolio-page" data-idea-pack="2">做活动页</button>
+            </article>
+            <article class="idea-card">
+              <div>
+                <strong>产品官网</strong>
+                <p>把现成网页改成你的产品介绍页，先验证有没有人感兴趣。</p>
+              </div>
+              <button type="button" data-idea-project="ai-profile-page" data-idea-pack="0">做官网</button>
+            </article>
+          </div>
+
+          <div class="source-strip">
+            <div>
+              <strong>素材来源不只 GitHub</strong>
+              <p>我们会从能打开的网页、开源项目、常见 App 功能和热点项目里挑“适合被小白改造”的东西，重新整理成可编辑模板。</p>
+            </div>
+            <a class="button" href="./radar.html">看热点来源</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt tab-panel" id="panel-workshop" data-panel="workshop" role="tabpanel" hidden>
+        <div class="section-inner">
+          <div class="section-heading">
+            <h2>修改过程就是和 AI 说话。</h2>
+            <p>
+              用户不用知道文件在哪里，也不用复制提示词。右侧说需求，左侧页面马上变，最后保存成自己的前端。
+            </p>
+          </div>
+          <div class="workshop-layout">
+            <section class="product-preview" aria-label="改造后的网页预览">
+              <div class="preview-top">
+                <div>
+                  <strong>左侧实时预览</strong>
+                  <span>每次修改都会直接反映到页面上</span>
+                </div>
+                <span>可保存</span>
+              </div>
+              <div class="preview-stage">
+                <div class="mock-page">
+                  <h3>我的 AI 工具榜单</h3>
+                  <p>整理我常用的写作、图片、代码和效率工具，方便朋友快速找到适合自己的工具。</p>
+                  <div class="mock-cards">
+                    <span><strong>写作工具</strong>适合写笔记、脚本和朋友圈文案。</span>
+                    <span><strong>图片工具</strong>适合做封面、海报和配图。</span>
+                    <span><strong>代码工具</strong>适合改网页、做小工具和查问题。</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+            <aside class="chat-panel" aria-label="AI 改造助手示例">
+              <div class="chat-head">
+                <h3>AI 改造助手</h3>
+                <p>直接说你想要的效果，不用一个字段一个字段填。</p>
+              </div>
+              <div class="chat-body">
+                <div class="chat-bubble user">把这个个人主页改成 AI 工具榜单，颜色温柔一点。</div>
+                <div class="chat-bubble ai">已帮你改标题、介绍、三张工具卡片和主色。左侧可以直接预览。</div>
+                <div class="chat-bubble user">再加一个“生成我的产品”的按钮。</div>
+                <div class="chat-bubble ai">按钮已经加好。保存后可以打开你的前端链接。</div>
+              </div>
+              <div class="chat-actions">
+                <div class="chat-input">例如：改成我的小红书选题工具，放 6 个选题卡片</div>
+                <div class="actions compact-actions">
+                  <a class="button primary" href="./remix-editor.html?project=portfolio-page&pack=2">打开改造台</a>
+                </div>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt tab-panel" id="panel-showcase" data-panel="showcase" role="tabpanel" hidden>
+        <div class="section-inner">
+          <div class="section-heading">
+            <h2>做完以后，要能发出去。</h2>
+            <p>
+              第一版先让用户拿到一个公开链接，再把作品放进案例列表。让新手看到：别人能做出来，我也能做出来。
+            </p>
+          </div>
+
+          <div class="showcase-grid">
+            <section class="form-panel" aria-labelledby="submitTitle">
+              <h3 id="submitTitle">把我的作品放进来</h3>
+              <form id="workForm">
+                <label>
+                  作品名称
+                  <input id="workTitle" name="title" required placeholder="例如：我的中文小站" />
+                </label>
+                <label>
+                  我是从哪个模板改的
+                  <select id="workProject" name="project"></select>
+                </label>
+                <label>
+                  作品链接
+                  <input id="workUrl" name="url" type="url" placeholder="https://..." />
+                </label>
+                <label>
+                  我改了什么
+                  <textarea id="workNote" name="note" required placeholder="例如：我把雨竹upon的小站改成了自己的个人主页，主要替换了标题、代表作、友链和联系方式"></textarea>
+                </label>
+                <div class="submit-row">
+                  <button class="button primary" type="submit">放进我的案例列表</button>
+                  <span class="notice" id="formNotice">现在会先保存在你自己的浏览器里。</span>
+                </div>
+              </form>
+            </section>
+
+            <section class="showcase-panel" aria-labelledby="worksTitle">
+              <h3 id="worksTitle">别人已经做出来的例子</h3>
+              <div class="work-list" id="workList"></div>
+            </section>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt tab-panel" id="panel-why" data-panel="why" role="tabpanel" hidden>
+        <div class="section-inner">
+          <div class="section-heading">
+            <h2>这不是 GitHub 社区，而是产品起步器。</h2>
+            <p>
+              GitHub、开源项目和真实网页只是素材来源。用户真正需要的是：我有一个想法，你帮我从现成东西开始，改成一个能发布的小产品。
+            </p>
+          </div>
+          <div class="why-grid">
+            <article class="why-card">
+              <strong>用户不想先学工具</strong>
+              <p>他们不会 GitHub、不会部署、也不一定能访问国外网站，但想把自己的想法变成网页。</p>
+            </article>
+            <article class="why-card">
+              <strong>我们先整理现成能力</strong>
+              <p>把已有网页、常见 App 功能和开源项目拆成可编辑模板，让用户不用从零开始。</p>
+            </article>
+            <article class="why-card">
+              <strong>闭环必须很短</strong>
+              <p>选目标、说需求、看预览、保存发布。这个闭环跑通，比做复杂社区更重要。</p>
+            </article>
+          </div>
+          <div class="actions compact-actions">
+            <a class="button primary" href="./remix-community.html">看完整分析</a>
+            <button class="button" type="button" data-open-tab="library">回模板库</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div>
+        普通人的产品起步器：先做出来，再慢慢学代码。
+      </div>
+    </footer>
+
+    <script>
+      const projects = [
+        {
+          id: 'portfolio-page',
+          name: '个人主页起点',
+          type: '可改网页：雨竹upon的小站',
+          sourceDemoUrl: './static-sites/yuzhu-upon/index.html',
+          screenshot: './assets/remix-previews/yuzhu-upon-home.png',
+          sourceNote: '这是一个中国开发者的真实个人小站，原网页有自我介绍、代表作、项目、友链和联系方式。',
+          category: 'easy',
+          score: 96,
+          technicalDifficulty: 2,
+          noviceDifficulty: 1.5,
+          summary:
+            '从一个真实中文小站开始，改成自己的主页、作品集、兴趣页或工具导航。',
+          whyGood:
+            '这个站点更贴近国内用户：有中文介绍、个人项目、朋友链接和联系入口。我们可以先把它整理成站内编辑版，你只换名字、介绍、项目和联系方式。',
+          need: '先准备头像、个人介绍、3 到 5 个项目、社交链接和联系方式。',
+          avoid: '第一次先不要做账号、评论、后台管理和收钱功能。',
+          tags: ['中国开发者', '中文个人小站', '适合第一版'],
+          packs: [
+            {
+              level: '第一步：换成自己的内容',
+              title: '先改成自己的主页',
+              tech: 1,
+              novice: 1,
+              goal:
+                '直接从雨竹upon的小站开始，把站点名字、欢迎语、代表作、项目、友链和联系方式换成自己的。',
+              files: ['站点名字', '欢迎语', '代表作', '项目列表', '友链', '联系方式'],
+              stayAway: ['账号功能', '评论区', '后台管理', '真实隐私信息'],
+              commands: ['先点“查看示例前端”看看长什么样', '再点“进入改造台”替换成你的内容', '改完点“查看我的前端”确认效果'],
+              deploy:
+                '第一版可以先把链接发给朋友看；联系方式先放公开账号，不要放私人地址。'
+            },
+            {
+              level: '第二步：换成兴趣作品页',
+              title: '再改成兴趣作品页',
+              tech: 2,
+              novice: 2,
+              goal:
+                '把个人介绍和项目卡片换成你的兴趣、作品、喜欢的内容和朋友链接。',
+              files: ['兴趣介绍', '喜欢的作品', '项目卡片', '友链入口'],
+              stayAway: ['复杂博客系统', '登录注册', '自动投稿'],
+              commands: ['先看示例兴趣页', '把卡片换成你的兴趣内容', '打开“我的前端”检查是否像自己的小站'],
+              deploy:
+                '适合发给朋友或同好圈子看，公开前先删掉不想公开的联系方式。'
+            },
+            {
+              level: '以后可以做',
+              title: '也能改成项目导航页',
+              tech: 2.5,
+              novice: 2.5,
+              goal:
+                '把页面改成一个自己的项目入口，把做过的网页、小工具、文章和社交主页放在一起。',
+              files: ['项目名称', '一句说明', '预览链接', '适合谁看'],
+              stayAway: ['自动同步项目', '用户账号', '在线评分'],
+              commands: ['先看示例导航页', '把卡片换成你的项目', '打开“我的前端”看看别人能不能一眼看懂'],
+              deploy:
+                '第一版手动整理就够了；等内容多了，再考虑自动同步和分类筛选。'
+            }
+          ]
+        },
+        {
+          id: 'ai-profile-page',
+          name: '个人品牌起点',
+          type: '可改网页：流星玩AI个人主页',
+          sourceDemoUrl: 'https://xiestar.github.io/',
+          screenshot: './assets/remix-previews/xiestar-home.png',
+          sourceNote: '这是一个中国创作者的真实个人主页，原网页有关于我、作品展示、专业服务和联系方式。',
+          category: 'profile',
+          score: 92,
+          technicalDifficulty: 2,
+          noviceDifficulty: 2,
+          summary:
+            '从一个 AI 创作者主页开始，改成个人品牌页、服务介绍页或内容账号主页。',
+          whyGood:
+            '这个站点结构很清楚：先说我是谁，再展示作品，再说明能提供什么服务，最后留下联系方式。适合想做 AI 个人品牌、接单页或内容账号主页的人。',
+          need: '先准备一句定位、个人介绍、3 个作品或服务、公开联系方式。',
+          avoid: '第一次不要做在线付款、复杂表单、客户管理和真实隐私信息。',
+          tags: ['中国开发者', 'AI 个人主页', '适合个人品牌'],
+          packs: [
+            {
+              level: '第一步：换成自己的介绍',
+              title: '先做一个个人品牌页',
+              tech: 2,
+              novice: 2,
+              goal:
+                '把流星玩AI的结构换成你的定位、经历、作品和联系方式，先做一个能自我介绍的主页。',
+              files: ['个人定位', '关于我', '作品展示', '联系方式'],
+              stayAway: ['在线收款', '客户后台', '复杂留言系统'],
+              commands: ['先看示例前端', '把文字换成你的经历和作品', '打开“我的前端”确认像不像你的主页'],
+              deploy:
+                '适合发在个人简介、公众号菜单、即刻或朋友圈里；联系方式用公开账号。'
+            },
+            {
+              level: '第二步：换成服务介绍页',
+              title: '再改成接单服务页',
+              tech: 3,
+              novice: 3,
+              goal:
+                '把作品区和服务区换成你能帮别人做什么，比如网页搭建、AI 工具教学、内容整理。',
+              files: ['服务名称', '适合客户', '能解决什么', '联系入口'],
+              stayAway: ['订单系统', '自动报价', '合同和收款'],
+              commands: ['先看示例服务页', '把服务卡片换成你能做的事', '打开“我的前端”检查别人是否能看懂'],
+              deploy:
+                '第一版只放服务说明和联系方式，不要承诺复杂交付，先验证有没有人来问。'
+            },
+            {
+              level: '以后可以做',
+              title: '也能改成内容账号主页',
+              tech: 3,
+              novice: 3,
+              goal:
+                '把主页改成你的公众号、视频号、播客或社群入口，集中展示内容方向和代表作品。',
+              files: ['账号定位', '代表内容', '关注入口', '合作方式'],
+              stayAway: ['自动发布内容', '粉丝后台', '数据统计系统'],
+              commands: ['先看示例账号页', '把内容卡片换成你的代表内容', '打开“我的前端”看看是否适合分享'],
+              deploy:
+                '适合放到个人资料链接里；后面再考虑订阅、数据统计和内容自动更新。'
+            }
+          ]
+        },
+        {
+          id: 'choice-tool',
+          name: '选择工具起点',
+          type: '可改网页：转盘选择小工具',
+          screenshot: './assets/remix-previews/spin-wheel-home.png',
+          sourceNote: '这是一个能直接打开的转盘网页，适合把选项换成餐厅、礼物、旅行路线或抽签结果。',
+          category: 'choice',
+          score: 84,
+          technicalDifficulty: 2.5,
+          noviceDifficulty: 2.3,
+          summary:
+            '从一个有互动的小工具开始，改成餐厅选择器、礼物推荐器或旅行抽签器。',
+          whyGood:
+            '这个模板本来就有“随机选一个”的互动。把转盘选项换成餐厅、礼物或旅行路线，就能变成更生活化的小工具。',
+          need: '准备候选项、几个筛选条件、结果文案和少量图片。',
+          avoid: '第一次不要做自动定位、外卖下单和复杂推荐。',
+          tags: ['现成 HTML', '有互动', '做完能玩'],
+          packs: [
+            {
+              level: '第一步：换成自己的选择题',
+              title: '先改成餐厅选择器',
+              tech: 2,
+              novice: 2,
+              goal:
+                '输入人数、预算、口味和距离偏好，页面从本地餐厅数据里给一个推荐。',
+              files: ['餐厅名称', '人均价格', '适合几个人', '推荐理由'],
+              stayAway: ['自动定位', '外卖下单', '实时排队信息'],
+              commands: ['先看示例餐厅选择器', '把候选餐厅换成你熟悉的店', '打开“我的前端”试着点几个选项'],
+              deploy:
+                '如果餐厅信息可以公开，就能发到网上；如果有私人地址，先删掉敏感信息。'
+            },
+            {
+              level: '第二步：做成推荐工具',
+              title: '再改成礼物推荐器',
+              tech: 2.5,
+              novice: 3,
+              goal:
+                '根据关系、预算、年龄段和场景推荐礼物，并给购买前提醒。',
+              files: ['礼物名称', '适合送谁', '预算范围', '避雷提醒'],
+              stayAway: ['直接下单', '收款付款', '实时比价'],
+              commands: ['先看示例礼物推荐器', '把礼物换成你想推荐的东西', '打开“我的前端”试试推荐结果'],
+              deploy:
+                '第一版只做手工整理的推荐清单，链接可以自己填，不要承诺实时价格。'
+            },
+            {
+              level: '以后可以做',
+              title: '也能改成旅行路线抽签器',
+              tech: 3,
+              novice: 3.5,
+              goal:
+                '从候选城市、预算和时间里抽出一条轻旅行路线。',
+              files: ['城市名称', '天数预算', '旅行风格', '路线提醒'],
+              stayAway: ['订机票酒店', '实时天气', '复杂路线规划'],
+              commands: ['先看示例旅行路线', '把路线换成你熟悉的城市', '打开“我的前端”看看是否像一个能分享的小工具'],
+              deploy:
+                '先做路线灵感页，订票、天气和路线细节都放到以后。'
+            }
+          ]
+        }
+      ];
+
+      const filters = [
+        { id: 'all', label: '全部' },
+        { id: 'easy', label: '最容易开始' },
+        { id: 'profile', label: '个人品牌页' },
+        { id: 'choice', label: '做选择工具' }
+      ];
+
+      const starterWorks = [
+        {
+          title: '我的中文小站第一页',
+          project: '个人主页起点',
+          url: './static-sites/yuzhu-upon/index.html',
+          note: '参考雨竹upon的小站结构：先放自我介绍、代表作、项目和联系方式。',
+          tag: '第一步'
+        },
+        {
+          title: 'AI 个人主页样例',
+          project: '个人品牌起点',
+          url: 'https://xiestar.github.io/',
+          note: '参考流星玩AI的结构：先介绍定位，再展示作品、服务和联系方式。',
+          tag: '第一步'
+        },
+        {
+          title: '周末吃什么选择器',
+          project: '选择工具起点',
+          url: '',
+          note: '把候选项换成本地餐厅，结果页会解释为什么推荐。',
+          tag: '第二步'
+        }
+      ];
+
+      const state = {
+        filter: 'all',
+        projectId: projects[0].id,
+        packIndex: 0
+      };
+
+      const filterBar = document.getElementById('filterBar');
+      const projectList = document.getElementById('projectList');
+      const detailPanel = document.getElementById('detailPanel');
+      const workProject = document.getElementById('workProject');
+      const workForm = document.getElementById('workForm');
+      const workList = document.getElementById('workList');
+      const formNotice = document.getElementById('formNotice');
+      const tabButtons = Array.from(document.querySelectorAll('[data-tab]'));
+      const tabPanels = Array.from(document.querySelectorAll('[data-panel]'));
+      const tabIds = tabPanels.map((panel) => panel.dataset.panel);
+
+      function activateTab(tabId, options = {}) {
+        const nextTab = tabIds.includes(tabId) ? tabId : 'library';
+        tabButtons.forEach((button) => {
+          const isActive = button.dataset.tab === nextTab;
+          button.classList.toggle('active', isActive);
+          button.setAttribute('aria-selected', String(isActive));
+        });
+        tabPanels.forEach((panel) => {
+          panel.hidden = panel.dataset.panel !== nextTab;
+        });
+        if (options.scroll) {
+          document
+            .querySelector(`[data-panel="${nextTab}"]`)
+            ?.scrollIntoView({ behavior: options.behavior || 'smooth', block: 'start' });
+        }
+      }
+
+      function scoreLabel(score) {
+        if (score >= 90) return '高成功率';
+        if (score >= 80) return '适合试做';
+        return '谨慎尝试';
+      }
+
+      function stars(value) {
+        if (value <= 1.5) return '很容易';
+        if (value <= 2.5) return '容易上手';
+        if (value <= 3.2) return '有一点挑战';
+        return '以后再试';
+      }
+
+      function visibleProjects() {
+        if (state.filter === 'all') return projects;
+        return projects.filter((project) => project.category === state.filter);
+      }
+
+      function getActiveProject() {
+        return projects.find((project) => project.id === state.projectId) || projects[0];
+      }
+
+      function promptExamples(project) {
+        if (project.id === 'portfolio-page') {
+          return ['改成我的个人主页', '换成我的项目', '颜色更温柔'];
+        }
+        if (project.id === 'ai-profile-page') {
+          return ['改成我的 AI 主页', '突出我的服务', '加三个案例'];
+        }
+        return ['改成餐厅选择器', '换成礼物推荐器', '加几个选项'];
+      }
+
+      function packStepLabel(index) {
+        return ['换内容', '换方向', '以后再做'][index] || '更多想法';
+      }
+
+      function renderFilters() {
+        filterBar.innerHTML = filters
+          .map(
+            (filter) =>
+              `<button class="chip-button ${state.filter === filter.id ? 'active' : ''}" type="button" data-filter="${filter.id}">${filter.label}</button>`
+          )
+          .join('');
+      }
+
+      function renderProjectList() {
+        const items = visibleProjects();
+        if (!items.some((project) => project.id === state.projectId)) {
+          state.projectId = items[0]?.id || projects[0].id;
+          state.packIndex = 0;
+        }
+        projectList.innerHTML = items
+          .map(
+            (project, index) => `
+              <button class="project-button ${project.id === state.projectId ? 'active' : ''}" type="button" data-project="${project.id}">
+                <div class="project-row-head">
+                  <span class="project-index">${String(index + 1).padStart(2, '0')}</span>
+                  <h3>${project.name}</h3>
+                </div>
+                <p>${project.summary}</p>
+              </button>
+            `
+          )
+          .join('');
+      }
+
+      function renderDetail() {
+        const project = getActiveProject();
+        const pack = project.packs[state.packIndex] || project.packs[0];
+        const sampleHref =
+          project.sourceDemoUrl ||
+          `./remix-demo.html?project=${project.id}&pack=${state.packIndex}&mode=sample`;
+        const sampleTarget = project.sourceDemoUrl ? ' target="_blank" rel="noreferrer"' : '';
+        const sampleLabel = project.sourceDemoUrl ? '看原网页' : '看示例';
+        detailPanel.innerHTML = `
+          <div class="detail-head">
+            <div>
+              <h2>${project.name}</h2>
+              <p>${project.summary}</p>
+            </div>
+          </div>
+          <div class="detail-body">
+            <div class="pack-tabs">
+              ${project.packs
+                .map(
+                  (item, index) => `
+                    <button class="pack-tab ${index === state.packIndex ? 'active' : ''}" type="button" data-pack="${index}">
+                      <strong>${packStepLabel(index)}</strong>
+                      <span>${item.title}</span>
+                    </button>
+                  `
+                )
+                .join('')}
+            </div>
+
+            <div class="pack-detail">
+              <div class="simple-pack-layout">
+                <div class="tiny-preview">
+                  <h4>原网页截图</h4>
+                  <div class="preview-shot">
+                    <img src="${project.screenshot}" alt="${project.name}真实网页截图" loading="lazy" />
+                  </div>
+                </div>
+
+                <div class="simple-change-list">
+                  <div class="simple-change-card featured">
+                    <h4>${pack.title}</h4>
+                    <p>${pack.goal}</p>
+                    <div class="prompt-list">
+                      ${promptExamples(project).map((item) => `<span>${item}</span>`).join('')}
+                    </div>
+                    <div class="pack-actions">
+                      <a class="edit-button" href="./remix-editor.html?project=${project.id}&pack=${state.packIndex}">
+                        进入改造台
+                      </a>
+                      <a class="demo-button" href="${sampleHref}"${sampleTarget}>
+                        ${sampleLabel}
+                      </a>
+                    </div>
+                  </div>
+                  <div class="mini-info-card">
+                    <h4>主要改这些</h4>
+                    <div class="change-tags">
+                      ${pack.files.map((item) => `<span>${item}</span>`).join('')}
+                    </div>
+                  </div>
+                  <div class="mini-info-card">
+                    <h4>第一版先别碰</h4>
+                    <p>${pack.stayAway.join('、')}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      function storedWorks() {
+        try {
+          return JSON.parse(localStorage.getItem('remix-mvp-works') || '[]');
+        } catch (error) {
+          return [];
+        }
+      }
+
+      function saveWorks(works) {
+        localStorage.setItem('remix-mvp-works', JSON.stringify(works));
+      }
+
+      function renderWorkOptions() {
+        workProject.innerHTML = projects
+          .map((project) => `<option value="${project.name}">${project.name}</option>`)
+          .join('');
+      }
+
+      function renderWorks() {
+        const works = [...storedWorks(), ...starterWorks];
+        workList.innerHTML = works
+          .map(
+            (work, index) => `
+              <article class="work-item">
+                <div class="work-shot">${String(index + 1).padStart(2, '0')}</div>
+                <div>
+                  <h3>${work.title}</h3>
+                  <p>${work.note}</p>
+                  <div class="work-meta">
+                    <span>${work.project}</span>
+                    <span>${work.tag || '我的案例'}</span>
+                    ${work.url ? `<a href="${work.url}" target="_blank" rel="noreferrer">打开作品</a>` : ''}
+                  </div>
+                </div>
+              </article>
+            `
+          )
+          .join('');
+      }
+
+      function renderAll() {
+        renderFilters();
+        renderProjectList();
+        renderDetail();
+        renderWorkOptions();
+        renderWorks();
+      }
+
+      filterBar.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-filter]');
+        if (!button) return;
+        state.filter = button.dataset.filter;
+        state.packIndex = 0;
+        renderAll();
+      });
+
+      projectList.addEventListener('click', (event) => {
+        const button = event.target.closest('[data-project]');
+        if (!button) return;
+        state.projectId = button.dataset.project;
+        state.packIndex = 0;
+        renderAll();
+      });
+
+      detailPanel.addEventListener('click', (event) => {
+        const packButton = event.target.closest('[data-pack]');
+        if (packButton) {
+          state.packIndex = Number(packButton.dataset.pack);
+          renderDetail();
+          return;
+        }
+      });
+
+      document.addEventListener('click', (event) => {
+        const ideaButton = event.target.closest('[data-idea-project]');
+        if (ideaButton) {
+          state.projectId = ideaButton.dataset.ideaProject;
+          state.packIndex = Number(ideaButton.dataset.ideaPack || 0);
+          renderAll();
+          activateTab('library', { scroll: true });
+          return;
+        }
+
+        const tabButton = event.target.closest('[data-tab], [data-open-tab]');
+        if (!tabButton) return;
+        const tabId = tabButton.dataset.tab || tabButton.dataset.openTab;
+        activateTab(tabId, { scroll: true });
+      });
+
+      workForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const formData = new FormData(workForm);
+        const nextWork = {
+          title: String(formData.get('title') || '').trim(),
+          project: String(formData.get('project') || '').trim(),
+          url: String(formData.get('url') || '').trim(),
+          note: String(formData.get('note') || '').trim(),
+          tag: '我的案例'
+        };
+        if (!nextWork.title || !nextWork.note) return;
+        saveWorks([nextWork, ...storedWorks()]);
+        workForm.reset();
+        formNotice.textContent = '已加入当前浏览器的本地案例。';
+        renderWorkOptions();
+        renderWorks();
+      });
+
+      renderAll();
+      const initialTab = window.location.hash.replace('#', '') || 'hot';
+      activateTab(initialTab);
+    </script>
+  </body>
+</html>

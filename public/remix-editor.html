@@ -1,0 +1,2054 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="在网页里直接修改模板内容，实时预览自己的作品。"
+    />
+    <title>直接修改我的作品</title>
+    <style>
+      :root {
+        color: #172033;
+        background: #f7fbff;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-width: 320px;
+        margin: 0;
+        background: #f4f7fa;
+      }
+
+      button,
+      input,
+      textarea,
+      select {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .button {
+        min-height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 0 14px;
+        border: 1px solid #d8dee7;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #1d2a3b;
+        font-weight: 850;
+        box-shadow: none;
+      }
+
+      .button.primary {
+        border-color: #172033;
+        background: #172033;
+        color: #ffffff;
+      }
+
+      .button.subtle {
+        background: #f8fafc;
+      }
+
+      .button:hover {
+        border-color: #b9c5d4;
+        background: #f7f9fb;
+      }
+
+      .shell {
+        width: min(1720px, 100%);
+        margin: 0 auto;
+        padding: 16px 20px;
+      }
+
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      .editor-layout {
+        display: grid;
+        grid-template-columns: minmax(760px, 1fr) minmax(400px, 440px);
+        gap: 18px;
+        align-items: start;
+      }
+
+      .edit-panel,
+      .preview-panel {
+        border: 1px solid #dfe5ec;
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 12px 28px rgba(31, 45, 64, 0.06);
+      }
+
+      .edit-panel {
+        height: calc(100vh - 32px);
+        min-height: 720px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .panel-head {
+        flex-shrink: 0;
+        padding: 16px 18px;
+        border-bottom: 1px solid #e6ebf0;
+      }
+
+      .panel-head h2 {
+        color: #172033;
+        font-size: 1.18rem;
+        line-height: 1.35;
+      }
+
+      .panel-head p {
+        margin-top: 6px;
+        color: #607084;
+        font-size: 0.92rem;
+        line-height: 1.58;
+      }
+
+      .form-grid {
+        display: grid;
+        gap: 12px;
+        padding: 16px 18px;
+      }
+
+      .chat-editor {
+        flex: 1;
+        min-height: 0;
+        display: grid;
+        grid-template-rows: minmax(0, 1fr) auto auto auto;
+        gap: 14px;
+        padding: 16px 18px;
+        overflow: hidden;
+      }
+
+      .chat-thread {
+        min-height: 0;
+        display: grid;
+        align-content: start;
+        gap: 12px;
+        overflow: auto;
+        padding: 0 4px 2px 0;
+      }
+
+      .chat-message {
+        max-width: 88%;
+        display: grid;
+        gap: 6px;
+        padding: 12px;
+        border: 1px solid #dfe5ec;
+        border-radius: 8px;
+        background: #f8fafc;
+      }
+
+      .chat-message.user {
+        justify-self: end;
+        max-width: 82%;
+        border-color: #172033;
+        background: #172033;
+        color: #ffffff;
+      }
+
+      .chat-message strong {
+        font-size: 0.84rem;
+      }
+
+      .chat-message p {
+        color: inherit;
+        font-size: 0.95rem;
+        line-height: 1.65;
+      }
+
+      .chat-quick {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        padding-top: 2px;
+      }
+
+      .chat-chip {
+        min-height: 34px;
+        padding: 0 10px;
+        border: 1px solid #d8dee7;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #1d2a3b;
+        font-size: 0.86rem;
+        font-weight: 820;
+      }
+
+      .chat-chip:hover {
+        border-color: #b9c5d4;
+        background: #f7f9fb;
+      }
+
+      .chat-compose {
+        display: grid;
+        gap: 10px;
+      }
+
+      .chat-compose textarea {
+        min-height: 92px;
+        max-height: 142px;
+      }
+
+      .chat-send-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .change-list {
+        display: grid;
+        gap: 6px;
+        padding: 12px;
+        border: 1px solid #dfe5ec;
+        border-radius: 8px;
+        background: #f8fafc;
+      }
+
+      .change-list h3 {
+        color: #172033;
+        font-size: 0.96rem;
+      }
+
+      .change-list ul {
+        margin: 0;
+        padding-left: 18px;
+        color: #607084;
+        font-size: 0.9rem;
+        line-height: 1.6;
+      }
+
+      label,
+      .field-label {
+        display: grid;
+        gap: 6px;
+        color: #243044;
+        font-size: 0.9rem;
+        font-weight: 820;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        border: 1px solid #d8dee7;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #172033;
+      }
+
+      input,
+      select {
+        min-height: 40px;
+        padding: 0 12px;
+      }
+
+      textarea {
+        min-height: 82px;
+        padding: 10px 12px;
+        resize: vertical;
+      }
+
+      input[type="color"] {
+        min-height: 44px;
+        padding: 4px;
+      }
+
+      .item-group {
+        display: grid;
+        gap: 10px;
+        padding: 12px;
+        border: 1px solid #e1e6ee;
+        border-radius: 8px;
+        background: #f8fafc;
+      }
+
+      .item-group h3 {
+        color: #172033;
+        font-size: 1rem;
+      }
+
+      .two-cols {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        gap: 10px;
+      }
+
+      .form-actions {
+        flex-shrink: 0;
+        z-index: 3;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 18px;
+        border-top: 1px solid #e6ebf0;
+        background: rgba(255, 255, 255, 0.96);
+      }
+
+      .form-actions .notice {
+        width: auto;
+        margin-left: auto;
+      }
+
+      .notice {
+        color: #607084;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      .preview-panel {
+        position: sticky;
+        top: 18px;
+        height: calc(100vh - 32px);
+        min-height: 720px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .preview-frame {
+        min-height: 0;
+        flex: 1;
+        display: flex;
+        padding: 8px;
+        background: #edf2f7;
+      }
+
+      .site-preview {
+        width: 100%;
+        height: 100%;
+        min-height: 0;
+        overflow: hidden;
+        border: 1px solid #d9e1ea;
+        border-radius: 8px;
+        background: #ffffff;
+        color: #172033;
+      }
+
+      .preview-hero {
+        min-height: 280px;
+        display: grid;
+        align-content: end;
+        gap: 16px;
+        padding: 34px;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.96), rgba(255, 255, 255, 0.66)),
+          url("assets/portfolio-hero.png");
+        background-position: center;
+        background-size: cover;
+      }
+
+      .preview-kicker {
+        width: fit-content;
+        min-height: 28px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 10px;
+        border-radius: 8px;
+        background: color-mix(in srgb, var(--accent, #1769c2) 12%, #ffffff);
+        color: var(--accent, #1769c2);
+        font-size: 0.78rem;
+        font-weight: 850;
+      }
+
+      .preview-hero h2 {
+        max-width: 720px;
+        color: #172033;
+        font-size: clamp(2rem, 4vw, 4rem);
+        line-height: 1;
+        letter-spacing: 0;
+      }
+
+      .preview-hero p {
+        max-width: 680px;
+        color: #526174;
+        font-size: 1.04rem;
+        line-height: 1.7;
+      }
+
+      .preview-cta {
+        width: fit-content;
+        min-height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 14px;
+        border-radius: 8px;
+        background: var(--accent, #1769c2);
+        color: #ffffff;
+        font-weight: 850;
+      }
+
+      .preview-section {
+        padding: 24px 34px 34px;
+      }
+
+      .preview-section h3 {
+        color: #172033;
+        font-size: 1.26rem;
+      }
+
+      .preview-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 12px;
+        margin-top: 16px;
+      }
+
+      .preview-card {
+        min-height: 168px;
+        padding: 16px;
+        border: 1px solid rgba(31, 45, 64, 0.1);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .preview-card strong {
+        display: block;
+        color: #172033;
+        font-size: 1.04rem;
+        line-height: 1.35;
+      }
+
+      .preview-card span {
+        display: block;
+        margin-top: 8px;
+        color: var(--accent, #1769c2);
+        font-size: 0.82rem;
+        font-weight: 850;
+      }
+
+      .preview-card p {
+        margin-top: 10px;
+        color: #526174;
+        line-height: 1.62;
+      }
+
+      .yuzhu-site {
+        height: 100%;
+        min-height: 0;
+        overflow: hidden;
+        padding: 20px;
+        background: linear-gradient(to bottom, #f5f5f5, #eeeeee);
+        color: #333333;
+        font-family:
+          "Noto Sans SC", "Noto Sans JP", Inter, ui-sans-serif, system-ui,
+          -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      .yuzhu-site.theme-cute {
+        background: linear-gradient(to bottom, #f5f5f5, #eeeeee);
+      }
+
+      .yuzhu-site.theme-clean {
+        background: linear-gradient(to bottom, #f7f7f7, #eeeeee);
+      }
+
+      .yuzhu-site.theme-dark {
+        background: linear-gradient(to bottom, #f5f5f5, #eeeeee);
+      }
+
+      .yuzhu-site.theme-dark .yuzhu-stage {
+        background: #ffffff;
+      }
+
+      .yuzhu-stage {
+        height: 100%;
+        min-height: 720px;
+        position: relative;
+        display: grid;
+        grid-template-columns: 300px minmax(0, 1fr);
+        overflow: hidden;
+        border-radius: 10px;
+        background: #ffffff;
+        box-shadow: #aaaaaa 0 0 5px;
+      }
+
+      .yuzhu-bubbles {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+      }
+
+      .yuzhu-bubbles span {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        box-shadow: #cccccc 0 0 5px;
+        opacity: 0.5;
+      }
+
+      .yuzhu-bubbles span:nth-child(1) {
+        top: 6%;
+        left: 2%;
+      }
+
+      .yuzhu-bubbles span:nth-child(2) {
+        top: 11%;
+        left: 8%;
+      }
+
+      .yuzhu-bubbles span:nth-child(3) {
+        top: 24%;
+        left: 18%;
+      }
+
+      .yuzhu-bubbles span:nth-child(4) {
+        top: 36%;
+        left: 7%;
+      }
+
+      .yuzhu-bubbles span:nth-child(5) {
+        top: 8%;
+        left: 39%;
+      }
+
+      .yuzhu-bubbles span:nth-child(6) {
+        top: 18%;
+        left: 48%;
+      }
+
+      .yuzhu-bubbles span:nth-child(7) {
+        top: 28%;
+        left: 52%;
+      }
+
+      .yuzhu-bubbles span:nth-child(8) {
+        top: 34%;
+        left: 68%;
+      }
+
+      .yuzhu-sidebar {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100% - 40px);
+        margin: 20px 0 20px 20px;
+        padding: 0 28px;
+        border-right: 1px solid #cccccc;
+        text-align: center;
+      }
+
+      .yuzhu-avatar {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        box-shadow: #cccccc 0 0 10px;
+        background: #ffffff;
+      }
+
+      .yuzhu-avatar img {
+        width: 100%;
+        height: 100%;
+        border: #eeeeee solid 2px;
+        border-radius: 50%;
+        box-sizing: border-box;
+        object-fit: cover;
+      }
+
+      .yuzhu-name {
+        color: #000000;
+        font-size: 1.12rem;
+        font-weight: 900;
+        margin-top: 4px;
+      }
+
+      .yuzhu-say {
+        color: #333333;
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      .yuzhu-socials {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 28px;
+        margin-top: 10px;
+      }
+
+      .yuzhu-social {
+        width: 36px;
+        height: 36px;
+        display: grid;
+        place-items: center;
+        border-radius: 5px;
+      }
+
+      .yuzhu-social:hover {
+        background: #dddddd;
+      }
+
+      .yuzhu-social img {
+        width: 22px;
+        height: 22px;
+        object-fit: contain;
+      }
+
+      .yuzhu-player {
+        width: min(260px, 100%);
+        display: grid;
+        grid-template-columns: 56px minmax(0, 1fr);
+        gap: 12px;
+        align-items: center;
+        margin-top: 30px;
+        text-align: left;
+      }
+
+      .yuzhu-cover {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background:
+          url("./static-sites/yuzhu-upon/external/qplayer-default-cover.png") center / cover,
+          linear-gradient(135deg, rgba(9, 163, 255, 0.22), rgba(255, 112, 112, 0.3));
+      }
+
+      .yuzhu-track strong,
+      .yuzhu-track span {
+        display: block;
+      }
+
+      .yuzhu-track span {
+        color: #8a97a7;
+        font-size: 0.82rem;
+      }
+
+      .yuzhu-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        grid-column: 2;
+        color: #111111;
+        font-weight: 900;
+      }
+
+      .yuzhu-play-button {
+        min-height: 30px;
+        padding: 0 10px;
+        border: 1px solid rgba(31, 45, 64, 0.12);
+        border-radius: 6px;
+        background: #ffffff;
+        color: #111111;
+        font-weight: 900;
+      }
+
+      .yuzhu-play-button:hover {
+        background: #f2f5f8;
+      }
+
+      .yuzhu-player.is-playing .yuzhu-cover {
+        box-shadow:
+          0 4px 14px rgba(31, 45, 64, 0.14),
+          0 0 0 8px color-mix(in srgb, var(--accent, #09a3ff) 14%, transparent);
+      }
+
+      .yuzhu-main {
+        position: relative;
+        z-index: 1;
+        min-width: 0;
+        height: calc(100% - 40px);
+        margin: 20px;
+        padding: 0 20px 34px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        text-align: center;
+      }
+
+      .yuzhu-nav {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 8px 10px;
+        min-height: 40px;
+        color: #222222;
+        font-size: 1rem;
+        font-weight: 800;
+      }
+
+      .yuzhu-nav button {
+        min-height: 36px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 10px;
+        border: 0;
+        border-radius: 5px;
+        background: transparent;
+        color: #222222;
+        cursor: pointer;
+        font: inherit;
+        font-weight: 850;
+      }
+
+      .yuzhu-nav button:hover,
+      .yuzhu-nav button.is-active {
+        background: #eeeeee;
+      }
+
+      .yuzhu-hero {
+        min-height: 390px;
+        display: grid;
+        align-content: center;
+        justify-items: center;
+        gap: 16px;
+        padding: 44px 0 24px;
+      }
+
+      .yuzhu-kicker {
+        color: var(--accent, #09a3ff);
+        font-weight: 900;
+      }
+
+      .yuzhu-hero h2 {
+        max-width: 760px;
+        color: #000000;
+        font-size: clamp(1.65rem, 2.2vw, 2.1rem);
+        line-height: 1.25;
+        letter-spacing: 0;
+      }
+
+      .yuzhu-intro-lines {
+        display: grid;
+        gap: 8px;
+        color: #333333;
+        font-size: 1rem;
+        line-height: 1.5;
+      }
+
+      .yuzhu-dot {
+        color: #222222;
+        font-size: 1.2rem;
+      }
+
+      .yuzhu-section,
+      .yuzhu-contact {
+        padding: 42px 0;
+        scroll-margin-top: 16px;
+      }
+
+      .yuzhu-section h3,
+      .yuzhu-contact h3 {
+        color: #000000;
+        font-size: clamp(1.35rem, 2.2vw, 1.7rem);
+        line-height: 1.2;
+      }
+
+      .yuzhu-section-note {
+        max-width: 560px;
+        margin: 8px auto 0;
+        color: #333333;
+        line-height: 1.55;
+      }
+
+      .yuzhu-card-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 24px;
+      }
+
+      .yuzhu-card {
+        min-height: 74px;
+        padding: 12px 14px;
+        border: 0;
+        border-radius: 0;
+        background: #ffffff;
+        box-shadow: #aaaaaa 0 0 5px;
+        text-align: center;
+      }
+
+      .yuzhu-card strong,
+      .yuzhu-card span,
+      .yuzhu-card p {
+        display: block;
+      }
+
+      .yuzhu-card strong {
+        color: #111111;
+        font-size: 1.02rem;
+      }
+
+      .yuzhu-card span {
+        display: none;
+      }
+
+      .yuzhu-card p {
+        margin-top: 6px;
+        color: #333333;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      .yuzhu-about {
+        border-top: 1px solid rgba(31, 45, 64, 0.08);
+        border-bottom: 1px solid rgba(31, 45, 64, 0.08);
+      }
+
+      .yuzhu-skills {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 14px;
+      }
+
+      .yuzhu-skills span {
+        min-height: 30px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 10px;
+        border-radius: 8px;
+        background: rgba(0, 153, 255, 0.1);
+        color: var(--accent, #09a3ff);
+        font-size: 0.82rem;
+        font-weight: 850;
+      }
+
+      .yuzhu-contact {
+        margin-top: 8px;
+        padding: 36px 0;
+        border-radius: 0;
+        background: transparent;
+      }
+
+      .yuzhu-contact p {
+        margin-top: 10px;
+        color: #333333;
+        line-height: 1.5;
+      }
+
+      .yuzhu-susie {
+        display: block;
+        width: 140px;
+        height: auto;
+        margin: 22px auto 4px;
+      }
+
+      .yuzhu-backtop {
+        position: absolute;
+        right: -18px;
+        bottom: -4px;
+        width: 128px;
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      .yuzhu-backtop img {
+        width: 100%;
+        display: block;
+      }
+
+      .choice-list {
+        display: grid;
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .choice-row {
+        display: grid;
+        grid-template-columns: 36px minmax(0, 1fr);
+        gap: 12px;
+        align-items: start;
+        padding: 14px;
+        border: 1px solid rgba(31, 45, 64, 0.1);
+        border-radius: 8px;
+        background: #f8fbfd;
+      }
+
+      .choice-row b {
+        display: grid;
+        width: 36px;
+        height: 36px;
+        place-items: center;
+        border-radius: 8px;
+        background: var(--accent, #1769c2);
+        color: #ffffff;
+      }
+
+      .result-box {
+        margin-top: 16px;
+        padding: 16px;
+        border: 1px solid color-mix(in srgb, var(--accent, #1769c2) 24%, #ffffff);
+        border-radius: 8px;
+        background: color-mix(in srgb, var(--accent, #1769c2) 8%, #ffffff);
+      }
+
+      .result-box strong {
+        display: block;
+        color: #172033;
+      }
+
+      .result-box p {
+        margin-top: 8px;
+        color: #526174;
+        line-height: 1.62;
+      }
+
+      @supports not (color: color-mix(in srgb, #000 10%, #fff)) {
+        .preview-kicker,
+        .result-box {
+          background: #eef7ff;
+        }
+      }
+
+      @media (max-width: 1220px) {
+        .editor-layout {
+          grid-template-columns: 1fr;
+        }
+
+        .preview-panel {
+          position: static;
+          height: auto;
+          min-height: 0;
+        }
+
+        .edit-panel {
+          height: auto;
+          min-height: 0;
+          overflow: visible;
+        }
+
+        .chat-editor {
+          overflow: visible;
+        }
+
+        .chat-thread {
+          max-height: 520px;
+        }
+
+        .site-preview {
+          height: min(760px, calc(100vh - 144px));
+          min-height: 620px;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .form-actions {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .button {
+          width: 100%;
+        }
+
+        .shell {
+          padding: 12px;
+        }
+
+        .panel-head,
+        .form-grid,
+        .chat-editor,
+        .preview-frame {
+          padding: 16px;
+        }
+
+        .two-cols,
+        .preview-grid,
+        .yuzhu-card-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .yuzhu-stage {
+          grid-template-columns: 1fr;
+        }
+
+        .yuzhu-sidebar {
+          min-height: auto;
+          padding: 36px 20px;
+          border-right: 0;
+          border-bottom: 1px solid rgba(31, 45, 64, 0.14);
+        }
+
+        .yuzhu-main {
+          padding: 20px;
+        }
+
+        .preview-hero,
+        .preview-section,
+        .yuzhu-hero,
+        .yuzhu-section,
+        .yuzhu-contact {
+          padding: 22px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="shell">
+      <section class="editor-layout">
+        <section class="preview-panel" aria-labelledby="previewTitle">
+          <div class="panel-head">
+            <h2 id="previewTitle">预览我的作品</h2>
+            <p id="previewHint">这里会跟着左边输入的内容一起变化。</p>
+          </div>
+          <div class="preview-frame">
+            <div class="site-preview" id="preview"></div>
+          </div>
+        </section>
+
+        <section class="edit-panel" aria-labelledby="editTitle">
+          <div class="panel-head">
+            <h2 id="editTitle">填写内容</h2>
+            <p id="editHint">先把示例文字换成自己的内容。</p>
+          </div>
+          <div class="chat-editor" id="editorForm"></div>
+          <div class="form-actions">
+            <button class="button" type="button" id="saveButton">保存</button>
+            <a class="button primary" id="generateProductButton" href="#">生成我的产品</a>
+            <span class="notice" id="saveNotice">生成前会自动保存。</span>
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <script>
+      const packCatalog = {
+        'portfolio-page': [
+          {
+            title: '直接改雨竹upon的小站',
+            kind: 'portfolio',
+            helper: '直接把雨竹upon的小站换成你的名字、欢迎语、代表作、友链和联系方式。'
+          },
+          {
+            title: '改成兴趣作品页',
+            kind: 'list',
+            helper: '适合把兴趣、作品、友链整理成卡片。'
+          },
+          {
+            title: '改成项目导航页',
+            kind: 'list',
+            helper: '适合把做过的网页、小工具和文章放在一起。'
+          }
+        ],
+        'ai-profile-page': [
+          {
+            title: '做一个 AI 个人主页',
+            kind: 'portfolio',
+            helper: '适合先改定位、介绍、作品和联系方式。'
+          },
+          {
+            title: '改成接单服务页',
+            kind: 'list',
+            helper: '适合整理你能提供的服务和联系入口。'
+          },
+          {
+            title: '改成内容账号主页',
+            kind: 'list',
+            helper: '适合整理公众号、视频号、播客或社群入口。'
+          }
+        ],
+        'choice-tool': [
+          {
+            title: '改成餐厅选择器',
+            kind: 'choice',
+            helper: '适合整理候选餐厅和推荐理由。'
+          },
+          {
+            title: '改成礼物推荐器',
+            kind: 'choice',
+            helper: '适合整理礼物、预算、适合对象和避雷点。'
+          },
+          {
+            title: '改成旅行路线抽签器',
+            kind: 'choice',
+            helper: '适合整理城市、天数、预算和路线。'
+          }
+        ]
+      };
+
+      const defaults = {
+        portfolio: {
+          title: '我的中文小站',
+          subtitle: '这里放我的自我介绍、代表作、项目、朋友链接和联系方式。',
+          primary: '查看我的项目',
+          color: '#09a3ff',
+          kicker: '中文个人小站',
+          sectionTitle: '代表作和项目',
+          cards: [
+            {
+              title: '第一个代表作',
+              meta: '网页项目',
+              note: '用一句话说清楚这个作品是什么、为什么值得看。'
+            },
+            {
+              title: '我的兴趣项目',
+              meta: '个人实验',
+              note: '可以放音乐盒、起始页、小工具或任何你喜欢的作品。'
+            },
+            {
+              title: '联系我',
+              meta: '公开账号',
+              note: '放一个别人能找到你的方式，公开前记得去掉隐私信息。'
+            }
+          ]
+        },
+        list: {
+          title: '我的内容清单',
+          subtitle: '把我最近想整理的内容放在这里，方便自己和朋友快速查看。',
+          primary: '查看清单',
+          color: '#1769c2',
+          kicker: '清单页面',
+          sectionTitle: '我整理的内容',
+          cards: [
+            {
+              title: '工具一',
+              meta: '适合新手',
+              note: '它能帮我快速生成页面结构。'
+            },
+            {
+              title: '工具二',
+              meta: '适合做内容',
+              note: '它能帮我整理选题和标题方向。'
+            },
+            {
+              title: '工具三',
+              meta: '以后再试',
+              note: '它看起来有潜力，但我还需要继续测试。'
+            }
+          ]
+        },
+        choice: {
+          title: '今晚吃什么',
+          subtitle: '把候选项放进来，页面会给出一个推荐答案。',
+          primary: '帮我选一个',
+          color: '#1769c2',
+          kicker: '选择小工具',
+          question: '我应该选哪一个？',
+          choices: [
+            {
+              title: '附近小馆',
+              meta: '人均 50',
+              note: '不用排队，适合临时决定。'
+            },
+            {
+              title: '火锅店',
+              meta: '适合 3 人以上',
+              note: '热闹，但可能需要等位。'
+            },
+            {
+              title: '轻食店',
+              meta: '更清淡',
+              note: '适合想吃简单一点的时候。'
+            }
+          ],
+          resultTitle: '推荐：附近小馆',
+          resultReason: '预算合适，距离近，不需要提前准备，最适合今天先去试试。'
+        }
+      };
+
+      const projectNames = {
+        'portfolio-page': '中文个人小站模板',
+        'ai-profile-page': 'AI 个人主页模板',
+        'choice-tool': '转盘选择 HTML 小工具'
+      };
+
+      const sourceDemoUrls = {
+        'portfolio-page': './static-sites/yuzhu-upon/index.html',
+        'ai-profile-page': 'https://xiestar.github.io/',
+        'choice-tool': 'https://nikpatil2123.github.io/Spin-wheel-Game/'
+      };
+
+      const params = new URLSearchParams(window.location.search);
+      const projectId = packCatalog[params.get('project')] ? params.get('project') : 'portfolio-page';
+      const packIndex = Math.min(
+        Math.max(Number(params.get('pack') || 0), 0),
+        packCatalog[projectId].length - 1
+      );
+      const pack = packCatalog[projectId][packIndex];
+      const storageVersion = 'direct-yuzhu-site-v3';
+      const storageKey = `remix-editor-${storageVersion}-${projectId}-${packIndex}`;
+      const form = document.getElementById('editorForm');
+      const preview = document.getElementById('preview');
+      const saveButton = document.getElementById('saveButton');
+      const saveNotice = document.getElementById('saveNotice');
+      const mineDemoUrl = `./remix-demo.html?project=${projectId}&pack=${packIndex}&mode=mine`;
+      const aiApiUrl = 'https://github-web-coding-radar-remix-ai.hpuxyh-taste-lens.workers.dev/api/remix-chat';
+
+      let data = loadData();
+      let lastChanges = ['还没开始修改，可以直接说你想要什么效果。'];
+      let chatMessages = initialChatMessages();
+
+      function clone(value) {
+        return JSON.parse(JSON.stringify(value));
+      }
+
+      function initialChatMessages() {
+        return [
+          {
+            role: 'assistant',
+            text:
+              '你不用一个字段一个字段填，直接告诉我想把这个小站改成什么样。比如：改成摄影作品集、颜色温柔一点、加三个作品、做成 AI 工具榜单。'
+          }
+        ];
+      }
+
+      function defaultDataForPack() {
+        const base = clone(defaults[pack.kind]);
+        const title = pack.title;
+
+        if (title.includes('雨竹upon')) {
+          return {
+            ...base,
+            title: '雨竹upon的小站',
+            subtitle: '海内存知己，天涯若比邻。',
+            intro: '大家好，我是雨竹upon，一个热爱前端的高中生。HTML/CSS/JS 不精但专，喜欢一切可爱的事物！',
+            primary: '联系我',
+            color: '#09a3ff',
+            kicker: '欢迎来到我的小站！',
+            sectionTitle: '代表作',
+            skillsText: 'HTML / CSS / JavaScript / PHP / NodeJS / UI设计 / 视频制作',
+            cards: [
+              { title: 'QUIK 起始页', meta: '浏览器主页', note: '一个简洁、实用、个性化、无广告的浏览器主页。' },
+              { title: '雨竹音乐盒', meta: '兴趣项目', note: '把喜欢的音乐整理成一个在线音乐盒子，方便自己和朋友打开。' },
+              { title: 'Win10online', meta: '网页实验', note: '用标准网页技术复刻 Windows 10 体验，是一个很有记忆点的早期作品。' },
+              { title: '更多项目', meta: '项目入口', note: '这里可以继续放更多已经做过或正在做的网页作品。' }
+            ],
+            friends: [
+              { title: '川上星林', meta: '友链', note: '让生活充满色彩，让梦想更加绚丽。' },
+              { title: 'Alex', meta: '朋友的小站', note: '喜欢各种技术和网页小实验。' },
+              { title: '更多朋友', meta: '友链入口', note: '开发和学习路上，朋友们陪我一同前行。' }
+            ],
+            contactTitle: '联系我',
+            contactNote: '欢迎任何志同道合的小伙伴们与我交流，一起进步！'
+          };
+        }
+
+        if (title.includes('兴趣作品')) {
+          return {
+            ...base,
+            title: '我的兴趣小站',
+            subtitle: '把我喜欢的内容、正在做的小项目和朋友链接整理在这里，像一个自己的网上房间。',
+            primary: '看看我喜欢什么',
+            color: '#09a3ff',
+            kicker: '兴趣作品页',
+            sectionTitle: '兴趣和作品',
+            cards: [
+              { title: '我喜欢的音乐', meta: '兴趣收藏', note: '可以放歌单、音乐盒或者常听的音乐平台链接。' },
+              { title: '我的小工具', meta: '网页实验', note: '可以放自己做过的小页面、小组件或练习作品。' },
+              { title: '朋友链接', meta: '友链入口', note: '把朋友的小站放在这里，让别人继续逛下去。' }
+            ]
+          };
+        }
+
+        if (title.includes('项目导航')) {
+          return {
+            ...base,
+            title: '我的项目导航',
+            subtitle: '把我做过的网页、小工具、文章和社交主页放在一起，别人打开后能快速找到重点。',
+            primary: '打开项目',
+            kicker: '项目入口',
+            sectionTitle: '项目列表',
+            cards: [
+              { title: '个人主页', meta: '代表项目', note: '别人第一次认识你时，最应该先看的页面。' },
+              { title: '实用小工具', meta: '网页工具', note: '把你做过的选择器、清单页或查询页放在这里。' },
+              { title: '内容主页', meta: '文章 / 视频', note: '放你的公众号、视频号、博客或作品集合。' }
+            ]
+          };
+        }
+
+        if (title.includes('AI 个人主页')) {
+          return {
+            ...base,
+            title: '流星玩AI',
+            subtitle: '追逐月亮的流星，AI 赛道探索者。这里展示我的经历、AI 作品、专业服务和联系方式。',
+            primary: '查看作品',
+            color: '#4f46e5',
+            kicker: 'AI 个人主页',
+            sectionTitle: '作品和服务',
+            cards: [
+              { title: '个人主页', meta: 'HTML / CSS / JS', note: '展示我的项目、技能和经验，作为别人了解我的入口。' },
+              { title: 'DeepSeek 聊天机器人', meta: 'AI 作品', note: '基于 AI 技术做的聊天机器人，用来展示我的 AI 应用能力。' },
+              { title: '流星玩AI', meta: '内容账号', note: '分享 AI 技术应用和最新动态，帮助更多人了解 AI。' }
+            ]
+          };
+        }
+
+        if (title.includes('接单服务')) {
+          return {
+            ...base,
+            title: '我的服务介绍',
+            subtitle: '把我能帮别人做的事情写清楚：适合谁、能解决什么问题、怎么联系我。',
+            primary: '联系我',
+            color: '#4f46e5',
+            kicker: '接单服务页',
+            sectionTitle: '我可以帮你做',
+            cards: [
+              { title: 'AI 应用开发', meta: '适合企业和个人', note: '把重复工作整理成 AI 小工具，先从一个简单场景开始。' },
+              { title: '网站开发', meta: '适合个人品牌', note: '做一个能展示介绍、作品和联系方式的网页。' },
+              { title: 'AI 技术培训', meta: '适合团队入门', note: '用实际案例讲清楚 AI 工具怎么帮工作提效。' }
+            ]
+          };
+        }
+
+        if (title.includes('内容账号')) {
+          return {
+            ...base,
+            title: '我的内容主页',
+            subtitle: '把公众号、视频号、社群和代表内容放在一个页面，方便别人关注和合作。',
+            primary: '关注我',
+            color: '#4f46e5',
+            kicker: '内容账号主页',
+            sectionTitle: '代表内容',
+            cards: [
+              { title: '公众号 / 视频号', meta: '内容入口', note: '放你的账号名称和一句话介绍。' },
+              { title: '代表文章', meta: '精选内容', note: '放最能说明你能力的一篇文章或视频。' },
+              { title: '合作方式', meta: '公开联系方式', note: '写清楚别人可以怎么联系你、适合聊什么。' }
+            ]
+          };
+        }
+
+        if (title.includes('餐厅')) {
+          return {
+            ...base,
+            title: '今晚吃什么',
+            subtitle: '选人数、预算和口味后，从候选餐厅里给一个推荐。',
+            primary: '帮我选一个',
+            kicker: '餐厅选择器',
+            question: '今天更适合去哪家？',
+            choices: [
+              { title: '巷口小馆', meta: '人均 48 / 家常菜', note: '近、不用排队，适合临时决定。' },
+              { title: '热辣火锅', meta: '人均 110 / 适合多人', note: '适合 3 人以上，但周末可能要等位。' },
+              { title: '轻食咖啡', meta: '人均 65 / 清淡', note: '适合不想吃太撑的时候，还能聊天。' }
+            ],
+            resultTitle: '推荐：巷口小馆',
+            resultReason: '距离近、价格稳、不用等位，最适合今天快速解决晚饭。'
+          };
+        }
+
+        if (title.includes('礼物')) {
+          return {
+            ...base,
+            title: '礼物推荐器',
+            subtitle: '根据关系、预算和场景，先给出几个不容易踩雷的礼物方向。',
+            primary: '帮我挑礼物',
+            color: '#d94686',
+            kicker: '礼物工具',
+            question: '这次送什么更合适？',
+            choices: [
+              { title: '香薰礼盒', meta: '200 元内 / 朋友', note: '适合乔迁或生日，不太挑尺码。' },
+              { title: '桌面小音箱', meta: '300 元内 / 同事', note: '实用但不太私人，适合感谢礼。' },
+              { title: '手写卡片 + 鲜花', meta: '150 元内 / 重要关系', note: '情绪价值高，适合纪念日。' }
+            ],
+            resultTitle: '推荐：香薰礼盒',
+            resultReason: '预算可控、场景通用，也不需要知道太多私人信息，踩雷概率低。'
+          };
+        }
+
+        if (title.includes('旅行')) {
+          return {
+            ...base,
+            title: '旅行路线抽签器',
+            subtitle: '输入天数、预算和旅行风格后，先给一条轻量路线灵感。',
+            primary: '抽一条路线',
+            kicker: '旅行小工具',
+            question: '这次可以去哪儿？',
+            choices: [
+              { title: '杭州两日慢逛', meta: '2 天 / 轻松', note: '西湖、茶馆、城市散步，适合不赶路。' },
+              { title: '厦门三日海边', meta: '3 天 / 拍照', note: '海边、老街和咖啡店，适合朋友出游。' },
+              { title: '成都周末吃喝', meta: '2 天 / 美食', note: '火锅、小吃和公园，预算弹性大。' }
+            ],
+            resultTitle: '推荐：杭州两日慢逛',
+            resultReason: '行程轻、不用做太多攻略，适合先把周末旅行跑起来。'
+          };
+        }
+
+        return base;
+      }
+
+      function loadData() {
+        const base = defaultDataForPack();
+        try {
+          const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
+          if (!saved || typeof saved !== 'object') return base;
+          return {
+            ...base,
+            ...saved,
+            cards: saved.cards || base.cards,
+            choices: saved.choices || base.choices,
+            friends: saved.friends || base.friends
+          };
+        } catch (error) {
+          return base;
+        }
+      }
+
+      function saveData(message = '已保存，可以生成产品。') {
+        localStorage.setItem(storageKey, JSON.stringify(data));
+        saveNotice.textContent = message;
+      }
+
+      function escapeHtml(value) {
+        return String(value || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function safeColor(value) {
+        return /^#[0-9a-fA-F]{6}$/.test(String(value || '')) ? value : '#1769c2';
+      }
+
+      function safeTheme(value) {
+        return ['cute', 'clean', 'dark'].includes(String(value || '')) ? value : 'clean';
+      }
+
+      function cleanTextValue(value, fallback = '') {
+        return String(value || fallback || '').trim();
+      }
+
+      function normalizeCards(items, fallback) {
+        const source = Array.isArray(items) && items.length ? items : fallback;
+        return source.slice(0, 4).map((item) => ({
+          title: cleanTextValue(item?.title, '未命名作品'),
+          meta: cleanTextValue(item?.meta, '项目'),
+          note: cleanTextValue(item?.note, '这里放一句简单说明。')
+        }));
+      }
+
+      function normalizeAiData(next) {
+        return {
+          ...data,
+          title: cleanTextValue(next?.title, data.title),
+          subtitle: cleanTextValue(next?.subtitle, data.subtitle),
+          intro: cleanTextValue(next?.intro, data.intro),
+          primary: cleanTextValue(next?.primary, data.primary),
+          color: safeColor(next?.color || data.color),
+          visualStyle: safeTheme(next?.visualStyle || data.visualStyle),
+          kicker: cleanTextValue(next?.kicker, data.kicker),
+          sectionTitle: cleanTextValue(next?.sectionTitle, data.sectionTitle),
+          skillsText: cleanTextValue(next?.skillsText, data.skillsText),
+          contactTitle: cleanTextValue(next?.contactTitle, data.contactTitle),
+          contactNote: cleanTextValue(next?.contactNote, data.contactNote),
+          cards: normalizeCards(next?.cards, data.cards),
+          friends: normalizeCards(next?.friends, data.friends)
+        };
+      }
+
+      function isYuzhuPack() {
+        return projectId === 'portfolio-page' && packIndex === 0;
+      }
+
+      function renderCommonFields() {
+        return `
+          <label>
+            页面标题
+            <input name="title" value="${escapeHtml(data.title)}" />
+          </label>
+          <label>
+            简短介绍
+            <textarea name="subtitle">${escapeHtml(data.subtitle)}</textarea>
+          </label>
+          <div class="two-cols">
+            <label>
+              按钮文字
+              <input name="primary" value="${escapeHtml(data.primary)}" />
+            </label>
+            <label>
+              主色
+              <input name="color" type="color" value="${safeColor(data.color)}" />
+            </label>
+          </div>
+        `;
+      }
+
+      function renderCardsFields(items, name, label) {
+        return items
+          .map(
+            (item, index) => `
+              <div class="item-group">
+                <h3>${label}${index + 1}</h3>
+                <label>
+                  标题
+                  <input name="${name}.${index}.title" value="${escapeHtml(item.title)}" />
+                </label>
+                <label>
+                  标签
+                  <input name="${name}.${index}.meta" value="${escapeHtml(item.meta)}" />
+                </label>
+                <label>
+                  说明
+                  <textarea name="${name}.${index}.note">${escapeHtml(item.note)}</textarea>
+                </label>
+              </div>
+            `
+          )
+          .join('');
+      }
+
+      function renderForm() {
+        const quickPrompts = [
+          '改成摄影作品集',
+          '颜色换成温柔粉色',
+          '改成 AI 工具榜单',
+          '做成小红书选题工具',
+          '换成深色酷一点',
+          '加三个网页项目'
+        ];
+        form.innerHTML = `
+          <div class="chat-thread" id="chatThread" aria-live="polite">
+            ${chatMessages
+              .map(
+                (message) => `
+                  <div class="chat-message ${message.role === 'user' ? 'user' : 'assistant'}">
+                    <strong>${message.role === 'user' ? '你' : 'AI 修改助手'}</strong>
+                    <p>${escapeHtml(message.text)}</p>
+                  </div>
+                `
+              )
+              .join('')}
+          </div>
+          <div class="chat-quick" aria-label="快捷修改">
+            ${quickPrompts
+              .map(
+                (prompt) => `
+                  <button class="chat-chip" type="button" data-chat-prompt="${escapeHtml(prompt)}">${escapeHtml(prompt)}</button>
+                `
+              )
+              .join('')}
+          </div>
+          <div class="change-list">
+            <h3>刚刚改了什么</h3>
+            <ul>${lastChanges.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>
+          </div>
+          <div class="chat-compose">
+            <textarea id="chatInput" placeholder="直接说你想要的效果：比如，把它改成一个摄影作品集，整体更温柔，作品区放三张照片项目。"></textarea>
+            <div class="chat-send-row">
+              <span class="notice">发出去后，左边预览会马上变化。</span>
+              <button class="button primary" type="button" data-send-chat>发送修改</button>
+            </div>
+          </div>
+        `;
+        requestAnimationFrame(() => {
+          const thread = document.getElementById('chatThread');
+          if (thread) thread.scrollTop = thread.scrollHeight;
+        });
+      }
+
+      function setCards(items) {
+        data.cards = items;
+      }
+
+      function setFriends(items) {
+        data.friends = items;
+      }
+
+      function applyStyle(theme, color, label, changes) {
+        data.visualStyle = theme;
+        data.color = color;
+        changes.push(label);
+      }
+
+      function applyChatInstruction(rawText) {
+        const text = String(rawText || '').trim();
+        const changes = [];
+        if (!text) return changes;
+
+        if (/摄影|照片|相册|拍照/.test(text)) {
+          data.title = '我的摄影作品集';
+          data.subtitle = '记录我看到的光、城市和生活瞬间。';
+          data.kicker = '欢迎来到我的摄影小站！';
+          data.intro = '你好，我喜欢用镜头记录日常，也会整理街拍、人像和旅行照片。这里是我的摄影作品入口。';
+          data.primary = '联系约拍';
+          data.sectionTitle = '摄影作品';
+          data.skillsText = '摄影 / 修图 / 街拍 / 人像 / 旅行记录';
+          data.contactTitle = '联系我';
+          data.contactNote = '想约拍、交流作品或一起扫街，可以从这里联系我。';
+          setCards([
+            { title: '街头光影', meta: '城市记录', note: '用街拍记录城市里真实、松弛又有光的瞬间。' },
+            { title: '人像练习', meta: '约拍作品', note: '尝试用自然光拍出舒服、有故事感的人像。' },
+            { title: '旅行相册', meta: '照片合集', note: '把路上的风景、店铺和偶遇整理成一个相册。' }
+          ]);
+          changes.push('页面变成摄影作品集', '代表作换成摄影项目', '联系按钮改成约拍入口');
+        } else if (/小红书|选题|笔记|种草/.test(text)) {
+          data.title = '小红书选题工具';
+          data.subtitle = '把灵感、标题和素材整理成一张可直接开写的选题清单。';
+          data.kicker = '今天写什么？';
+          data.intro = '这是一个帮内容创作者整理选题的小页面，可以放爆款方向、标题灵感和素材状态。';
+          data.primary = '查看选题';
+          data.sectionTitle = '选题卡片';
+          data.skillsText = '选题 / 标题 / 素材 / 发布计划 / 内容复盘';
+          data.contactTitle = '合作和交流';
+          data.contactNote = '如果你也在做内容，可以一起交换选题和复盘方法。';
+          setCards([
+            { title: '选题灵感', meta: '适合新手', note: '把最近看到的热点、问题和用户需求先收集起来。' },
+            { title: '标题方向', meta: '马上能写', note: '准备 3 个标题版本，先选最容易让人点开的一个。' },
+            { title: '素材状态', meta: '发布前检查', note: '图片、案例、数据和结尾引导都放在这里。' }
+          ]);
+          changes.push('页面变成小红书选题工具', '卡片改成选题、标题和素材', '说明文案换成内容创作者能看懂的说法');
+        } else if (/ai|AI|工具榜单|榜单|工具清单/.test(text)) {
+          data.title = 'AI 工具榜单';
+          data.subtitle = '把常用 AI 工具按写作、图片、代码和效率整理出来。';
+          data.kicker = '我的 AI 工具榜';
+          data.intro = '这里整理我常用的 AI 工具和使用场景，方便新手快速知道每个工具适合做什么。';
+          data.primary = '查看工具';
+          data.sectionTitle = '推荐工具';
+          data.skillsText = 'AI 写作 / 图片生成 / 代码助手 / 自动化 / 效率工具';
+          data.contactTitle = '推荐工具给我';
+          data.contactNote = '如果你有好用的 AI 工具，也可以发给我一起测试。';
+          setCards([
+            { title: '写作工具', meta: '内容生成', note: '适合写大纲、标题、改文案和整理资料。' },
+            { title: '图片工具', meta: '视觉创作', note: '适合做封面、头像、插图和产品展示图。' },
+            { title: '代码工具', meta: '网页改造', note: '适合帮你理解项目、改页面和生成小功能。' }
+          ]);
+          changes.push('页面变成 AI 工具榜单', '代表作改成工具分类', '按钮和联系区换成工具推荐语境');
+        } else if (/餐厅|吃什么|选择器|去哪吃/.test(text)) {
+          data.title = '周末餐厅选择器';
+          data.subtitle = '把候选餐厅、预算和适合场景整理出来，朋友聚餐不用再纠结。';
+          data.kicker = '今天去哪吃？';
+          data.intro = '这是一个简单的餐厅选择页面，可以放餐厅卡片、推荐理由和适合人群。';
+          data.primary = '帮我选餐厅';
+          data.sectionTitle = '候选餐厅';
+          data.skillsText = '餐厅 / 预算 / 距离 / 口味 / 聚餐';
+          setCards([
+            { title: '巷口小馆', meta: '人均 50', note: '近、不用排队，适合临时决定。' },
+            { title: '热辣火锅', meta: '适合多人', note: '氛围热闹，适合朋友聚餐。' },
+            { title: '轻食咖啡', meta: '清淡聊天', note: '适合不想吃太撑，还想坐下来聊聊。' }
+          ]);
+          changes.push('页面变成餐厅选择器', '卡片换成候选餐厅', '按钮改成选择餐厅');
+        } else if (/项目|作品|卡片|网页/.test(text)) {
+          data.sectionTitle = '我的网页项目';
+          setCards([
+            { title: '个人主页', meta: '网页作品', note: '展示我的介绍、作品和联系方式。' },
+            { title: '选择困难小工具', meta: '互动工具', note: '帮朋友从几个选项里快速做决定。' },
+            { title: '内容清单页', meta: '整理页面', note: '把常用工具、灵感和链接整理在一起。' }
+          ]);
+          changes.push('代表作换成三个网页项目');
+        }
+
+        if (/粉|温柔|可爱|甜|少女/.test(text)) {
+          applyStyle('cute', '#ff6aa2', '颜色和背景换成温柔可爱风格', changes);
+        } else if (/黑|深色|酷|高级/.test(text)) {
+          applyStyle('dark', '#111827', '颜色和背景换成深色酷一点', changes);
+        } else if (/蓝|清爽|干净|清新|天空/.test(text)) {
+          applyStyle('clean', '#09a3ff', '颜色换成清爽蓝色', changes);
+        } else if (/绿|自然|植物/.test(text)) {
+          applyStyle('clean', '#16a34a', '主色换成自然绿色', changes);
+        } else if (/紫|科技|赛博/.test(text)) {
+          applyStyle('clean', '#6d5dfc', '主色换成科技紫色', changes);
+        }
+
+        if (/朋友|友链|伙伴/.test(text)) {
+          setFriends([
+            { title: '朋友的小站', meta: '友链', note: '这里放朋友主页或你想推荐的人。' },
+            { title: '合作伙伴', meta: '合作', note: '适合放一起做项目的人或团队。' },
+            { title: '更多链接', meta: '入口', note: '把更多值得访问的页面继续放进来。' }
+          ]);
+          changes.push('友链区换成更通用的朋友链接');
+        }
+
+        const nameMatch = text.match(/(?:名字|名称|标题|小站).{0,8}(?:改成|换成|叫|是)\s*([^，。,.!！?？]+)/);
+        if (nameMatch && nameMatch[1]) {
+          data.title = nameMatch[1].trim();
+          changes.push('小站名字已按你的说法替换');
+        }
+
+        return [...new Set(changes)];
+      }
+
+      function sendChatMessage(textFromButton) {
+        const input = document.getElementById('chatInput');
+        const text = String(textFromButton || input?.value || '').trim();
+        if (!text) {
+          saveNotice.textContent = '先说一句你想怎么改。';
+          return;
+        }
+        chatMessages.push({ role: 'user', text });
+        chatMessages.push({
+          role: 'assistant',
+          text: '收到，我正在让 DeepSeek 帮你改左边页面。'
+        });
+        saveNotice.textContent = 'DeepSeek 正在修改页面...';
+        renderForm();
+        requestAiRemix(text);
+      }
+
+      async function requestAiRemix(text) {
+        try {
+          const response = await fetch(aiApiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              message: text,
+              current: data,
+              projectId,
+              packIndex
+            })
+          });
+          const result = await response.json();
+          if (!response.ok || !result?.data) {
+            throw new Error(result?.detail || result?.error || 'AI 接口暂时不可用');
+          }
+          data = normalizeAiData(result.data);
+          lastChanges = Array.isArray(result.changes) && result.changes.length
+            ? result.changes
+            : ['DeepSeek 已根据你的描述改了页面'];
+          chatMessages[chatMessages.length - 1] = {
+            role: 'assistant',
+            text: result.assistantMessage || `已帮你改好：${lastChanges.join('、')}。左边预览已经更新。`
+          };
+          renderPreview();
+          saveData();
+          renderForm();
+        } catch (error) {
+          const changes = applyChatInstruction(text);
+          lastChanges = changes.length
+            ? changes
+            : ['AI 接口暂时没通，本地也没完全理解这句话。可以试试“改成摄影作品集”。'];
+          chatMessages[chatMessages.length - 1] = {
+            role: 'assistant',
+            text: changes.length
+              ? `DeepSeek 接口暂时没通，我先用本地规则帮你改了：${changes.join('、')}。`
+              : `DeepSeek 接口暂时没通：${error.message}。你可以换个更直接的说法再试。`
+          };
+          renderPreview();
+          saveData();
+          renderForm();
+        }
+      }
+
+      function applyInput(target) {
+        const name = target.name;
+        const value = target.value;
+        if (!name) return;
+        const parts = name.split('.');
+        if (parts.length === 3) {
+          const [group, index, field] = parts;
+          data[group][Number(index)][field] = value;
+        } else {
+          data[name] = value;
+        }
+        renderPreview();
+        saveData();
+      }
+
+      function cardHtml(items) {
+        return items
+          .map(
+            (item) => `
+              <article class="preview-card">
+                <strong>${escapeHtml(item.title)}</strong>
+                <span>${escapeHtml(item.meta)}</span>
+                <p>${escapeHtml(item.note)}</p>
+              </article>
+            `
+          )
+          .join('');
+      }
+
+      function chipsHtml(text) {
+        return String(text || '')
+          .split('/')
+          .map((item) => item.trim())
+          .filter(Boolean)
+          .map((item) => `<span>${escapeHtml(item)}</span>`)
+          .join('');
+      }
+
+      function shortSiteName() {
+        return String(data.title || '雨竹upon的小站').replace(/的小站$/, '');
+      }
+
+      function introLinesHtml() {
+        const intro = String(data.intro || '')
+          .split(/[。.!！?？]/)
+          .map((item) => item.trim())
+          .filter(Boolean)
+          .slice(0, 4);
+        return intro.map((item) => `<p>${escapeHtml(item)}</p>`).join('');
+      }
+
+      function yuzhuCardsHtml(items) {
+        return items
+          .map(
+            (item) => `
+              <article class="yuzhu-card">
+                <strong>${escapeHtml(item.title)}</strong>
+                <span>${escapeHtml(item.meta)}</span>
+                <p>${escapeHtml(item.note)}</p>
+              </article>
+            `
+          )
+          .join('');
+      }
+
+      function renderYuzhuPreview() {
+        const name = shortSiteName();
+        const bubblePoints = [
+          [2, 5],
+          [8, 10],
+          [18, 31],
+          [7, 46],
+          [39, 8],
+          [48, 18],
+          [52, 28],
+          [68, 34],
+          [78, 15],
+          [91, 31],
+          [95, 56],
+          [33, 55],
+          [42, 70],
+          [57, 72],
+          [74, 67],
+          [88, 74],
+          [15, 78],
+          [29, 84],
+          [50, 90],
+          [66, 88],
+          [82, 91],
+          [96, 82]
+        ];
+        const bubblesHtml = bubblePoints
+          .map(([left, top]) => `<span style="left:${left}%;top:${top}%"></span>`)
+          .join('');
+        return `
+          <div class="yuzhu-site theme-${safeTheme(data.visualStyle)}">
+            <div class="yuzhu-stage">
+              <div class="yuzhu-bubbles" aria-hidden="true">${bubblesHtml}</div>
+              <aside class="yuzhu-sidebar">
+                <div class="yuzhu-avatar">
+                  <img src="./static-sites/yuzhu-upon/favicon.ico" alt="">
+                </div>
+                <div class="yuzhu-name">${escapeHtml(name)}</div>
+                <p class="yuzhu-say">${escapeHtml(data.subtitle)}</p>
+                <div class="yuzhu-socials" aria-label="社交入口">
+                  <span class="yuzhu-social"><img src="./static-sites/yuzhu-upon/external/e834d9211aee.ico" alt=""></span>
+                  <span class="yuzhu-social"><img src="./static-sites/yuzhu-upon/external/8f38e1a41a8f.ico" alt=""></span>
+                  <span class="yuzhu-social"><img src="./static-sites/yuzhu-upon/external/b190c051791a.ico" alt=""></span>
+                  <span class="yuzhu-social"><img src="./static-sites/yuzhu-upon/external/e8f1e8d35373.png" alt=""></span>
+                </div>
+                <div class="yuzhu-player" aria-label="静态音乐播放器">
+                  <div class="yuzhu-cover"></div>
+                  <div class="yuzhu-track">
+                    <strong>我的歌单</strong>
+                    <span>静态展示，不接外部音乐服务</span>
+                  </div>
+                  <div class="yuzhu-controls">
+                    <button class="yuzhu-play-button" type="button" data-yuzhu-player>▶ 试听</button>
+                  </div>
+                </div>
+              </aside>
+              <section class="yuzhu-main">
+                <nav class="yuzhu-nav" aria-label="页面导航">
+                  <button class="is-active" type="button" data-yuzhu-section="home">首页</button>
+                  <b>·</b>
+                  <button type="button" data-yuzhu-section="intro">介绍</button>
+                  <b>·</b>
+                  <button type="button" data-yuzhu-section="project">项目</button>
+                  <b>·</b>
+                  <button type="button" data-yuzhu-section="blog">博客</button>
+                  <b>·</b>
+                  <button type="button" data-yuzhu-section="friends">友链</button>
+                  <b>·</b>
+                  <button type="button" data-yuzhu-section="contact">联系我</button>
+                </nav>
+                <section class="yuzhu-hero" data-yuzhu-panel="home">
+                  <h2>👋 ${escapeHtml(data.kicker)}</h2>
+                  <div class="yuzhu-intro-lines">${introLinesHtml()}</div>
+                  <p class="yuzhu-section-note">${escapeHtml(data.subtitle)}</p>
+                  <p class="yuzhu-dot">·</p>
+                </section>
+                <section class="yuzhu-section" data-yuzhu-panel="project">
+                  <h3>${escapeHtml(data.sectionTitle)}</h3>
+                  <p class="yuzhu-section-note">学任何东西最有成就感的时刻，莫过于自己的作品得到他人认可。</p>
+                  <img class="yuzhu-susie" src="./static-sites/yuzhu-upon/assets/susie.png" alt="">
+                  <div class="yuzhu-card-grid">${yuzhuCardsHtml(data.cards)}</div>
+                </section>
+                <section class="yuzhu-section yuzhu-about" data-yuzhu-panel="intro">
+                  <h3>自我介绍</h3>
+                  <p class="yuzhu-section-note">${escapeHtml(data.intro)}</p>
+                  <div class="yuzhu-skills">${chipsHtml(data.skillsText)}</div>
+                </section>
+                <section class="yuzhu-section" data-yuzhu-panel="blog">
+                  <h3>博客</h3>
+                  <p class="yuzhu-section-note">这里可以放最近写过的文章、学习记录或者想公开分享的小想法。</p>
+                  <div class="yuzhu-card-grid">${yuzhuCardsHtml(data.cards.slice(0, 2))}</div>
+                </section>
+                <section class="yuzhu-section" data-yuzhu-panel="friends">
+                  <h3>我的小伙伴们</h3>
+                  <p class="yuzhu-section-note">开发和学习路上，ta 们陪我一同前行。</p>
+                  <div class="yuzhu-card-grid">${yuzhuCardsHtml(data.friends)}</div>
+                </section>
+                <section class="yuzhu-contact" id="contact" data-yuzhu-panel="contact">
+                  <h3>${escapeHtml(data.contactTitle)}</h3>
+                  <p>${escapeHtml(data.contactNote)}</p>
+                </section>
+              </section>
+              <div class="yuzhu-backtop" aria-hidden="true">
+                <img src="./static-sites/yuzhu-upon/assets/backTop.png" alt="">
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderPortfolioPreview() {
+        return `
+          <div class="preview-hero">
+            <span class="preview-kicker">${escapeHtml(data.kicker)}</span>
+            <h2>${escapeHtml(data.title)}</h2>
+            <p>${escapeHtml(data.subtitle)}</p>
+            <span class="preview-cta">${escapeHtml(data.primary)}</span>
+          </div>
+          <section class="preview-section">
+            <h3>${escapeHtml(data.sectionTitle)}</h3>
+            <div class="preview-grid">${cardHtml(data.cards)}</div>
+          </section>
+        `;
+      }
+
+      function renderChoicePreview() {
+        return `
+          <div class="preview-hero">
+            <span class="preview-kicker">${escapeHtml(data.kicker)}</span>
+            <h2>${escapeHtml(data.title)}</h2>
+            <p>${escapeHtml(data.subtitle)}</p>
+            <span class="preview-cta">${escapeHtml(data.primary)}</span>
+          </div>
+          <section class="preview-section">
+            <h3>${escapeHtml(data.question)}</h3>
+            <div class="choice-list">
+              ${data.choices
+                .map(
+                  (item, index) => `
+                    <div class="choice-row">
+                      <b>${index + 1}</b>
+                      <div>
+                        <strong>${escapeHtml(item.title)}</strong>
+                        <p>${escapeHtml(item.meta)} · ${escapeHtml(item.note)}</p>
+                      </div>
+                    </div>
+                  `
+                )
+                .join('')}
+            </div>
+            <div class="result-box">
+              <strong>${escapeHtml(data.resultTitle)}</strong>
+              <p>${escapeHtml(data.resultReason)}</p>
+            </div>
+          </section>
+        `;
+      }
+
+      function renderPreview() {
+        preview.style.setProperty('--accent', safeColor(data.color));
+        if (isYuzhuPack()) {
+          preview.innerHTML = renderYuzhuPreview();
+          return;
+        }
+        preview.innerHTML = pack.kind === 'choice'
+            ? renderChoicePreview()
+            : renderPortfolioPreview();
+      }
+
+      const generateProductButton = document.getElementById('generateProductButton');
+      generateProductButton.href = mineDemoUrl;
+      document.getElementById('editHint').textContent = pack.helper;
+      if (isYuzhuPack()) {
+        document.getElementById('editTitle').textContent = 'AI 修改助手';
+        document.getElementById('editHint').textContent =
+          '直接说你想要什么效果，右侧会像聊天一样帮你改左边页面。';
+        document.getElementById('previewTitle').textContent = '按原站样子改';
+        document.getElementById('previewHint').textContent =
+          '这里会按雨竹upon小站的样子显示，你对 AI 说完，左边马上变。';
+      }
+
+      form.addEventListener('input', (event) => {
+        applyInput(event.target);
+      });
+
+      form.addEventListener('click', (event) => {
+        const promptButton = event.target.closest('[data-chat-prompt]');
+        if (promptButton) {
+          sendChatMessage(promptButton.dataset.chatPrompt);
+          return;
+        }
+
+        if (event.target.closest('[data-send-chat]')) {
+          sendChatMessage();
+        }
+      });
+
+      form.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter' && (event.metaKey || event.ctrlKey)) {
+          sendChatMessage();
+        }
+      });
+
+      preview.addEventListener('click', (event) => {
+        if (!isYuzhuPack()) return;
+        const sectionButton = event.target.closest('[data-yuzhu-section]');
+        if (sectionButton) {
+          const section = sectionButton.dataset.yuzhuSection;
+          preview
+            .querySelectorAll('[data-yuzhu-section]')
+            .forEach((button) => button.classList.toggle('is-active', button === sectionButton));
+          preview
+            .querySelector(`[data-yuzhu-panel="${section}"]`)
+            ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          return;
+        }
+
+        const playerButton = event.target.closest('[data-yuzhu-player]');
+        if (playerButton) {
+          const player = playerButton.closest('.yuzhu-player');
+          const isPlaying = !player.classList.contains('is-playing');
+          player.classList.toggle('is-playing', isPlaying);
+          playerButton.textContent = isPlaying ? 'Ⅱ 暂停' : '▶ 试听';
+          const note = player.querySelector('.yuzhu-track span');
+          note.textContent = isPlaying ? '播放中，静态演示' : '静态展示，不接外部音乐服务';
+        }
+      });
+
+      saveButton.addEventListener('click', () => saveData());
+      generateProductButton.addEventListener('click', () => {
+        saveData('已生成，正在打开你的产品。');
+      });
+
+      renderForm();
+      renderPreview();
+    </script>
+  </body>
+</html>

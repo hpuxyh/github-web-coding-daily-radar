@@ -1,0 +1,14 @@
+.env
+.DS_Store
+__pycache__/
+*.pyc
+.pytest_cache/
+.coverage
+/data/
+output/
+logs/
+node_modules/
+dist/
+.vite/
+.claude/
+.playwright-cli/

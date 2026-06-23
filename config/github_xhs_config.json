@@ -1,0 +1,147 @@
+{
+  "timezone": "Asia/Shanghai",
+  "history_path": "data/repo_history.json",
+  "output_dir": "output",
+  "per_page": 12,
+  "pages": 1,
+  "hot_limit": 15,
+  "used_limit": 15,
+  "starred_limit": 15,
+  "discussion_limit": 15,
+  "frontier_limit": 15,
+  "product_limit": 15,
+  "top_limit": 15,
+  "rising_limit": 15,
+  "xhs_count": 5,
+  "max_readmes": 12,
+  "readme_excerpt_chars": 1400,
+  "rising_max_age_days": 180,
+  "request_interval_seconds": 6.5,
+  "request_timeout_seconds": 35,
+  "retries": 1,
+  "expert_sources": {
+    "enabled": true,
+    "starred_per_page": 20,
+    "starred_pages": 1,
+    "weights": {
+      "github_star": 1.0,
+      "tweet_link": 1.2,
+      "project_reference": 1.1
+    },
+    "category_weights": {
+      "ai_engineer": 1.35,
+      "open_source_author": 1.25,
+      "investor_product_expert": 1.1
+    },
+    "experts": [
+      {
+        "id": "karpathy",
+        "name": "Andrej Karpathy",
+        "category": "ai_engineer",
+        "github": "karpathy",
+        "x": "karpathy",
+        "weight": 1.2,
+        "track_starred": true,
+        "project_refs": [
+          {
+            "repo": "karpathy/llm.c",
+            "url": "https://github.com/karpathy/llm.c",
+            "note": "公开开源项目，可作为 AI 工程趋势观察锚点。"
+          }
+        ]
+      },
+      {
+        "id": "swyx",
+        "name": "Swyx",
+        "category": "ai_engineer",
+        "github": "swyxio",
+        "x": "swyx",
+        "weight": 1.15,
+        "track_starred": true
+      },
+      {
+        "id": "harrison-chase",
+        "name": "Harrison Chase",
+        "category": "ai_engineer",
+        "github": "hwchase17",
+        "x": "hwchase17",
+        "weight": 1.15,
+        "track_starred": true
+      },
+      {
+        "id": "shadcn",
+        "name": "shadcn",
+        "category": "open_source_author",
+        "github": "shadcn",
+        "x": "shadcn",
+        "weight": 1.1,
+        "track_starred": true
+      },
+      {
+        "id": "antfu",
+        "name": "Anthony Fu",
+        "category": "open_source_author",
+        "github": "antfu",
+        "x": "antfu7",
+        "weight": 1.05,
+        "track_starred": true
+      },
+      {
+        "id": "sindresorhus",
+        "name": "Sindre Sorhus",
+        "category": "open_source_author",
+        "github": "sindresorhus",
+        "x": "sindresorhus",
+        "weight": 1.0,
+        "track_starred": true
+      },
+      {
+        "id": "rauchg",
+        "name": "Guillermo Rauch",
+        "category": "investor_product_expert",
+        "github": "rauchg",
+        "x": "rauchg",
+        "weight": 1.05,
+        "track_starred": true
+      },
+      {
+        "id": "levelsio",
+        "name": "Pieter Levels",
+        "category": "investor_product_expert",
+        "github": "levelsio",
+        "x": "levelsio",
+        "weight": 1.0,
+        "track_starred": true
+      }
+    ]
+  },
+  "all_time_queries": [
+    "topic:llm stars:>=20000 archived:false",
+    "topic:developer-tools stars:>=10000 archived:false",
+    "topic:code-editor stars:>=5000 archived:false",
+    "topic:ai-agent stars:>=5000 archived:false"
+  ],
+  "rising_queries": [
+    "created:>={date_60} stars:>=20 archived:false topic:coding-agent",
+    "created:>={date_60} stars:>=20 archived:false topic:mcp",
+    "created:>={date_60} stars:>=20 archived:false topic:web-ide",
+    "created:>={date_60} stars:>=20 archived:false topic:ai-agent",
+    "created:>={date_60} stars:>=20 archived:false vibe-coding"
+  ],
+  "frontier_queries": [
+    "created:>={date_90} stars:>=50 archived:false topic:coding-agent",
+    "created:>={date_90} stars:>=50 archived:false topic:mcp",
+    "created:>={date_90} stars:>=50 archived:false topic:ai-agent",
+    "created:>={date_90} stars:>=50 archived:false claude-code",
+    "created:>={date_90} stars:>=50 archived:false topic:agent-framework",
+    "pushed:>={date_14} stars:>=1000 archived:false topic:developer-tools"
+  ],
+  "product_queries": [
+    "created:>={date_90} stars:>=30 archived:false topic:app-builder",
+    "created:>={date_90} stars:>=30 archived:false topic:low-code",
+    "created:>={date_90} stars:>=30 archived:false topic:no-code",
+    "created:>={date_90} stars:>=30 archived:false topic:web-ide",
+    "created:>={date_90} stars:>=30 archived:false topic:ai-coding",
+    "created:>={date_90} stars:>=30 archived:false prototype"
+  ]
+}
