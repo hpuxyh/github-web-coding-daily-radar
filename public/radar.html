@@ -4040,8 +4040,14 @@
         return value;
       }
 
+      function shouldTrackVisit() {
+        if (location.hostname === '127.0.0.1' || location.hostname === 'localhost') return false;
+        if (location.hostname.endsWith('github.io')) return false;
+        return true;
+      }
+
       function trackVisit() {
-        if (location.hostname === '127.0.0.1' || location.hostname === 'localhost') return;
+        if (!shouldTrackVisit()) return;
         const payload = JSON.stringify({
           path: location.pathname,
           referrer: document.referrer,
