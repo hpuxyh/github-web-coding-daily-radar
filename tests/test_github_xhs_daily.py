@@ -338,8 +338,13 @@ MIT
         }
         daily.score_repo(repo, history, run_date)
         self.assertEqual(repo["delta_stars"], 50)
+        self.assertEqual(repo["delta_forks"], 2)
+        self.assertEqual(repo["delta_open_issues"], 0)
         self.assertEqual(repo["delta_days"], 2)
         self.assertEqual(repo["delta_per_day"], 25.0)
+        self.assertEqual(repo["daily_stars"], 25.0)
+        self.assertEqual(repo["daily_forks"], 1.0)
+        self.assertTrue(repo["pushed_today"] is False)
         self.assertGreater(repo["scores"]["hot"], 0)
         self.assertGreater(repo["scores"]["used"], 0)
         self.assertGreater(repo["scores"]["starred"], 0)
@@ -347,6 +352,43 @@ MIT
         self.assertGreater(repo["scores"]["rising"], 0)
         self.assertGreater(repo["scores"]["frontier"], 0)
         self.assertGreater(repo["scores"]["product"], 0)
+
+    def test_hot_score_prioritizes_daily_growth_over_all_time_stars(self):
+        run_date = dt.date(2026, 6, 5)
+        history = {
+            "repos": {
+                "demo/classic": [
+                    {"date": "2026-06-04", "stars": 100000, "forks": 5000, "open_issues": 20}
+                ],
+                "demo/riser": [
+                    {"date": "2026-06-04", "stars": 100, "forks": 10, "open_issues": 1}
+                ],
+            }
+        }
+        classic = {
+            "full_name": "demo/classic",
+            "stars": 100000,
+            "forks": 5000,
+            "open_issues": 20,
+            "created_at": "2020-01-01T00:00:00Z",
+            "pushed_at": "2026-06-04T00:00:00Z",
+            "features": [],
+        }
+        riser = {
+            "full_name": "demo/riser",
+            "stars": 140,
+            "forks": 14,
+            "open_issues": 3,
+            "created_at": "2026-05-01T00:00:00Z",
+            "pushed_at": "2026-06-05T00:00:00Z",
+            "features": ["AI Coding / Agent"],
+        }
+
+        daily.score_repo(classic, history, run_date)
+        daily.score_repo(riser, history, run_date)
+
+        self.assertGreater(riser["scores"]["hot"], classic["scores"]["hot"])
+        self.assertGreater(classic["scores"]["starred"], riser["scores"]["starred"])
 
     def test_restore_previous_readme_assets_preserves_images(self):
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -518,6 +560,39 @@ MIT
         self.assertEqual(history["repos"]["demo/project"][0]["date"], "2026-06-21")
         self.assertEqual(history["repos"]["demo/project"][0]["stars"], 123)
         self.assertEqual(history["repos"]["demo/project"][0]["open_issues"], 0)
+
+    def test_bootstrap_history_from_daily_archive_fills_partial_dates(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            archive_dir = Path(tmpdir)
+            (archive_dir / "index.json").write_text(
+                json.dumps({"dates": [{"date": "2026-06-21", "path": "2026-06-21.json"}]}),
+                encoding="utf-8",
+            )
+            (archive_dir / "2026-06-21.json").write_text(
+                json.dumps(
+                    {
+                        "date": "2026-06-21",
+                        "all_repos": [
+                            {"full_name": "demo/existing", "stars": 10, "forks": 1, "open_issues": 0},
+                            {"full_name": "demo/missing", "stars": 20, "forks": 2, "open_issues": 1},
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            history = {
+                "repos": {
+                    "demo/existing": [
+                        {"date": "2026-06-21", "stars": 10, "forks": 1, "open_issues": 0}
+                    ]
+                }
+            }
+
+            added = daily.bootstrap_history_from_daily_archive(history, archive_dir)
+
+        self.assertEqual(added, 1)
+        self.assertIn("demo/missing", history["repos"])
+        self.assertEqual(history["repos"]["demo/missing"][0]["stars"], 20)
 
     def test_build_markdown_contains_required_sections(self):
         run_date = dt.date(2026, 6, 5)

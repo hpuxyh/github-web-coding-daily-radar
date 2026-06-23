@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-23T16:12:08Z",
+  "updated_at": "2026-06-23T17:03:29Z",
   "repos": {
     "affaan-m/ECC": [
       {
@@ -11,8 +11,8 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 220305,
-        "forks": 33748,
+        "stars": 220323,
+        "forks": 33754,
         "open_issues": 75,
         "pushed_at": "2026-06-22T04:55:54Z"
       }
@@ -27,10 +27,10 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 200667,
-        "forks": 35765,
-        "open_issues": 23031,
-        "pushed_at": "2026-06-23T16:05:14Z"
+        "stars": 200700,
+        "forks": 35773,
+        "open_issues": 23045,
+        "pushed_at": "2026-06-23T16:55:37Z"
       }
     ],
     "Significant-Gravitas/AutoGPT": [
@@ -43,8 +43,8 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 185109,
-        "forks": 46116,
+        "stars": 185110,
+        "forks": 46117,
         "open_issues": 457,
         "pushed_at": "2026-06-23T11:29:03Z"
       }
@@ -59,9 +59,9 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 174796,
+        "stars": 174800,
         "forks": 16715,
-        "open_issues": 3492,
+        "open_issues": 3493,
         "pushed_at": "2026-06-23T14:35:21Z"
       }
     ],
@@ -75,7 +75,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 164168,
+        "stars": 164172,
         "forks": 21263,
         "open_issues": 56,
         "pushed_at": "2026-06-23T04:28:02Z"
@@ -91,10 +91,10 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 161844,
-        "forks": 33576,
+        "stars": 161843,
+        "forks": 33577,
         "open_issues": 2437,
-        "pushed_at": "2026-06-23T16:10:41Z"
+        "pushed_at": "2026-06-23T16:53:49Z"
       }
     ],
     "langgenius/dify": [
@@ -107,9 +107,9 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 146289,
-        "forks": 23008,
-        "open_issues": 746,
+        "stars": 146294,
+        "forks": 23009,
+        "open_issues": 747,
         "pushed_at": "2026-06-23T15:03:34Z"
       }
     ],
@@ -123,7 +123,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 142729,
+        "stars": 142737,
         "forks": 20540,
         "open_issues": 422,
         "pushed_at": "2026-06-22T22:25:22Z"
@@ -139,10 +139,10 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 139996,
+        "stars": 140000,
         "forks": 23211,
-        "open_issues": 406,
-        "pushed_at": "2026-06-23T15:38:39Z"
+        "open_issues": 405,
+        "pushed_at": "2026-06-23T16:26:27Z"
       }
     ],
     "firecrawl/firecrawl": [
@@ -155,10 +155,10 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 137990,
+        "stars": 138015,
         "forks": 7981,
         "open_issues": 394,
-        "pushed_at": "2026-06-23T15:48:29Z"
+        "pushed_at": "2026-06-23T17:01:13Z"
       }
     ],
     "puppeteer/puppeteer": [
@@ -187,8 +187,8 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 79622,
-        "forks": 5934,
+        "stars": 79624,
+        "forks": 5935,
         "open_issues": 759,
         "pushed_at": "2026-06-23T14:36:59Z"
       }
@@ -203,10 +203,10 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 78110,
-        "forks": 9931,
-        "open_issues": 333,
-        "pushed_at": "2026-06-23T15:56:58Z"
+        "stars": 78119,
+        "forks": 9932,
+        "open_issues": 332,
+        "pushed_at": "2026-06-23T16:43:20Z"
       }
     ],
     "daytonaio/daytona": [
@@ -219,10 +219,10 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 72346,
-        "forks": 5614,
+        "stars": 72357,
+        "forks": 5616,
         "open_issues": 454,
-        "pushed_at": "2026-06-23T16:02:50Z"
+        "pushed_at": "2026-06-23T16:23:01Z"
       }
     ],
     "ComposioHQ/awesome-claude-skills": [
@@ -234,9 +234,9 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 65624,
-        "forks": 7295,
-        "open_issues": 863,
+        "stars": 65628,
+        "forks": 7296,
+        "open_issues": 864,
         "pushed_at": "2026-05-22T03:17:49Z"
       }
     ],
@@ -250,9 +250,9 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 65339,
-        "forks": 4036,
-        "open_issues": 1295,
+        "stars": 65352,
+        "forks": 4037,
+        "open_issues": 1297,
         "pushed_at": "2026-06-23T14:09:45Z"
       }
     ],
@@ -281,10 +281,10 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 51825,
-        "forks": 2570,
-        "open_issues": 78,
-        "pushed_at": "2026-06-23T15:00:12Z"
+        "stars": 51917,
+        "forks": 2576,
+        "open_issues": 76,
+        "pushed_at": "2026-06-23T16:29:54Z"
       }
     ],
     "usebruno/bruno": [
@@ -299,7 +299,7 @@
         "date": "2026-06-24",
         "stars": 45102,
         "forks": 2611,
-        "open_issues": 1740,
+        "open_issues": 1741,
         "pushed_at": "2026-06-23T15:50:06Z"
       }
     ],
@@ -313,7 +313,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 18611,
+        "stars": 18616,
         "forks": 1353,
         "open_issues": 23,
         "pushed_at": "2026-06-02T09:53:57Z"
@@ -329,7 +329,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 5864,
+        "stars": 5867,
         "forks": 699,
         "open_issues": 9,
         "pushed_at": "2026-06-03T11:35:43Z"
@@ -345,10 +345,10 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 4537,
-        "forks": 525,
-        "open_issues": 246,
-        "pushed_at": "2026-06-23T16:09:01Z"
+        "stars": 4540,
+        "forks": 527,
+        "open_issues": 247,
+        "pushed_at": "2026-06-23T17:01:10Z"
       }
     ],
     "op7418/guizang-social-card-skill": [
@@ -393,7 +393,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 3227,
+        "stars": 3229,
         "forks": 445,
         "open_issues": 1,
         "pushed_at": "2026-06-22T09:48:17Z"
@@ -425,7 +425,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 1290,
+        "stars": 1291,
         "forks": 114,
         "open_issues": 45,
         "pushed_at": "2026-06-23T08:58:28Z"
@@ -473,10 +473,10 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 69854,
-        "forks": 7879,
-        "open_issues": 417,
-        "pushed_at": "2026-06-23T15:59:07Z"
+        "stars": 69881,
+        "forks": 7882,
+        "open_issues": 418,
+        "pushed_at": "2026-06-23T16:50:00Z"
       }
     ],
     "nexu-io/html-anything": [
@@ -489,7 +489,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 7158,
+        "stars": 7160,
         "forks": 707,
         "open_issues": 45,
         "pushed_at": "2026-06-16T10:22:48Z"
@@ -505,7 +505,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 978,
+        "stars": 980,
         "forks": 208,
         "open_issues": 21,
         "pushed_at": "2026-06-21T08:31:44Z"
@@ -537,7 +537,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 878,
+        "stars": 879,
         "forks": 343,
         "open_issues": 2,
         "pushed_at": "2026-06-20T01:30:15Z"
@@ -553,7 +553,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 779,
+        "stars": 780,
         "forks": 103,
         "open_issues": 23,
         "pushed_at": "2026-06-18T11:27:38Z"
@@ -602,9 +602,9 @@
       {
         "date": "2026-06-24",
         "stars": 279,
-        "forks": 63,
+        "forks": 64,
         "open_issues": 0,
-        "pushed_at": "2026-06-23T16:08:30Z"
+        "pushed_at": "2026-06-23T16:51:01Z"
       }
     ],
     "zhnt/loushang": [
@@ -617,7 +617,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 304,
+        "stars": 305,
         "forks": 67,
         "open_issues": 22,
         "pushed_at": "2026-06-23T01:24:01Z"
@@ -632,7 +632,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 56202,
+        "stars": 56206,
         "forks": 7273,
         "open_issues": 559,
         "pushed_at": "2026-06-23T01:02:10Z"
@@ -648,8 +648,8 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 13130,
-        "forks": 2508,
+        "stars": 13135,
+        "forks": 2510,
         "open_issues": 6,
         "pushed_at": "2026-06-23T12:29:01Z"
       }
@@ -679,7 +679,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 5364,
+        "stars": 5366,
         "forks": 232,
         "open_issues": 9,
         "pushed_at": "2026-06-23T09:02:44Z"
@@ -694,10 +694,10 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 8270,
+        "stars": 8294,
         "forks": 541,
-        "open_issues": 53,
-        "pushed_at": "2026-06-23T11:02:43Z"
+        "open_issues": 52,
+        "pushed_at": "2026-06-23T16:54:25Z"
       }
     ],
     "opensquilla/opensquilla": [
@@ -710,7 +710,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 4623,
+        "stars": 4626,
         "forks": 350,
         "open_issues": 114,
         "pushed_at": "2026-06-23T03:36:49Z"
@@ -758,7 +758,7 @@
         "stars": 2115,
         "forks": 456,
         "open_issues": 285,
-        "pushed_at": "2026-06-23T13:54:23Z"
+        "pushed_at": "2026-06-23T16:40:14Z"
       }
     ],
     "santifer/career-ops": [
@@ -771,7 +771,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 55354,
+        "stars": 55360,
         "forks": 10944,
         "open_issues": 143,
         "pushed_at": "2026-06-23T14:18:42Z"
@@ -787,8 +787,8 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 29298,
-        "forks": 8805,
+        "stars": 29299,
+        "forks": 8806,
         "open_issues": 127,
         "pushed_at": "2026-06-23T04:35:34Z"
       }
@@ -803,9 +803,9 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 24086,
-        "forks": 1466,
-        "open_issues": 779,
+        "stars": 24098,
+        "forks": 1467,
+        "open_issues": 785,
         "pushed_at": "2026-06-23T09:24:43Z"
       }
     ],
@@ -820,7 +820,7 @@
       {
         "date": "2026-06-24",
         "stars": 15271,
-        "forks": 1424,
+        "forks": 1425,
         "open_issues": 150,
         "pushed_at": "2026-06-21T15:43:55Z"
       }
@@ -835,10 +835,10 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 12635,
+        "stars": 12642,
         "forks": 1442,
         "open_issues": 339,
-        "pushed_at": "2026-06-23T10:47:52Z"
+        "pushed_at": "2026-06-23T16:41:17Z"
       }
     ],
     "walkinglabs/learn-harness-engineering": [
@@ -851,7 +851,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 9080,
+        "stars": 9083,
         "forks": 964,
         "open_issues": 18,
         "pushed_at": "2026-06-16T08:48:21Z"
@@ -867,9 +867,9 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 8301,
-        "forks": 1020,
-        "open_issues": 109,
+        "stars": 8303,
+        "forks": 1021,
+        "open_issues": 110,
         "pushed_at": "2026-06-23T09:32:24Z"
       }
     ],
@@ -883,7 +883,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 6003,
+        "stars": 6004,
         "forks": 524,
         "open_issues": 101,
         "pushed_at": "2026-06-17T09:01:08Z"
@@ -899,7 +899,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 1914,
+        "stars": 1915,
         "forks": 243,
         "open_issues": 1,
         "pushed_at": "2026-06-09T23:15:07Z"
@@ -915,7 +915,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 1018,
+        "stars": 1020,
         "forks": 56,
         "open_issues": 21,
         "pushed_at": "2026-06-23T11:00:00Z"
@@ -1013,8 +1013,8 @@
         "date": "2026-06-24",
         "stars": 45041,
         "forks": 4296,
-        "open_issues": 1298,
-        "pushed_at": "2026-06-23T15:53:46Z"
+        "open_issues": 1296,
+        "pushed_at": "2026-06-23T16:57:17Z"
       }
     ],
     "files-community/Files": [
@@ -1027,9 +1027,9 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 44008,
+        "stars": 44009,
         "forks": 2758,
-        "open_issues": 493,
+        "open_issues": 492,
         "pushed_at": "2026-06-22T20:53:15Z"
       }
     ],
@@ -1179,7 +1179,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 1822,
+        "stars": 1823,
         "forks": 131,
         "open_issues": 0,
         "pushed_at": "2026-06-22T22:13:46Z"
@@ -1214,7 +1214,7 @@
         "stars": 798,
         "forks": 36,
         "open_issues": 0,
-        "pushed_at": "2026-06-21T10:30:31Z"
+        "pushed_at": "2026-06-23T16:26:49Z"
       }
     ],
     "julianoczkowski/designer-skills": [
@@ -1291,7 +1291,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 100285,
+        "stars": 100292,
         "forks": 11169,
         "open_issues": 282,
         "pushed_at": "2026-06-20T18:21:29Z"
@@ -1307,8 +1307,8 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 97587,
-        "forks": 14955,
+        "stars": 97590,
+        "forks": 14956,
         "open_issues": 3,
         "pushed_at": "2026-06-02T14:14:19Z"
       }
@@ -1323,7 +1323,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 38563,
+        "stars": 38564,
         "forks": 1292,
         "open_issues": 887,
         "pushed_at": "2026-06-10T01:13:44Z"
@@ -1358,7 +1358,7 @@
         "stars": 20258,
         "forks": 5957,
         "open_issues": 159,
-        "pushed_at": "2026-06-23T16:00:40Z"
+        "pushed_at": "2026-06-23T16:55:16Z"
       }
     ],
     "iggredible/Learn-Vim": [
@@ -1387,7 +1387,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 7306,
+        "stars": 7307,
         "forks": 794,
         "open_issues": 301,
         "pushed_at": "2026-06-23T14:54:49Z"
@@ -1437,7 +1437,7 @@
         "date": "2026-06-24",
         "stars": 5716,
         "forks": 1176,
-        "open_issues": 68,
+        "open_issues": 69,
         "pushed_at": "2026-06-23T13:14:34Z"
       }
     ],
@@ -1451,7 +1451,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 73014,
+        "stars": 73015,
         "forks": 6653,
         "open_issues": 3,
         "pushed_at": "2026-06-18T03:46:44Z"
@@ -1467,9 +1467,9 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 68061,
-        "forks": 11071,
-        "open_issues": 81,
+        "stars": 68065,
+        "forks": 11073,
+        "open_issues": 84,
         "pushed_at": "2026-06-22T08:14:35Z"
       }
     ],
@@ -1485,8 +1485,8 @@
         "date": "2026-06-24",
         "stars": 47713,
         "forks": 4528,
-        "open_issues": 1192,
-        "pushed_at": "2026-06-23T15:56:36Z"
+        "open_issues": 1194,
+        "pushed_at": "2026-06-23T16:59:10Z"
       }
     ],
     "ZhuLinsen/daily_stock_analysis": [
@@ -1499,8 +1499,8 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 46791,
-        "forks": 42310,
+        "stars": 46838,
+        "forks": 42324,
         "open_issues": 40,
         "pushed_at": "2026-06-22T17:01:52Z"
       }
@@ -1515,8 +1515,8 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 45579,
-        "forks": 10227,
+        "stars": 45580,
+        "forks": 10228,
         "open_issues": 18,
         "pushed_at": "2026-06-23T12:57:25Z"
       }
@@ -1531,7 +1531,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 44637,
+        "stars": 44638,
         "forks": 7880,
         "open_issues": 885,
         "pushed_at": "2026-06-23T10:33:20Z"
@@ -1549,7 +1549,7 @@
         "date": "2026-06-24",
         "stars": 44575,
         "forks": 2845,
-        "open_issues": 314,
+        "open_issues": 316,
         "pushed_at": "2026-06-23T15:59:40Z"
       }
     ],
@@ -1563,8 +1563,8 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 38460,
-        "forks": 3049,
+        "stars": 38486,
+        "forks": 3051,
         "open_issues": 93,
         "pushed_at": "2026-06-23T13:04:55Z"
       }
@@ -1581,8 +1581,8 @@
         "date": "2026-06-24",
         "stars": 35429,
         "forks": 4399,
-        "open_issues": 613,
-        "pushed_at": "2026-06-23T16:02:14Z"
+        "open_issues": 612,
+        "pushed_at": "2026-06-23T16:59:59Z"
       }
     ],
     "hugohe3/ppt-master": [
@@ -1595,7 +1595,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 30689,
+        "stars": 30705,
         "forks": 2672,
         "open_issues": 4,
         "pushed_at": "2026-06-23T05:33:42Z"
@@ -1755,7 +1755,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 220,
+        "stars": 221,
         "forks": 23,
         "open_issues": 2,
         "pushed_at": "2026-06-22T03:03:58Z"
@@ -1819,7 +1819,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 1292,
+        "stars": 1293,
         "forks": 127,
         "open_issues": 0,
         "pushed_at": "2026-06-12T13:46:56Z"
@@ -1867,7 +1867,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 811,
+        "stars": 813,
         "forks": 49,
         "open_issues": 11,
         "pushed_at": "2026-06-22T10:14:58Z"
@@ -1883,7 +1883,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 772,
+        "stars": 775,
         "forks": 67,
         "open_issues": 8,
         "pushed_at": "2026-06-22T16:05:46Z"
@@ -1916,7 +1916,7 @@
       {
         "date": "2026-06-24",
         "stars": 744,
-        "forks": 139,
+        "forks": 140,
         "open_issues": 13,
         "pushed_at": "2026-06-23T11:50:48Z"
       }
@@ -1931,7 +1931,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 868,
+        "stars": 869,
         "forks": 48,
         "open_issues": 3,
         "pushed_at": "2026-06-12T03:16:49Z"
@@ -1949,8 +1949,8 @@
         "date": "2026-06-24",
         "stars": 234,
         "forks": 31,
-        "open_issues": 2,
-        "pushed_at": "2026-06-23T16:08:18Z"
+        "open_issues": 3,
+        "pushed_at": "2026-06-23T16:58:14Z"
       }
     ],
     "av/facts": [
@@ -1995,7 +1995,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 2706,
+        "stars": 2707,
         "forks": 617,
         "open_issues": 0,
         "pushed_at": "2026-05-05T15:39:49Z"
@@ -2011,7 +2011,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 1609,
+        "stars": 1610,
         "forks": 101,
         "open_issues": 3,
         "pushed_at": "2026-06-22T20:13:40Z"
@@ -2059,7 +2059,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 914,
+        "stars": 915,
         "forks": 101,
         "open_issues": 6,
         "pushed_at": "2026-06-12T07:48:25Z"
@@ -2107,9 +2107,9 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 76147,
-        "forks": 4312,
-        "open_issues": 308,
+        "stars": 76160,
+        "forks": 4314,
+        "open_issues": 309,
         "pushed_at": "2026-06-12T13:51:06Z"
       }
     ],
@@ -2123,10 +2123,10 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 71067,
-        "forks": 7134,
-        "open_issues": 382,
-        "pushed_at": "2026-06-23T12:35:13Z"
+        "stars": 71080,
+        "forks": 7137,
+        "open_issues": 381,
+        "pushed_at": "2026-06-23T16:28:47Z"
       }
     ],
     "openai/codex-plugin-cc": [
@@ -2139,7 +2139,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 21480,
+        "stars": 21484,
         "forks": 1305,
         "open_issues": 246,
         "pushed_at": "2026-06-14T23:36:23Z"
@@ -2155,7 +2155,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 20293,
+        "stars": 20295,
         "forks": 16255,
         "open_issues": 12,
         "pushed_at": "2026-06-23T11:47:09Z"
@@ -2171,7 +2171,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 19550,
+        "stars": 19556,
         "forks": 2405,
         "open_issues": 16,
         "pushed_at": "2026-06-14T12:25:26Z"
@@ -2219,7 +2219,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 9847,
+        "stars": 9848,
         "forks": 7781,
         "open_issues": 35,
         "pushed_at": "2026-06-17T10:16:55Z"
@@ -2267,8 +2267,8 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 41476,
-        "forks": 6656,
+        "stars": 41481,
+        "forks": 6658,
         "open_issues": 2,
         "pushed_at": "2026-06-23T08:02:05Z"
       }
@@ -2284,7 +2284,7 @@
       {
         "date": "2026-06-24",
         "stars": 40819,
-        "forks": 5550,
+        "forks": 5551,
         "open_issues": 949,
         "pushed_at": "2026-06-23T16:03:22Z"
       }
@@ -2299,7 +2299,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 8192,
+        "stars": 8194,
         "forks": 648,
         "open_issues": 41,
         "pushed_at": "2026-06-22T01:57:52Z"
@@ -2331,8 +2331,8 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 743,
-        "forks": 97,
+        "stars": 744,
+        "forks": 98,
         "open_issues": 5,
         "pushed_at": "2026-06-23T10:51:23Z"
       }
@@ -2379,10 +2379,10 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 514,
+        "stars": 515,
         "forks": 172,
         "open_issues": 24,
-        "pushed_at": "2026-06-23T11:33:08Z"
+        "pushed_at": "2026-06-23T16:34:38Z"
       }
     ],
     "MioMioOS/MioIsland": [
@@ -2411,7 +2411,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 444,
+        "stars": 445,
         "forks": 33,
         "open_issues": 0,
         "pushed_at": "2026-05-15T16:07:49Z"
@@ -2491,7 +2491,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 23718,
+        "stars": 23719,
         "forks": 2391,
         "open_issues": 660,
         "pushed_at": "2026-06-23T14:23:41Z"
@@ -2523,10 +2523,10 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 177700,
-        "forks": 21736,
-        "open_issues": 7368,
-        "pushed_at": "2026-06-23T16:10:56Z"
+        "stars": 177714,
+        "forks": 21737,
+        "open_issues": 7369,
+        "pushed_at": "2026-06-23T16:59:52Z"
       }
     ],
     "sql-hkr/tiny8": [
@@ -2587,7 +2587,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 20183,
+        "stars": 20184,
         "forks": 2099,
         "open_issues": 91,
         "pushed_at": "2026-06-09T22:51:22Z"
@@ -2750,7 +2750,7 @@
         "stars": 5456,
         "forks": 868,
         "open_issues": 569,
-        "pushed_at": "2026-06-23T16:11:25Z"
+        "pushed_at": "2026-06-23T16:40:57Z"
       }
     ],
     "linkedin/Liger-Kernel": [
@@ -2813,8 +2813,8 @@
         "date": "2026-06-24",
         "stars": 127,
         "forks": 7,
-        "open_issues": 10,
-        "pushed_at": "2026-06-23T15:35:33Z"
+        "open_issues": 9,
+        "pushed_at": "2026-06-23T16:33:45Z"
       }
     ],
     "alexandru/social-publish": [
@@ -2859,10 +2859,10 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 6040,
+        "stars": 6041,
         "forks": 184,
         "open_issues": 10,
-        "pushed_at": "2026-06-23T16:00:31Z"
+        "pushed_at": "2026-06-23T16:54:34Z"
       }
     ],
     "dolthub/dolt": [
@@ -2877,8 +2877,8 @@
         "date": "2026-06-24",
         "stars": 23596,
         "forks": 813,
-        "open_issues": 583,
-        "pushed_at": "2026-06-22T23:31:27Z"
+        "open_issues": 581,
+        "pushed_at": "2026-06-23T16:37:15Z"
       }
     ],
     "getlago/inside-lago-voice-skill": [
@@ -2939,8 +2939,8 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 599,
-        "forks": 447,
+        "stars": 600,
+        "forks": 448,
         "open_issues": 21,
         "pushed_at": "2026-06-22T01:43:00Z"
       }
@@ -2987,10 +2987,10 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 22744,
+        "stars": 22746,
         "forks": 1786,
         "open_issues": 2837,
-        "pushed_at": "2026-06-23T15:46:05Z"
+        "pushed_at": "2026-06-23T17:02:34Z"
       }
     ],
     "Agent-Field/agentfield": [
@@ -3005,8 +3005,8 @@
         "date": "2026-06-24",
         "stars": 2224,
         "forks": 357,
-        "open_issues": 90,
-        "pushed_at": "2026-06-22T18:00:48Z"
+        "open_issues": 91,
+        "pushed_at": "2026-06-23T16:15:52Z"
       }
     ],
     "nanocoai/nanoclaw": [
@@ -3019,9 +3019,9 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 29959,
+        "stars": 29958,
         "forks": 12895,
-        "open_issues": 768,
+        "open_issues": 769,
         "pushed_at": "2026-06-23T12:47:41Z"
       }
     ],
@@ -3035,8 +3035,8 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 25560,
-        "forks": 2593,
+        "stars": 25563,
+        "forks": 2592,
         "open_issues": 8,
         "pushed_at": "2026-06-09T23:25:36Z"
       }
@@ -3067,9 +3067,9 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 36899,
-        "forks": 2348,
-        "open_issues": 536,
+        "stars": 36911,
+        "forks": 2350,
+        "open_issues": 537,
         "pushed_at": "2026-06-21T01:15:45Z"
       }
     ],
@@ -3435,7 +3435,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 117243,
+        "stars": 117248,
         "forks": 9135,
         "open_issues": 2051,
         "pushed_at": "2026-06-23T06:41:21Z"
@@ -3515,8 +3515,8 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 31957,
-        "forks": 5348,
+        "stars": 31959,
+        "forks": 5349,
         "open_issues": 73,
         "pushed_at": "2023-10-15T06:05:06Z"
       }
@@ -3532,7 +3532,7 @@
       {
         "date": "2026-06-24",
         "stars": 11395,
-        "forks": 1874,
+        "forks": 1873,
         "open_issues": 0,
         "pushed_at": "2022-06-17T23:22:08Z"
       }
@@ -3579,10 +3579,10 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 48774,
+        "stars": 48775,
         "forks": 10375,
-        "open_issues": 1911,
-        "pushed_at": "2026-06-23T16:03:17Z"
+        "open_issues": 1912,
+        "pushed_at": "2026-06-23T16:49:25Z"
       }
     ],
     "vercel-labs/nostics": [
@@ -3659,10 +3659,10 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 63360,
-        "forks": 5162,
+        "stars": 63366,
+        "forks": 5163,
         "open_issues": 689,
-        "pushed_at": "2026-06-23T14:51:14Z"
+        "pushed_at": "2026-06-23T16:40:24Z"
       }
     ],
     "antfu/whenexpr": [
@@ -3966,7 +3966,7 @@
         "stars": 10976,
         "forks": 773,
         "open_issues": 1303,
-        "pushed_at": "2026-06-23T14:58:15Z"
+        "pushed_at": "2026-06-23T16:37:42Z"
       }
     ],
     "vercel/ai": [
@@ -3980,9 +3980,9 @@
       {
         "date": "2026-06-24",
         "stars": 25085,
-        "forks": 4642,
-        "open_issues": 1798,
-        "pushed_at": "2026-06-23T16:05:18Z"
+        "forks": 4643,
+        "open_issues": 1801,
+        "pushed_at": "2026-06-23T16:57:27Z"
       }
     ],
     "dillionverma/llm.report": [
@@ -4011,7 +4011,7 @@
       },
       {
         "date": "2026-06-24",
-        "stars": 20522,
+        "stars": 20523,
         "forks": 6674,
         "open_issues": 26,
         "pushed_at": "2026-05-18T14:08:51Z"
@@ -4141,8 +4141,8 @@
         "date": "2026-06-24",
         "stars": 30581,
         "forks": 2369,
-        "open_issues": 24,
-        "pushed_at": "2026-06-23T13:52:44Z"
+        "open_issues": 25,
+        "pushed_at": "2026-06-23T16:48:04Z"
       }
     ],
     "Schniz/fnm": [
@@ -4189,8 +4189,8 @@
         "date": "2026-06-24",
         "stars": 6803,
         "forks": 400,
-        "open_issues": 138,
-        "pushed_at": "2026-06-23T01:53:05Z"
+        "open_issues": 139,
+        "pushed_at": "2026-06-23T16:24:03Z"
       }
     ],
     "ai-boost/awesome-harness-engineering": [
@@ -4394,7 +4394,7 @@
     "louislam/uptime-kuma": [
       {
         "date": "2026-06-24",
-        "stars": 88342,
+        "stars": 88344,
         "forks": 8013,
         "open_issues": 761,
         "pushed_at": "2026-06-23T02:34:31Z"

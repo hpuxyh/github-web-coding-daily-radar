@@ -1509,6 +1509,18 @@ def expert_score_components(repo: dict[str, Any]) -> tuple[float, int, int]:
     return score, len([item for item in expert_ids if item]), len([item for item in categories if item])
 
 
+def recent_expert_signal_count(repo: dict[str, Any], run_date: dt.date, days: int = 7) -> int:
+    count = 0
+    for signal in repo.get("expert_signals") or []:
+        starred_at = parse_iso_datetime(signal.get("starred_at"))
+        if not starred_at:
+            continue
+        age = (run_date - starred_at.date()).days
+        if 0 <= age <= days:
+            count += 1
+    return count
+
+
 def editorial_lens(repo: dict[str, Any]) -> dict[str, Any]:
     frontier_hits = keyword_hits(repo, FRONTIER_KEYWORDS)
     product_hits = keyword_hits(repo, PRODUCT_KEYWORDS)
@@ -1565,15 +1577,24 @@ def score_repo(repo: dict[str, Any], history: dict[str, Any], run_date: dt.date)
 
     prior = latest_snapshot_before(history, repo["full_name"], run_date)
     delta_stars = None
+    delta_forks = None
+    delta_open_issues = None
     delta_days = None
     delta_per_day = 0.0
+    delta_forks_per_day = 0.0
+    delta_open_issues_per_day = 0.0
     if prior:
         prior_date = dt.date.fromisoformat(prior["date"])
         delta_days = max(1, (run_date - prior_date).days)
         delta_stars = max(0, stars - int(prior.get("stars", 0)))
+        delta_forks = forks - int(prior.get("forks", 0))
+        delta_open_issues = open_issues - int(prior.get("open_issues", 0))
         delta_per_day = delta_stars / delta_days
+        delta_forks_per_day = max(0, delta_forks) / delta_days
+        delta_open_issues_per_day = max(0, delta_open_issues) / delta_days
 
     freshness = 45 / (1 + pushed_age)
+    pushed_today = pushed_age == 0
     young_bonus = 80 if age_days <= 30 else 45 if age_days <= 90 else 20 if age_days <= 180 else 0
     lens = editorial_lens(repo)
     frontier_signal = min(len(lens["frontier_hits"]) * 28, 180)
@@ -1585,6 +1606,19 @@ def score_repo(repo: dict[str, Any], history: dict[str, Any], run_date: dt.date)
         min(expert_raw_score * 36, 260)
         + min(expert_count * 32, 160)
         + min(expert_category_count * 24, 80)
+    )
+    recent_expert_signals = recent_expert_signal_count(repo, run_date)
+    daily_star_gain = delta_per_day if delta_stars is not None else (stars if age_days <= 1 else 0.0)
+    daily_fork_gain = delta_forks_per_day if delta_forks is not None else (forks if age_days <= 1 else 0.0)
+    daily_issue_gain = (
+        delta_open_issues_per_day if delta_open_issues is not None else (open_issues if age_days <= 1 else 0.0)
+    )
+    daily_activity_score = (
+        min(math.log1p(max(daily_star_gain, 0)) * 170, 1400)
+        + min(math.log1p(max(daily_fork_gain, 0)) * 55, 220)
+        + min(math.log1p(max(daily_issue_gain, 0)) * 18, 90)
+        + (45 if pushed_today else 0)
+        + min(recent_expert_signals * 55, 160)
     )
 
     rising_score = (
@@ -1621,10 +1655,18 @@ def score_repo(repo: dict[str, Any], history: dict[str, Any], run_date: dt.date)
     homepage_bonus = 18 if repo.get("homepage") else 0
     license_bonus = 8 if repo.get("license") else 0
     docs_bonus = readme_bonus + example_bonus + homepage_bonus + license_bonus
-    hot_score = rising_score + min(frontier_signal * 0.35, 65)
+    hot_score = (
+        daily_activity_score
+        + (70 if age_days <= 7 and stars >= 20 else 0)
+        + min(frontier_signal * 0.35, 65)
+        + min(feature_bonus * 0.9, 70)
+        + min(total_star_weight * 0.2, 38)
+        + expert_signal_weight * 0.2
+    )
     used_score = (
         min(math.sqrt(max(forks, 0)) * 8, 420)
         + min(math.log10(max(stars, 1)) * 70, 360)
+        + min(math.log1p(max(daily_fork_gain, 0)) * 30, 120)
         + min(math.sqrt(max(open_issues, 0)) * 3.5, 130)
         + freshness * 1.4
         + docs_bonus
@@ -1637,6 +1679,7 @@ def score_repo(repo: dict[str, Any], history: dict[str, Any], run_date: dt.date)
         + min(math.sqrt(max(forks, 0)) * 7, 300)
         + min(math.log10(max(stars, 1)) * 55, 290)
         + min(delta_per_day * 20, 220)
+        + min(math.log1p(max(daily_issue_gain, 0)) * 28, 120)
         + freshness * 1.2
         + min(feature_bonus, 70)
         + expert_signal_weight * 0.2
@@ -1645,8 +1688,15 @@ def score_repo(repo: dict[str, Any], history: dict[str, Any], run_date: dt.date)
     repo["age_days"] = age_days
     repo["star_velocity"] = round(star_velocity, 2)
     repo["delta_stars"] = delta_stars
+    repo["delta_forks"] = delta_forks
+    repo["delta_open_issues"] = delta_open_issues
     repo["delta_days"] = delta_days
     repo["delta_per_day"] = round(delta_per_day, 2)
+    repo["daily_stars"] = round(daily_star_gain, 2)
+    repo["daily_forks"] = round(daily_fork_gain, 2)
+    repo["daily_open_issues"] = round(daily_issue_gain, 2)
+    repo["pushed_today"] = pushed_today
+    repo["recent_expert_signals"] = recent_expert_signals
     repo["expert_score"] = round(expert_raw_score, 3)
     repo["scores"] = {
         "hot": round(hot_score, 2),
@@ -1712,14 +1762,38 @@ def xhs_angle(repo: dict[str, Any]) -> str:
     return "开发者效率工具"
 
 
+def daily_change_text(repo: dict[str, Any]) -> str:
+    if repo.get("delta_stars") is None:
+        if int(repo.get("age_days") or 9999) <= 1:
+            return "新项目，当前收藏基本可视作首日热度"
+        return "暂无上一快照，先作为候选观察"
+
+    days = int(repo.get("delta_days") or 1)
+    prefix = "今天" if days == 1 else f"最近 {days} 天"
+    parts: list[str] = []
+    if repo.get("delta_stars") or not (
+        repo.get("delta_forks") or repo.get("delta_open_issues") or repo.get("pushed_today")
+    ):
+        parts.append(f"新增 {compact_int(repo.get('delta_stars'))} 个收藏")
+    delta_forks = repo.get("delta_forks")
+    if delta_forks:
+        direction = "新增" if delta_forks > 0 else "减少"
+        parts.append(f"{direction} {compact_int(abs(delta_forks))} 个 fork")
+    delta_open_issues = repo.get("delta_open_issues")
+    if delta_open_issues:
+        direction = "新增" if delta_open_issues > 0 else "减少"
+        parts.append(f"{direction} {compact_int(abs(delta_open_issues))} 个 issue")
+    if repo.get("pushed_today"):
+        parts.append("今天有代码更新")
+    return f"{prefix}" + "，".join(parts)
+
+
 def repo_card(repo: dict[str, Any], index: int, list_name: str) -> str:
     features = feature_labels_zh(repo.get("features") or []) or ["待人工确认"]
-    delta = "暂无历史快照"
-    if repo.get("delta_stars") is not None:
-        delta = f"{repo['delta_days']} 天涨星 {repo['delta_stars']}，约 {repo['delta_per_day']}/天"
+    delta = daily_change_text(repo)
     topics = ", ".join(repo.get("topics")[:8]) if repo.get("topics") else "无"
     if list_name == "热度榜":
-        reason = f"最近增长和更新信号更强，适合优先判断是不是新趋势。{delta}"
+        reason = f"今日新增热度更明显，适合优先判断是不是新趋势。{delta}"
     elif list_name == "大家都在用榜":
         reason = (
             f"已有 {compact_int(repo.get('forks'))} 个分支，README / 示例 / 更新状态会一起参与评分，"
@@ -1748,7 +1822,7 @@ def repo_card(repo: dict[str, Any], index: int, list_name: str) -> str:
         f"- 项目介绍：{chinese_intro(repo)}",
         expert_line,
         f"- 选题判断：{reason}",
-        f"- 热度信号：项目年龄 {repo.get('age_days')} 天，平均 {repo.get('star_velocity')}/天；{delta}",
+        f"- 今日新增信号：{delta}；创建以来平均 {repo.get('star_velocity')}/天",
         f"- Topics：{topics}",
     ]
     return "\n".join(line for line in lines if line)
@@ -1761,7 +1835,7 @@ def xhs_draft(repo: dict[str, Any], index: int) -> str:
     angle = xhs_angle(repo)
     delta_text = ""
     if repo.get("delta_stars") is not None:
-        delta_text = f"，最近 {repo['delta_days']} 天新增 {repo['delta_stars']} 个星标"
+        delta_text = f"，{daily_change_text(repo)}"
     title = f"{repo['name']}：一个值得关注的 {angle} 开源项目"
     cover = f"{repo['name']}｜{angle}"
     body = f"""#### 草稿 {index}: {title}
@@ -1810,7 +1884,7 @@ def build_markdown(
         "",
         "## 今日摘要",
         "",
-        f"- 热度榜收录 {len(hot)} 个项目，主要看最近涨星、更新、项目年龄和热点方向。",
+        f"- 热度榜收录 {len(hot)} 个项目，主要看今天新增收藏、fork、issue、今天更新和近期人物信号。",
         f"- 大家都在用榜收录 {len(used)} 个项目，主要看 fork、文档示例、维护状态和可直接试用程度。",
         f"- 高收藏榜收录 {len(starred)} 个项目，主要看累计星标、分支和长期认可度。",
         f"- 参与讨论榜收录 {len(discussion)} 个项目，主要看 issue、fork、最近更新和社区协作痕迹。",
@@ -1871,7 +1945,7 @@ def build_markdown(
             "",
             f"- GitHub 搜索每个查询最多抓取 {config.get('per_page', 50)} 条，默认只抓第 {config.get('pages', 1)} 页。",
             "- 人物/专家观察源：只读取公开 GitHub star、配置里的公开推文链接和项目引用，不采集私信、私有收藏或登录后内容。",
-            "- 热度榜：看最近涨星、星标速度、最近更新、项目年龄和热点关键词。",
+            "- 热度榜：优先看今天新增收藏、fork、issue、今天更新和近期人物信号，累计 stars 只做弱参考。",
             "- 大家都在用榜：看 fork、README、截图示例、官网、维护状态和可直接试用程度。",
             "- 高收藏榜：看 stars、forks、维护状态和长期认可度。",
             "- 参与讨论榜：看 open issues、forks、最近更新和社区协作痕迹。",
@@ -2284,14 +2358,14 @@ def history_snapshot_dates(history: dict[str, Any]) -> set[str]:
     return dates
 
 
-def daily_archive_payload_paths(archive_dir: Path, known_dates: set[str]) -> list[Path]:
+def daily_archive_payload_paths(archive_dir: Path, known_dates: set[str] | None = None) -> list[Path]:
     index_path = archive_dir / "index.json"
     paths: list[Path] = []
     if index_path.exists():
         index = load_daily_archive_index(index_path)
         for entry in index.get("dates") or []:
             date_text = str(entry.get("date") or "").strip()
-            if not date_text or date_text in known_dates:
+            if not date_text:
                 continue
             rel_path = str(entry.get("path") or f"{date_text}.json").strip()
             path = archive_dir / rel_path
@@ -2302,9 +2376,7 @@ def daily_archive_payload_paths(archive_dir: Path, known_dates: set[str]) -> lis
     for path in sorted(archive_dir.glob("*.json")):
         if path.name in {"index.json", "latest.json"}:
             continue
-        date_text = path.stem
-        if date_text not in known_dates:
-            paths.append(path)
+        paths.append(path)
     return paths
 
 
@@ -2313,8 +2385,7 @@ def bootstrap_history_from_daily_archive(history: dict[str, Any], archive_dir: P
         return 0
 
     added = 0
-    known_dates = history_snapshot_dates(history)
-    for path in daily_archive_payload_paths(archive_dir, known_dates):
+    for path in daily_archive_payload_paths(archive_dir):
         try:
             payload = json.loads(path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError) as exc:
@@ -2323,9 +2394,6 @@ def bootstrap_history_from_daily_archive(history: dict[str, Any], archive_dir: P
         if not isinstance(payload, dict):
             continue
         added += bootstrap_history_from_payload(history, payload)
-        date_text = str(payload.get("date") or path.stem).strip()
-        if date_text:
-            known_dates.add(date_text)
     return added
 
 
@@ -2716,11 +2784,19 @@ def select_rankings(
     hot_candidates = [
         repo
         for repo in repos
-        if "rising" in repo.get("sources", [])
-        or repo.get("age_days", 9999) <= rising_max_age_days
-        or float(repo.get("delta_per_day") or 0) > 0
-        or float(repo.get("star_velocity") or 0) >= 5
-        or repo.get("lens", {}).get("frontier_hits")
+        if float(repo.get("daily_stars") or 0) > 0
+        or float(repo.get("daily_forks") or 0) > 0
+        or float(repo.get("daily_open_issues") or 0) > 0
+        or bool(repo.get("pushed_today"))
+        or int(repo.get("recent_expert_signals") or 0) > 0
+        or (repo.get("delta_stars") is None and repo.get("age_days", 9999) <= min(14, rising_max_age_days))
+        or (
+            repo.get("lens", {}).get("frontier_hits")
+            and (
+                "rising" in repo.get("sources", [])
+                or repo.get("age_days", 9999) <= rising_max_age_days
+            )
+        )
     ]
     if not hot_candidates:
         hot_candidates = repos
