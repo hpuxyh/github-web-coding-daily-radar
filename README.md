@@ -2,7 +2,7 @@
 
 这个项目复制自 `github-web-coding-radar`，页面外观基本保持一致，新的重点是“按天留档、按天查看”。
 
-它每天从公开 GitHub 项目里抓取 AI 编程、Agent、MCP、网页编辑器、低代码、开发者工具等方向的项目，生成中文榜单和小红书草稿，并把每一天的数据保存成独立快照。
+它每天从公开 GitHub 项目里抓取 AI 编程、Agent、MCP、网页编辑器、低代码、开发者工具等方向的早期项目，生成中文榜单和小红书草稿，并把每一天的数据保存成独立快照。
 
 ## 在线页面
 
@@ -59,7 +59,9 @@ npm run build
 
 主要配置文件是 `config/github_xhs_config.json`：
 
-- `all_time_queries`：长期高收藏项目。
+- `early_focus_preferred_star_cap`：默认偏好的早期收藏上限，当前是 500。
+- `early_focus_max_star_cap`：进入新趋势榜的硬上限，当前是 1000；超过后只保留在全量历史里作参照。
+- `all_time_queries`：兼容旧字段名，现在用于抓取半年内、低收藏区间的早期潜力项目。
 - `rising_queries`：近期增长项目。
 - `frontier_queries`：AI 编程、Agent、MCP 等前沿项目。
 - `product_queries`：可试用、可改造、可做内容选题的产品项目。
@@ -80,10 +82,10 @@ npm run dev
 
 候选项目来自 GitHub 搜索、仓库主题、README、更新记录和可配置的公开人物观察源。系统会生成四个互斥榜单：
 
-- 热度榜：优先看当天新增 stars、fork、issue、今天是否更新和近期人物信号；累计 stars 只做弱参考。
-- 大家都在用：看 fork、README、截图示例、官网和持续维护。
-- 高收藏：看累计 stars、forks 和长期认可度。
-- 参与讨论：看 issue、fork、最近更新和公开协作痕迹。
+- 热度榜：先过滤到 stars <= 1000 的早期项目，再看当天新增 stars、fork、issue、今天是否更新和近期人物信号。
+- 大家都在用：仍然只在早期项目池里看 fork、README、截图示例、官网和持续维护。
+- 早期潜力：看 stars <= 500 的种子项目，以及 501-1000 区间里增长斜率明显的项目。
+- 参与讨论：只在早期项目池里看 issue、fork、最近更新和公开协作痕迹。
 
 同一个项目只进入最匹配的一个榜单，避免每天页面里重复出现。
 

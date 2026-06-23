@@ -62,6 +62,9 @@ NEW_RANKING_SECTIONS = ("hot", "used", "starred", "discussion")
 LEGACY_RANKING_SECTIONS = ("frontier", "product_ideas", "all_time", "rising")
 PAYLOAD_REPO_SECTIONS = ("all_repos", *NEW_RANKING_SECTIONS, *LEGACY_RANKING_SECTIONS, "xhs_repos")
 PAYLOAD_IMAGE_SECTIONS = (*NEW_RANKING_SECTIONS, *LEGACY_RANKING_SECTIONS, "xhs_repos", "all_repos")
+EARLY_FOCUS_PREFERRED_STAR_CAP = 500
+EARLY_FOCUS_MAX_STAR_CAP = 1000
+EARLY_FOCUS_MAX_AGE_DAYS = 180
 
 
 FEATURE_RULES = [
@@ -1565,7 +1568,36 @@ def latest_snapshot_before(
     return max(prior, key=lambda item: item["date"])
 
 
-def score_repo(repo: dict[str, Any], history: dict[str, Any], run_date: dt.date) -> None:
+def early_focus_settings(config: dict[str, Any] | None = None) -> tuple[int, int, int]:
+    config = config or {}
+    preferred_cap = int(config.get("early_focus_preferred_star_cap", EARLY_FOCUS_PREFERRED_STAR_CAP))
+    max_cap = int(config.get("early_focus_max_star_cap", EARLY_FOCUS_MAX_STAR_CAP))
+    max_age_days = int(config.get("early_focus_max_age_days", EARLY_FOCUS_MAX_AGE_DAYS))
+    preferred_cap = max(1, preferred_cap)
+    max_cap = max(preferred_cap, max_cap)
+    max_age_days = max(1, max_age_days)
+    return preferred_cap, max_cap, max_age_days
+
+
+def early_focus_stage(stars: int, preferred_cap: int, max_cap: int) -> str:
+    if stars <= preferred_cap:
+        return "seed"
+    if stars <= max_cap:
+        return "emerging"
+    return "mature"
+
+
+def is_early_focus_repo(repo: dict[str, Any], config: dict[str, Any] | None = None) -> bool:
+    _, max_cap, _ = early_focus_settings(config)
+    return int(repo.get("stars") or 0) <= max_cap
+
+
+def score_repo(
+    repo: dict[str, Any],
+    history: dict[str, Any],
+    run_date: dt.date,
+    config: dict[str, Any] | None = None,
+) -> None:
     stars = repo["stars"]
     forks = repo["forks"]
     open_issues = int(repo.get("open_issues") or 0)
@@ -1600,6 +1632,19 @@ def score_repo(repo: dict[str, Any], history: dict[str, Any], run_date: dt.date)
     frontier_signal = min(len(lens["frontier_hits"]) * 28, 180)
     product_signal = min(len(lens["product_hits"]) * 24, 170)
     total_star_weight = min(math.log10(max(stars, 1)) * 35, 190)
+    preferred_star_cap, max_star_cap, early_max_age_days = early_focus_settings(config)
+    trend_stage = early_focus_stage(stars, preferred_star_cap, max_star_cap)
+    early_star_bonus = 130 if trend_stage == "seed" else 70 if trend_stage == "emerging" else 0
+    early_star_penalty = 0 if trend_stage != "mature" else min(math.log1p(stars / max_star_cap) * 420, 980)
+    early_age_bonus = (
+        70
+        if age_days <= 30
+        else 45
+        if age_days <= 90
+        else 25
+        if age_days <= early_max_age_days
+        else 0
+    )
     velocity_weight = min(star_velocity * 14, 240) + min(delta_per_day * 38, 380)
     expert_raw_score, expert_count, expert_category_count = expert_score_components(repo)
     expert_signal_weight = (
@@ -1662,6 +1707,9 @@ def score_repo(repo: dict[str, Any], history: dict[str, Any], run_date: dt.date)
         + min(feature_bonus * 0.9, 70)
         + min(total_star_weight * 0.2, 38)
         + expert_signal_weight * 0.2
+        + early_star_bonus
+        + early_age_bonus
+        - early_star_penalty
     )
     used_score = (
         min(math.sqrt(max(forks, 0)) * 8, 420)
@@ -1673,7 +1721,15 @@ def score_repo(repo: dict[str, Any], history: dict[str, Any], run_date: dt.date)
         + min(feature_bonus * 1.3, 95)
         + expert_signal_weight * 0.25
     )
-    starred_score = all_time_score
+    starred_score = (
+        daily_activity_score * 0.55
+        + rising_score * 0.75
+        + docs_bonus
+        + early_star_bonus * 1.6
+        + early_age_bonus
+        + min(stars, max_star_cap) * 0.08
+        - early_star_penalty
+    )
     discussion_score = (
         min(math.sqrt(max(open_issues, 0)) * 14, 440)
         + min(math.sqrt(max(forks, 0)) * 7, 300)
@@ -1697,6 +1753,13 @@ def score_repo(repo: dict[str, Any], history: dict[str, Any], run_date: dt.date)
     repo["daily_open_issues"] = round(daily_issue_gain, 2)
     repo["pushed_today"] = pushed_today
     repo["recent_expert_signals"] = recent_expert_signals
+    repo["early_focus"] = {
+        "eligible": trend_stage != "mature",
+        "stage": trend_stage,
+        "preferred_star_cap": preferred_star_cap,
+        "max_star_cap": max_star_cap,
+        "max_age_days": early_max_age_days,
+    }
     repo["expert_score"] = round(expert_raw_score, 3)
     repo["scores"] = {
         "hot": round(hot_score, 2),
@@ -1788,6 +1851,19 @@ def daily_change_text(repo: dict[str, Any]) -> str:
     return f"{prefix}" + "，".join(parts)
 
 
+def early_focus_text(repo: dict[str, Any]) -> str:
+    focus = repo.get("early_focus") or {}
+    stars = int(repo.get("stars") or 0)
+    preferred_cap = int(focus.get("preferred_star_cap") or EARLY_FOCUS_PREFERRED_STAR_CAP)
+    max_cap = int(focus.get("max_star_cap") or EARLY_FOCUS_MAX_STAR_CAP)
+    stage = focus.get("stage") or early_focus_stage(stars, preferred_cap, max_cap)
+    if stage == "seed":
+        return f"收藏仍在早期区间，低于 {compact_int(max_cap)} 的观察上限。"
+    if stage == "emerging":
+        return f"收藏接近起量但还没过 {compact_int(max_cap)}，适合看增长斜率。"
+    return f"收藏已超过 {compact_int(max_cap)}，只保留在历史数据里作参照。"
+
+
 def repo_card(repo: dict[str, Any], index: int, list_name: str) -> str:
     features = feature_labels_zh(repo.get("features") or []) or ["待人工确认"]
     delta = daily_change_text(repo)
@@ -1799,8 +1875,8 @@ def repo_card(repo: dict[str, Any], index: int, list_name: str) -> str:
             f"已有 {compact_int(repo.get('forks'))} 个分支，README / 示例 / 更新状态会一起参与评分，"
             "更偏向能直接试用或改造的项目。"
         )
-    elif list_name == "高收藏榜":
-        reason = f"累计 {compact_int(repo.get('stars'))} 个收藏，说明它已经被大量开发者长期认可。"
+    elif list_name == "早期潜力榜":
+        reason = f"{early_focus_text(repo)} {delta}"
     elif list_name == "参与讨论榜":
         reason = (
             f"当前有 {compact_int(repo.get('open_issues'))} 个公开 issue，"
@@ -1817,6 +1893,7 @@ def repo_card(repo: dict[str, Any], index: int, list_name: str) -> str:
         f"- 榜单：{list_name}",
         f"- 链接：{repo['html_url']}",
         f"- 数据：{compact_int(repo['stars'])} 个星标，{compact_int(repo['forks'])} 个分支，创建 {repo.get('created_at', '')[:10]}，最近更新 {repo.get('pushed_at', '')[:10]}",
+        f"- 早期口径：{early_focus_text(repo)}",
         f"- 语言/协议：{repo.get('language') or '未知'} / {repo.get('license') or '未知'}",
         f"- 网页编程功能：{', '.join(features)}",
         f"- 项目介绍：{chinese_intro(repo)}",
@@ -1886,7 +1963,7 @@ def build_markdown(
         "",
         f"- 热度榜收录 {len(hot)} 个项目，主要看今天新增收藏、fork、issue、今天更新和近期人物信号。",
         f"- 大家都在用榜收录 {len(used)} 个项目，主要看 fork、文档示例、维护状态和可直接试用程度。",
-        f"- 高收藏榜收录 {len(starred)} 个项目，主要看累计星标、分支和长期认可度。",
+        f"- 早期潜力榜收录 {len(starred)} 个项目，主要看低收藏区间、增长斜率和新趋势信号。",
         f"- 参与讨论榜收录 {len(discussion)} 个项目，主要看 issue、fork、最近更新和社区协作痕迹。",
         "- 第一次运行时没有历史涨星数据；连续运行后，“最近涨星”会越来越准。",
         "",
@@ -1911,17 +1988,17 @@ def build_markdown(
 
     lines.extend(
         [
-        "## 高收藏榜",
+        "## 早期潜力榜",
         "",
         ]
     )
 
     if starred:
         for index, repo in enumerate(starred, 1):
-            lines.append(repo_card(repo, index, "高收藏榜"))
+            lines.append(repo_card(repo, index, "早期潜力榜"))
             lines.append("")
     else:
-        lines.extend(["没有拿到高收藏项目。", ""])
+        lines.extend(["没有拿到符合早期潜力口径的项目。", ""])
 
     lines.extend(["## 参与讨论榜", ""])
     if discussion:
@@ -1945,11 +2022,12 @@ def build_markdown(
             "",
             f"- GitHub 搜索每个查询最多抓取 {config.get('per_page', 50)} 条，默认只抓第 {config.get('pages', 1)} 页。",
             "- 人物/专家观察源：只读取公开 GitHub star、配置里的公开推文链接和项目引用，不采集私信、私有收藏或登录后内容。",
-            "- 热度榜：优先看今天新增收藏、fork、issue、今天更新和近期人物信号，累计 stars 只做弱参考。",
+            f"- 新趋势口径：默认偏好 stars <= {config.get('early_focus_preferred_star_cap', EARLY_FOCUS_PREFERRED_STAR_CAP)}，硬上限 stars <= {config.get('early_focus_max_star_cap', EARLY_FOCUS_MAX_STAR_CAP)}；超过上限的成熟项目只保留在全量历史里。",
+            "- 热度榜：优先看今天新增收藏、fork、issue、今天更新和近期人物信号，并先过滤到早期项目池。",
             "- 大家都在用榜：看 fork、README、截图示例、官网、维护状态和可直接试用程度。",
-            "- 高收藏榜：看 stars、forks、维护状态和长期认可度。",
+            "- 早期潜力榜：看低收藏区间、创建时间、日增长、文档和趋势关键词。",
             "- 参与讨论榜：看 open issues、forks、最近更新和社区协作痕迹。",
-            "- 同一个项目只放进一个榜单；冲突时按热度榜、大家都在用榜、参与讨论榜、高收藏榜的顺序归类。",
+            "- 同一个项目只放进一个榜单；冲突时按热度榜、大家都在用榜、参与讨论榜、早期潜力榜的顺序归类。",
             "- 说明文档摘要为程序自动抽取，发布前建议人工补一遍中文表达和截图。",
         ]
     )
@@ -2692,6 +2770,7 @@ def restore_previous_readme_assets(
     previous_assets: dict[str, dict[str, Any]],
     history: dict[str, Any],
     run_date: dt.date,
+    config: dict[str, Any] | None = None,
 ) -> int:
     restored = 0
     for repo in repos:
@@ -2709,7 +2788,7 @@ def restore_previous_readme_assets(
         if changed:
             repo["features"] = infer_features(repo)
             attach_repo_doc_summary(repo)
-            score_repo(repo, history, run_date)
+            score_repo(repo, history, run_date, config)
             restored += 1
     return restored
 
@@ -2748,7 +2827,7 @@ def enrich_repositories(
             )
         repo["features"] = infer_features(repo)
         attach_repo_doc_summary(repo)
-        score_repo(repo, history, run_date)
+        score_repo(repo, history, run_date, config)
 
 
 def select_rankings(
@@ -2766,9 +2845,30 @@ def select_rankings(
     discussion_limit = int(config.get("discussion_limit", config.get("frontier_limit", 15)))
     xhs_count = int(config.get("xhs_count", 5))
     rising_max_age_days = int(config.get("rising_max_age_days", 180))
+    _, max_star_cap, early_max_age_days = early_focus_settings(config)
+    early_pool = [repo for repo in repos if is_early_focus_repo(repo, config)]
+    focus_pool = early_pool or repos
+
+    def has_daily_signal(repo: dict[str, Any]) -> bool:
+        return (
+            float(repo.get("daily_stars") or 0) > 0
+            or float(repo.get("daily_forks") or 0) > 0
+            or float(repo.get("daily_open_issues") or 0) > 0
+            or bool(repo.get("pushed_today"))
+            or int(repo.get("recent_expert_signals") or 0) > 0
+        )
+
+    def has_new_trend_signal(repo: dict[str, Any]) -> bool:
+        return (
+            has_daily_signal(repo)
+            or repo.get("age_days", 9999) <= early_max_age_days
+            or bool(repo.get("lens", {}).get("frontier_hits"))
+            or bool(repo.get("lens", {}).get("product_hits"))
+            or bool(repo.get("expert_signals"))
+        )
 
     # 同一个项目只进一个榜单，避免不同标签页里重复出现。
-    # 认领顺序：先保留最近变热和真实使用痕迹，再给讨论活跃项目留位置，最后补高收藏经典项目。
+    # 认领顺序：先保留最近变热和真实使用痕迹，再给讨论活跃项目留位置，最后补早期潜力项目。
     claimed: set[str] = set()
 
     def take(candidates: list[dict[str, Any]], score_key: str, limit: int) -> list[dict[str, Any]]:
@@ -2783,12 +2883,8 @@ def select_rankings(
 
     hot_candidates = [
         repo
-        for repo in repos
-        if float(repo.get("daily_stars") or 0) > 0
-        or float(repo.get("daily_forks") or 0) > 0
-        or float(repo.get("daily_open_issues") or 0) > 0
-        or bool(repo.get("pushed_today"))
-        or int(repo.get("recent_expert_signals") or 0) > 0
+        for repo in focus_pool
+        if has_daily_signal(repo)
         or (repo.get("delta_stars") is None and repo.get("age_days", 9999) <= min(14, rising_max_age_days))
         or (
             repo.get("lens", {}).get("frontier_hits")
@@ -2799,15 +2895,14 @@ def select_rankings(
         )
     ]
     if not hot_candidates:
-        hot_candidates = repos
+        hot_candidates = focus_pool
     hot = take(hot_candidates, "hot", hot_limit)
 
     used_candidates = [
         repo
-        for repo in repos
+        for repo in focus_pool
         if "product" in repo.get("sources", [])
-        or "all_time" in repo.get("sources", [])
-        or int(repo.get("forks") or 0) >= 20
+        or int(repo.get("forks") or 0) >= 5
         or repo.get("examples")
         or repo.get("readme_excerpt")
         or repo.get("homepage")
@@ -2816,23 +2911,29 @@ def select_rankings(
         or "Sandbox / Preview" in repo.get("features", [])
     ]
     if not used_candidates:
-        used_candidates = repos
+        used_candidates = focus_pool
     used = take(used_candidates, "used", used_limit)
 
     discussion_candidates = [
         repo
-        for repo in repos
+        for repo in focus_pool
         if int(repo.get("open_issues") or 0) > 0
-        or int(repo.get("forks") or 0) >= 10
+        or int(repo.get("forks") or 0) >= 5
+        or float(repo.get("daily_open_issues") or 0) > 0
         or repo.get("expert_signals")
     ]
     if not discussion_candidates:
-        discussion_candidates = repos
+        discussion_candidates = focus_pool
     discussion = take(discussion_candidates, "discussion", discussion_limit)
 
-    starred_candidates = [repo for repo in repos if "all_time" in repo.get("sources", []) or int(repo.get("stars") or 0) > 0]
+    starred_candidates = [
+        repo
+        for repo in focus_pool
+        if has_new_trend_signal(repo)
+        or int(repo.get("stars") or 0) <= max_star_cap
+    ]
     if not starred_candidates:
-        starred_candidates = repos
+        starred_candidates = focus_pool
     starred = take(starred_candidates, "starred", starred_limit)
 
     seen: set[str] = set()
@@ -2915,6 +3016,7 @@ def run(args: argparse.Namespace) -> int:
         previous_readme_assets,
         history,
         run_date,
+        config,
     )
     hot, used, starred, discussion, xhs_repos = select_rankings(repos, config)
     update_history(paths.data_path, history, repos, run_date)
@@ -2927,7 +3029,7 @@ def run(args: argparse.Namespace) -> int:
     print(f"Repos collected: {len(repos)}")
     print(f"Hot ranking: {len(hot)}")
     print(f"Used ranking: {len(used)}")
-    print(f"Starred ranking: {len(starred)}")
+    print(f"Early potential ranking: {len(starred)}")
     print(f"Discussion ranking: {len(discussion)}")
     print(f"XHS drafts: {len(xhs_repos)}")
     if restored_readme_assets:

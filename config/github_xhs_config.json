@@ -16,6 +16,9 @@
   "max_readmes": 12,
   "readme_excerpt_chars": 1400,
   "rising_max_age_days": 180,
+  "early_focus_preferred_star_cap": 500,
+  "early_focus_max_star_cap": 1000,
+  "early_focus_max_age_days": 180,
   "request_interval_seconds": 6.5,
   "request_timeout_seconds": 35,
   "retries": 1,
@@ -116,32 +119,32 @@
     ]
   },
   "all_time_queries": [
-    "topic:llm stars:>=20000 archived:false",
-    "topic:developer-tools stars:>=10000 archived:false",
-    "topic:code-editor stars:>=5000 archived:false",
-    "topic:ai-agent stars:>=5000 archived:false"
+    "created:>={date_180} stars:50..1000 archived:false topic:llm",
+    "created:>={date_180} stars:50..1000 archived:false topic:developer-tools",
+    "created:>={date_180} stars:50..1000 archived:false topic:code-editor",
+    "created:>={date_180} stars:50..1000 archived:false topic:ai-agent"
   ],
   "rising_queries": [
-    "created:>={date_60} stars:>=20 archived:false topic:coding-agent",
-    "created:>={date_60} stars:>=20 archived:false topic:mcp",
-    "created:>={date_60} stars:>=20 archived:false topic:web-ide",
-    "created:>={date_60} stars:>=20 archived:false topic:ai-agent",
-    "created:>={date_60} stars:>=20 archived:false vibe-coding"
+    "created:>={date_60} stars:20..500 archived:false topic:coding-agent",
+    "created:>={date_60} stars:20..500 archived:false topic:mcp",
+    "created:>={date_60} stars:20..500 archived:false topic:web-ide",
+    "created:>={date_60} stars:20..500 archived:false topic:ai-agent",
+    "created:>={date_60} stars:20..500 archived:false vibe-coding"
   ],
   "frontier_queries": [
-    "created:>={date_90} stars:>=50 archived:false topic:coding-agent",
-    "created:>={date_90} stars:>=50 archived:false topic:mcp",
-    "created:>={date_90} stars:>=50 archived:false topic:ai-agent",
-    "created:>={date_90} stars:>=50 archived:false claude-code",
-    "created:>={date_90} stars:>=50 archived:false topic:agent-framework",
-    "pushed:>={date_14} stars:>=1000 archived:false topic:developer-tools"
+    "created:>={date_90} stars:30..1000 archived:false topic:coding-agent",
+    "created:>={date_90} stars:30..1000 archived:false topic:mcp",
+    "created:>={date_90} stars:30..1000 archived:false topic:ai-agent",
+    "created:>={date_90} stars:30..1000 archived:false claude-code",
+    "created:>={date_90} stars:30..1000 archived:false topic:agent-framework",
+    "pushed:>={date_14} stars:50..1000 archived:false topic:developer-tools"
   ],
   "product_queries": [
-    "created:>={date_90} stars:>=30 archived:false topic:app-builder",
-    "created:>={date_90} stars:>=30 archived:false topic:low-code",
-    "created:>={date_90} stars:>=30 archived:false topic:no-code",
-    "created:>={date_90} stars:>=30 archived:false topic:web-ide",
-    "created:>={date_90} stars:>=30 archived:false topic:ai-coding",
-    "created:>={date_90} stars:>=30 archived:false prototype"
+    "created:>={date_90} stars:20..500 archived:false topic:app-builder",
+    "created:>={date_90} stars:20..500 archived:false topic:low-code",
+    "created:>={date_90} stars:20..500 archived:false topic:no-code",
+    "created:>={date_90} stars:20..500 archived:false topic:web-ide",
+    "created:>={date_90} stars:20..500 archived:false topic:ai-coding",
+    "created:>={date_90} stars:20..500 archived:false prototype"
   ]
 }

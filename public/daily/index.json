@@ -1,11 +1,11 @@
 {
-  "updated_at": "2026-06-23T17:05:42Z",
+  "updated_at": "2026-06-23T18:00:11Z",
   "latest_date": "2026-06-24",
   "dates": [
     {
       "date": "2026-06-24",
       "path": "2026-06-24.json",
-      "repo_count": 285,
+      "repo_count": 298,
       "hot_count": 15,
       "used_count": 15,
       "starred_count": 15,

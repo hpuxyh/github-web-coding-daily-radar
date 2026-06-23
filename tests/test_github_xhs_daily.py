@@ -345,6 +345,8 @@ MIT
         self.assertEqual(repo["daily_stars"], 25.0)
         self.assertEqual(repo["daily_forks"], 1.0)
         self.assertTrue(repo["pushed_today"] is False)
+        self.assertTrue(repo["early_focus"]["eligible"])
+        self.assertEqual(repo["early_focus"]["stage"], "seed")
         self.assertGreater(repo["scores"]["hot"], 0)
         self.assertGreater(repo["scores"]["used"], 0)
         self.assertGreater(repo["scores"]["starred"], 0)
@@ -388,7 +390,59 @@ MIT
         daily.score_repo(riser, history, run_date)
 
         self.assertGreater(riser["scores"]["hot"], classic["scores"]["hot"])
-        self.assertGreater(classic["scores"]["starred"], riser["scores"]["starred"])
+        self.assertGreater(riser["scores"]["starred"], classic["scores"]["starred"])
+        self.assertGreater(classic["scores"]["all_time"], riser["scores"]["all_time"])
+
+    def test_select_rankings_filters_mature_repos_for_trend_lists(self):
+        mature = self.ranked_repo(
+            "demo/mature",
+            ["rising"],
+            scores={"hot": 9999, "used": 9999, "starred": 9999, "discussion": 9999},
+            features=["AI Coding / Agent"],
+        )
+        mature.update(
+            {
+                "stars": 146000,
+                "forks": 5000,
+                "open_issues": 200,
+                "daily_stars": 500,
+                "daily_forks": 50,
+                "daily_open_issues": 10,
+                "pushed_today": True,
+            }
+        )
+        early = self.ranked_repo(
+            "demo/early",
+            ["rising"],
+            scores={"hot": 100, "used": 100, "starred": 100, "discussion": 100},
+            features=["AI Coding / Agent"],
+        )
+        early.update(
+            {
+                "stars": 420,
+                "forks": 12,
+                "open_issues": 3,
+                "daily_stars": 8,
+                "daily_forks": 1,
+                "daily_open_issues": 1,
+                "pushed_today": True,
+            }
+        )
+
+        hot, used, starred, discussion, _ = daily.select_rankings(
+            [mature, early],
+            {
+                "hot_limit": 5,
+                "used_limit": 5,
+                "starred_limit": 5,
+                "discussion_limit": 5,
+                "xhs_count": 5,
+            },
+        )
+
+        shown = [repo["full_name"] for repo in hot + used + starred + discussion]
+        self.assertIn("demo/early", shown)
+        self.assertNotIn("demo/mature", shown)
 
     def test_restore_previous_readme_assets_preserves_images(self):
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -619,7 +673,7 @@ MIT
         markdown = daily.build_markdown(run_date, [repo], [repo], [repo], [repo], [repo], {"per_page": 40, "pages": 1})
         self.assertIn("热度榜", markdown)
         self.assertIn("大家都在用榜", markdown)
-        self.assertIn("高收藏榜", markdown)
+        self.assertIn("早期潜力榜", markdown)
         self.assertIn("参与讨论榜", markdown)
         self.assertIn("小红书草稿", markdown)
         self.assertIn("demo/repo", markdown)
