@@ -2766,6 +2766,9 @@
         if (/(八字紫微|命理排盘)/.test(`${profile.name || ''} ${profile.category || ''}`)) {
           return ['AI Agent Skill', '命理排盘', '综合印证'];
         }
+        if (/(实战指南|教程|电子书)/.test(`${profile.name || ''} ${profile.category || ''}`)) {
+          return ['实战指南', 'AI 编程学习', '案例手册'];
+        }
         return repo.features?.length ? repo.features.map(toChineseFeature) : ['待确认'];
       }
 
@@ -3121,7 +3124,7 @@
         const audience = String(profile.audience || '需要评估新工具的人').replace(/[。.!！]$/, '');
         const problem = String(profile.problem || '').replace(/[。.!！]$/, '');
         const approach = String(profile.approach || '').replace(/[。.!！]$/, '');
-        return `${profile.name}。主要给${audience}用；它解决的是${problem}，做法是${approach}。`;
+        return `${profile.name}。主要给${audience}用；它解决的是 ${problem}，做法是${approach}。`;
       }
 
       function toChineseIntro(repo) {
