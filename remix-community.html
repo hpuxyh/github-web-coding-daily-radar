@@ -1,0 +1,709 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="GitHub 网页模板改造社区：把 GitHub 上已经能打开的 HTML 页面，变成小白也能直接修改、预览和展示的作品。"
+    />
+    <title>GitHub 网页模板改造社区</title>
+    <style>
+      :root {
+        color: #182235;
+        background: #f5f9fb;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        min-width: 320px;
+        margin: 0;
+        background: #f5f9fb;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .topbar {
+        position: fixed;
+        z-index: 10;
+        top: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+        padding: 14px 5vw;
+        border-bottom: 1px solid rgba(53, 74, 96, 0.12);
+        background: rgba(247, 251, 253, 0.86);
+        backdrop-filter: blur(18px);
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 850;
+      }
+
+      .brand-mark {
+        display: inline-grid;
+        width: 36px;
+        height: 36px;
+        place-items: center;
+        border-radius: 8px;
+        background: #182235;
+        color: #ffffff;
+        font-size: 0.78rem;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .nav a {
+        min-height: 36px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 12px;
+        border-radius: 8px;
+        color: #526176;
+        font-size: 0.92rem;
+        font-weight: 760;
+      }
+
+      .nav a:hover {
+        background: rgba(35, 112, 179, 0.1);
+        color: #1c6aa9;
+      }
+
+      .hero {
+        min-height: 82svh;
+        display: flex;
+        align-items: center;
+        padding: 112px 5vw 58px;
+        background-image:
+          linear-gradient(
+            90deg,
+            rgba(245, 249, 251, 0.98) 0%,
+            rgba(245, 249, 251, 0.92) 42%,
+            rgba(245, 249, 251, 0.5) 74%,
+            rgba(245, 249, 251, 0.14) 100%
+          ),
+          linear-gradient(
+            180deg,
+            rgba(245, 249, 251, 0.08) 0%,
+            rgba(245, 249, 251, 0.96) 100%
+          ),
+          url("assets/portfolio-hero.png");
+        background-position: center right;
+        background-size: cover;
+      }
+
+      .hero-inner {
+        width: min(860px, 100%);
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        min-height: 34px;
+        align-items: center;
+        padding: 0 12px;
+        border: 1px solid rgba(37, 122, 196, 0.2);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.74);
+        color: #1d6fae;
+        font-size: 0.88rem;
+        font-weight: 850;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        max-width: 760px;
+        margin-top: 22px;
+        color: #142033;
+        font-size: clamp(3.2rem, 8vw, 6.8rem);
+        line-height: 0.96;
+        letter-spacing: 0;
+      }
+
+      .hero-lead {
+        max-width: 760px;
+        margin-top: 24px;
+        color: #243148;
+        font-size: clamp(1.26rem, 2.2vw, 1.72rem);
+        line-height: 1.5;
+        font-weight: 850;
+      }
+
+      .hero-note {
+        max-width: 760px;
+        margin-top: 18px;
+        color: #516173;
+        font-size: 1.05rem;
+        line-height: 1.78;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 30px;
+      }
+
+      .button {
+        min-height: 46px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        padding: 0 18px;
+        border-radius: 8px;
+        border: 1px solid rgba(31, 45, 64, 0.14);
+        background: #ffffff;
+        color: #1d2a3b;
+        font-weight: 850;
+        box-shadow: 0 12px 28px rgba(31, 45, 64, 0.08);
+      }
+
+      .button.primary {
+        border-color: #1d6fae;
+        background: #1d6fae;
+        color: #ffffff;
+      }
+
+      .metrics-band {
+        padding: 28px 5vw;
+        background: #132034;
+        color: #ffffff;
+      }
+
+      .metrics {
+        width: min(1180px, 100%);
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1px;
+        margin: 0 auto;
+        overflow: hidden;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.12);
+      }
+
+      .metric {
+        min-height: 122px;
+        padding: 22px;
+        background: rgba(255, 255, 255, 0.06);
+      }
+
+      .metric strong {
+        display: block;
+        color: #ffffff;
+        font-size: clamp(1.8rem, 3.4vw, 2.8rem);
+        line-height: 1;
+      }
+
+      .metric span {
+        display: block;
+        margin-top: 10px;
+        color: rgba(255, 255, 255, 0.75);
+        line-height: 1.55;
+      }
+
+      .section {
+        padding: 76px 5vw;
+      }
+
+      .section.alt {
+        background: #ffffff;
+      }
+
+      .section-inner {
+        width: min(1180px, 100%);
+        margin: 0 auto;
+      }
+
+      .section-heading {
+        max-width: 760px;
+        margin-bottom: 30px;
+      }
+
+      .section-heading span {
+        display: inline-flex;
+        min-height: 28px;
+        align-items: center;
+        padding: 0 10px;
+        border-radius: 8px;
+        background: #e8f3fb;
+        color: #1d6fae;
+        font-size: 0.78rem;
+        font-weight: 850;
+      }
+
+      .section-heading h2 {
+        margin-top: 14px;
+        color: #142033;
+        font-size: clamp(2rem, 4vw, 3.7rem);
+        line-height: 1.06;
+        letter-spacing: 0;
+      }
+
+      .section-heading p {
+        margin-top: 16px;
+        color: #526176;
+        font-size: 1.08rem;
+        line-height: 1.72;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .card {
+        min-height: 230px;
+        padding: 22px;
+        border: 1px solid rgba(38, 59, 82, 0.1);
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 20px 42px rgba(39, 58, 77, 0.07);
+      }
+
+      .card h3 {
+        color: #162236;
+        font-size: 1.28rem;
+        line-height: 1.3;
+      }
+
+      .card p {
+        margin-top: 12px;
+        color: #526176;
+        line-height: 1.7;
+      }
+
+      .tagline {
+        display: inline-flex;
+        min-height: 28px;
+        align-items: center;
+        margin-bottom: 14px;
+        padding: 0 9px;
+        border-radius: 8px;
+        background: #fff3df;
+        color: #9a521e;
+        font-size: 0.78rem;
+        font-weight: 850;
+      }
+
+      .flow {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .flow-step {
+        min-height: 190px;
+        padding: 20px;
+        border: 1px solid rgba(31, 45, 64, 0.1);
+        border-radius: 8px;
+        background: #f8fbfd;
+      }
+
+      .flow-step strong {
+        display: inline-grid;
+        width: 34px;
+        height: 34px;
+        place-items: center;
+        border-radius: 8px;
+        background: #1d6fae;
+        color: #ffffff;
+      }
+
+      .flow-step h3 {
+        margin-top: 16px;
+        font-size: 1.15rem;
+      }
+
+      .flow-step p {
+        margin-top: 10px;
+        color: #536274;
+        line-height: 1.65;
+      }
+
+      .split {
+        display: grid;
+        grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+        gap: 28px;
+        align-items: start;
+      }
+
+      .callout {
+        padding: 28px;
+        border-radius: 8px;
+        background: #142033;
+        color: #ffffff;
+      }
+
+      .callout h2 {
+        font-size: clamp(1.8rem, 3.6vw, 3rem);
+        line-height: 1.12;
+      }
+
+      .callout p {
+        margin-top: 16px;
+        color: rgba(255, 255, 255, 0.78);
+        line-height: 1.76;
+      }
+
+      .list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .list-item {
+        padding: 18px 20px;
+        border: 1px solid rgba(31, 45, 64, 0.1);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .list-item strong {
+        display: block;
+        color: #162236;
+      }
+
+      .list-item span {
+        display: block;
+        margin-top: 8px;
+        color: #536274;
+        line-height: 1.64;
+      }
+
+      .source-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .source-row a {
+        min-height: 38px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 12px;
+        border: 1px solid rgba(31, 45, 64, 0.12);
+        border-radius: 8px;
+        background: #ffffff;
+        color: #1d6fae;
+        font-weight: 800;
+      }
+
+      footer {
+        padding: 28px 5vw 44px;
+        background: #132034;
+        color: rgba(255, 255, 255, 0.7);
+      }
+
+      footer div {
+        width: min(1180px, 100%);
+        margin: 0 auto;
+      }
+
+      @media (max-width: 920px) {
+        .topbar {
+          position: sticky;
+        }
+
+        .nav {
+          display: none;
+        }
+
+        .hero {
+          min-height: auto;
+          padding-top: 72px;
+          background-position: center;
+        }
+
+        .metrics,
+        .grid,
+        .flow,
+        .split {
+          grid-template-columns: 1fr;
+        }
+
+        .metric {
+          min-height: 104px;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .section {
+          padding: 56px 5vw;
+        }
+
+        .hero-actions {
+          flex-direction: column;
+        }
+
+        .button {
+          width: 100%;
+        }
+
+        .card,
+        .flow-step,
+        .callout {
+          padding: 18px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="./">
+        <span class="brand-mark">改</span>
+        <span>每天帮你找能改的网页模板</span>
+      </a>
+      <nav class="nav" aria-label="页面导航">
+        <a href="#why">为什么做</a>
+        <a href="#growth">增长</a>
+        <a href="#how">怎么做</a>
+        <a href="#mvp">第一版</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-inner">
+          <span class="eyebrow">GitHub 网页模板发现 + 小白站内编辑 + 作品展示社区</span>
+          <h1>GitHub 网页模板改造社区</h1>
+          <p class="hero-lead">
+            把 GitHub 上已经能打开的 HTML 页面，变成小白也能直接修改、预览和展示的作品模板。
+          </p>
+          <p class="hero-note">
+            这个项目不是再做一个排行榜，而是把“发现项目”往后推进一步：先判断哪些网页能被拉进来，再整理成站内可编辑模板，让用户填内容就能改出自己的网页。
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#mvp">看第一版怎么做</a>
+            <a class="button" href="https://github.com/hpuxyh/github-web-coding-radar" target="_blank" rel="noreferrer">看当前仓库</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="metrics-band" id="growth">
+        <div class="metrics" aria-label="增长依据">
+          <div class="metric">
+            <strong>180M+</strong>
+            <span>GitHub 2025 年披露的平台开发者规模。</span>
+          </div>
+          <div class="metric">
+            <strong>36M+</strong>
+            <span>一年新增开发者，平均每秒都有新人加入。</span>
+          </div>
+          <div class="metric">
+            <strong>230+</strong>
+            <span>每分钟新建仓库数量，项目供给持续增长。</span>
+          </div>
+          <div class="metric">
+            <strong>80%</strong>
+            <span>新开发者第一周尝试 Copilot，AI coding 已经变成默认入口。</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt" id="why">
+        <div class="section-inner">
+          <div class="section-heading">
+            <span>为什么做</span>
+            <h2>GitHub 的项目很多，但小白缺的是“能不能直接改成我的网页”。</h2>
+            <p>
+              小白用户和 web coding 玩家不是没有灵感，而是卡在理解、运行、改造和发布上。GitHub Trending 能告诉他们什么热，AI coding 工具能帮他们写代码，但中间缺少一层“把现成 HTML 页面变成可编辑模板”的产品。
+            </p>
+          </div>
+          <div class="grid">
+            <article class="card">
+              <span class="tagline">用户痛点</span>
+              <h3>看不懂</h3>
+              <p>项目名、README、目录和文件都偏工程语言。用户很难判断哪个页面能直接打开，哪个页面适合自己改。</p>
+            </article>
+            <article class="card">
+              <span class="tagline">执行痛点</span>
+              <h3>跑不动</h3>
+              <p>只要需要安装依赖、配置环境或看命令，小白就容易在第一步放弃。第一版要优先选打开 HTML 就能看的页面。</p>
+            </article>
+            <article class="card">
+              <span class="tagline">转化痛点</span>
+              <h3>不会改</h3>
+              <p>用户需要的不是“复制代码”，而是知道这个模板能改成什么、先换哪些内容、改完在哪里预览。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-inner split">
+          <div class="callout">
+            <h2>为什么值得做</h2>
+            <p>
+              增长来自两边同时变大：一边是 GitHub 上持续增加的开源页面和模板，一边是越来越多非传统开发者开始用 AI 做网页、工具、小游戏和内部面板。这个社区正好站在两者中间，把“网页供给”转成“可编辑作品”。
+            </p>
+          </div>
+          <div class="list">
+            <div class="list-item">
+              <strong>不是替代 GitHub</strong>
+              <span>GitHub 继续作为代码源头，我们做小白可读的筛选层、模板整理层和站内编辑层。</span>
+            </div>
+            <div class="list-item">
+              <strong>不是替代 AI coding 工具</strong>
+              <span>用户以后仍然可以用 Codex、Cursor、Copilot、v0、YouWare 等工具继续深改，我们先解决“第一版能不能直接改出来”。</span>
+            </div>
+            <div class="list-item">
+              <strong>不是普通社区</strong>
+              <span>社区内容围绕“我从哪个网页模板改出了什么作品”，天然有案例、链接、截图和复用价值。</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt" id="how">
+        <div class="section-inner">
+          <div class="section-heading">
+            <span>为什么能做出来</span>
+            <h2>第一性能力已经有了：模板发现、中文解释、站内预览。</h2>
+            <p>
+              当前仓库已经有项目发现、中文卡片、示例前端、站内编辑和本地保存。下一步不是从零造云端 IDE，而是先把适合的 HTML 页面整理成可编辑模板。
+            </p>
+          </div>
+          <div class="flow">
+            <article class="flow-step">
+              <strong>1</strong>
+              <h3>发现网页模板</h3>
+              <p>从 GitHub 搜索、topic、README 和人工来源里筛出能直接打开、适合小白改的 HTML 页面。</p>
+            </article>
+            <article class="flow-step">
+              <strong>2</strong>
+              <h3>判断能不能拉进来</h3>
+              <p>看 demo、截图、文件结构、许可证和运行复杂度，优先选 index.html、CSS、少量 JS 的网页。</p>
+            </article>
+            <article class="flow-step">
+              <strong>3</strong>
+              <h3>整理成可编辑模板</h3>
+              <p>把原网页拆成标题、介绍、图片、卡片、按钮、颜色这些可填写内容，让用户在网页里直接改。</p>
+            </article>
+            <article class="flow-step">
+              <strong>4</strong>
+              <h3>展示作品</h3>
+              <p>用户提交作品链接、截图、原模板和改造说明，形成可复用的案例库。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="mvp">
+        <div class="section-inner">
+          <div class="section-heading">
+            <span>第一版</span>
+            <h2>先做网页模板库，不急着做云端 IDE。</h2>
+            <p>
+              第一版的目标是验证用户是否愿意选模板、看示例、站内改内容和提交作品。只要能证明“现成网页 + 站内编辑 + 作品展示”有使用行为，再继续做一键发布和更深的代码改造。
+            </p>
+          </div>
+          <div class="grid">
+            <article class="card">
+              <span class="tagline">内容产品</span>
+              <h3>精选可改网页模板</h3>
+              <p>每个模板给一句话解释、适合人群、难度、截图、坑点和可编辑程度。</p>
+            </article>
+            <article class="card">
+              <span class="tagline">工具产品</span>
+              <h3>每个模板 3 个改法</h3>
+              <p>比如改成作品集、排行榜、内部看板、小游戏、选题工具，并直接提供站内编辑入口。</p>
+            </article>
+            <article class="card">
+              <span class="tagline">社区产品</span>
+              <h3>作品提交和案例页</h3>
+              <p>用户提交自己的改造作品，页面展示原模板、改造结果、截图和经验。</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt">
+        <div class="section-inner">
+          <div class="section-heading">
+            <span>技术上需要提供什么</span>
+            <h2>真正的门槛在“可拉取、可编辑、可预览、可发布”。</h2>
+            <p>
+              技术底座可以分四层：模板发现系统、模板整理系统、站内编辑系统、作品展示系统。后续再加一键发布、在线托管和更深的代码改造。
+            </p>
+          </div>
+          <div class="list">
+            <div class="list-item">
+              <strong>模板发现系统</strong>
+              <span>定时筛选 HTML 页面，按是否能打开、是否好看、是否适合小白改来打分。</span>
+            </div>
+            <div class="list-item">
+              <strong>模板整理系统</strong>
+              <span>读取原网页、图片和样式，把能改的部分整理成标题、卡片、按钮、颜色等字段。</span>
+            </div>
+            <div class="list-item">
+              <strong>站内编辑系统</strong>
+              <span>让用户在网页里填写内容，实时预览，先保存到浏览器，后面再接账号和云端保存。</span>
+            </div>
+            <div class="list-item">
+              <strong>作品展示系统</strong>
+              <span>收集用户作品链接、截图、原模板和改造说明，形成可浏览、可复用、可传播的案例库。</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-inner">
+          <div class="section-heading">
+            <span>依据</span>
+            <h2>不是拍脑袋，趋势和缺口都已经出现。</h2>
+            <p>
+              GitHub 的项目供给、AI coding 的用户增长、以及现有发现工具和 vibe coding 平台的分工，都说明“把现成网页变成可编辑模板”的中间层有机会。
+            </p>
+          </div>
+          <div class="source-row">
+            <a href="https://github.blog/news-insights/octoverse/octoverse-a-new-developer-joins-github-every-second-as-ai-leads-typescript-to-1/" target="_blank" rel="noreferrer">GitHub Octoverse 2025</a>
+            <a href="https://github.com/trending" target="_blank" rel="noreferrer">GitHub Trending</a>
+            <a href="https://docs.github.com/en/get-started/start-your-journey/finding-inspiration-on-github" target="_blank" rel="noreferrer">GitHub 官方入门</a>
+            <a href="https://hellogithub.com/en/periodical/volume/1" target="_blank" rel="noreferrer">HelloGitHub</a>
+            <a href="https://github.com/pingcap/ossinsight" target="_blank" rel="noreferrer">OSSInsight</a>
+            <a href="https://www.yourware.cn/" target="_blank" rel="noreferrer">YouWare</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div>
+        GitHub 网页模板改造社区，先从“每天帮你找好项目”升级而来。更新日期：2026-06-07。
+      </div>
+    </footer>
+  </body>
+</html>

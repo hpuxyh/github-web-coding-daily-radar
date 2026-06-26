@@ -1,0 +1,1302 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="打开一个可以演示的前端页面，查看示例版本或自己修改后的版本。" />
+    <title>前端演示</title>
+    <style>
+      :root {
+        color: #172033;
+        background: #f7fbff;
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        font-synthesis: none;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-width: 320px;
+        margin: 0;
+        background: #f7fbff;
+      }
+
+      button {
+        cursor: pointer;
+        font: inherit;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .topbar {
+        position: sticky;
+        z-index: 20;
+        top: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 14px 5vw;
+        border-bottom: 1px solid rgba(42, 67, 90, 0.12);
+        background: rgba(248, 252, 255, 0.9);
+        backdrop-filter: blur(18px);
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 860;
+      }
+
+      .brand-mark {
+        display: inline-grid;
+        width: 36px;
+        height: 36px;
+        place-items: center;
+        border-radius: 8px;
+        background: #172033;
+        color: #ffffff;
+        font-size: 0.8rem;
+      }
+
+      .top-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .button {
+        min-height: 42px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 14px;
+        border: 1px solid rgba(31, 45, 64, 0.14);
+        border-radius: 8px;
+        background: #ffffff;
+        color: #1d2a3b;
+        font-weight: 850;
+        box-shadow: 0 12px 28px rgba(31, 45, 64, 0.08);
+      }
+
+      .button.primary {
+        border-color: #172033;
+        background: #172033;
+        color: #ffffff;
+      }
+
+      .demo-shell {
+        width: min(1180px, 100%);
+        margin: 0 auto;
+        padding: 28px 5vw 56px;
+      }
+
+      .demo-head {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 16px;
+        align-items: end;
+        margin-bottom: 18px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        min-height: 30px;
+        align-items: center;
+        padding: 0 10px;
+        border-radius: 8px;
+        background: #e8f3fb;
+        color: #1769c2;
+        font-size: 0.8rem;
+        font-weight: 850;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin: 0;
+      }
+
+      h1 {
+        max-width: 760px;
+        margin-top: 12px;
+        color: #172033;
+        font-size: clamp(2rem, 5vw, 4.2rem);
+        line-height: 1.02;
+        letter-spacing: 0;
+      }
+
+      .demo-note {
+        max-width: 720px;
+        margin-top: 12px;
+        color: #607084;
+        line-height: 1.7;
+      }
+
+      .status-box {
+        max-width: 320px;
+        padding: 16px;
+        border: 1px solid rgba(31, 45, 64, 0.1);
+        border-radius: 8px;
+        background: #ffffff;
+        color: #526174;
+        line-height: 1.58;
+      }
+
+      .demo-stage {
+        overflow: hidden;
+        border: 1px solid rgba(31, 45, 64, 0.12);
+        border-radius: 8px;
+        background: #ffffff;
+        box-shadow: 0 24px 54px rgba(39, 58, 77, 0.09);
+      }
+
+      .site-preview {
+        min-height: 720px;
+        background: #ffffff;
+        color: #172033;
+      }
+
+      body.yuzhu-product {
+        overflow: hidden;
+        background: #eeeeee;
+      }
+
+      body.yuzhu-product .topbar,
+      body.yuzhu-product .demo-head {
+        display: none;
+      }
+
+      body.yuzhu-product .demo-shell {
+        width: 100%;
+        padding: 0;
+      }
+
+      body.yuzhu-product .demo-stage {
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+      }
+
+      body.yuzhu-product .site-preview {
+        min-height: 100vh;
+      }
+
+      body.yuzhu-product .yuzhu-site {
+        min-height: 100vh;
+        padding: 30px;
+      }
+
+      body.yuzhu-product .yuzhu-stage {
+        height: calc(100vh - 60px);
+        min-height: 0;
+      }
+
+      .preview-hero {
+        min-height: 430px;
+        display: grid;
+        align-content: center;
+        gap: 18px;
+        padding: clamp(32px, 8vw, 82px);
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.98), rgba(255, 255, 255, 0.7)),
+          url("assets/portfolio-hero.png");
+        background-position: center;
+        background-size: cover;
+      }
+
+      .preview-kicker {
+        width: fit-content;
+        min-height: 30px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 10px;
+        border-radius: 8px;
+        background: color-mix(in srgb, var(--accent, #1769c2) 12%, #ffffff);
+        color: var(--accent, #1769c2);
+        font-size: 0.82rem;
+        font-weight: 850;
+      }
+
+      .preview-hero h2 {
+        max-width: 760px;
+        color: #172033;
+        font-size: clamp(2.4rem, 8vw, 6.4rem);
+        line-height: 0.96;
+        letter-spacing: 0;
+      }
+
+      .preview-hero p {
+        max-width: 720px;
+        color: #526174;
+        font-size: clamp(1.08rem, 2vw, 1.3rem);
+        line-height: 1.7;
+      }
+
+      .preview-cta,
+      .choice-action {
+        width: fit-content;
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 16px;
+        border: 0;
+        border-radius: 8px;
+        background: var(--accent, #1769c2);
+        color: #ffffff;
+        font-weight: 850;
+      }
+
+      .preview-section {
+        padding: clamp(28px, 6vw, 64px);
+      }
+
+      .preview-section h3 {
+        color: #172033;
+        font-size: clamp(1.6rem, 4vw, 3rem);
+      }
+
+      .preview-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 20px;
+      }
+
+      .preview-card {
+        min-height: 180px;
+        padding: 18px;
+        border: 1px solid rgba(31, 45, 64, 0.1);
+        border-radius: 8px;
+        background: #ffffff;
+      }
+
+      .preview-card strong {
+        display: block;
+        color: #172033;
+        font-size: 1.08rem;
+        line-height: 1.35;
+      }
+
+      .preview-card span {
+        display: block;
+        margin-top: 8px;
+        color: var(--accent, #1769c2);
+        font-size: 0.84rem;
+        font-weight: 850;
+      }
+
+      .preview-card p {
+        margin-top: 10px;
+        color: #526174;
+        line-height: 1.62;
+      }
+
+      .yuzhu-site {
+        min-height: 820px;
+        overflow: hidden;
+        padding: 20px;
+        background: linear-gradient(to bottom, #f5f5f5, #eeeeee);
+        color: #333333;
+        font-family:
+          "Noto Sans SC", "Noto Sans JP", Inter, ui-sans-serif, system-ui,
+          -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      .yuzhu-stage {
+        position: relative;
+        display: grid;
+        grid-template-columns: 350px minmax(0, 1fr);
+        min-height: 780px;
+        overflow: hidden;
+        border-radius: 10px;
+        background: #ffffff;
+        box-shadow: #aaaaaa 0 0 5px;
+      }
+
+      .yuzhu-bubbles {
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
+        pointer-events: none;
+      }
+
+      .yuzhu-bubbles span {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.5);
+        box-shadow: #cccccc 0 0 5px;
+        opacity: 0.5;
+      }
+
+      .yuzhu-sidebar {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        justify-content: center;
+        align-items: center;
+        min-height: calc(100% - 40px);
+        margin: 20px 0 20px 20px;
+        padding: 0 28px;
+        border-right: 1px solid #cccccc;
+        text-align: center;
+      }
+
+      .yuzhu-avatar {
+        width: 180px;
+        height: 180px;
+        border-radius: 50%;
+        background: #ffffff;
+        box-shadow: #cccccc 0 0 10px;
+      }
+
+      .yuzhu-avatar img {
+        width: 100%;
+        height: 100%;
+        border: #eeeeee solid 2px;
+        border-radius: 50%;
+        box-sizing: border-box;
+        object-fit: cover;
+      }
+
+      .yuzhu-name {
+        margin-top: 4px;
+        color: #000000;
+        font-size: 1.12rem;
+        font-weight: 900;
+      }
+
+      .yuzhu-say {
+        min-height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #333333;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      .yuzhu-socials {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 28px;
+        margin-top: 10px;
+      }
+
+      .yuzhu-social {
+        width: 36px;
+        height: 36px;
+        display: grid;
+        place-items: center;
+        border-radius: 5px;
+      }
+
+      .yuzhu-social:hover {
+        background: #dddddd;
+      }
+
+      .yuzhu-social img {
+        width: 22px;
+        height: 22px;
+        object-fit: contain;
+      }
+
+      .yuzhu-player {
+        width: min(260px, 100%);
+        display: grid;
+        grid-template-columns: 56px minmax(0, 1fr);
+        gap: 12px;
+        align-items: center;
+        margin-top: 30px;
+        text-align: left;
+      }
+
+      .yuzhu-cover {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background:
+          url("./static-sites/yuzhu-upon/external/qplayer-default-cover.png") center / cover,
+          linear-gradient(135deg, rgba(9, 163, 255, 0.22), rgba(255, 112, 112, 0.3));
+      }
+
+      .yuzhu-track strong,
+      .yuzhu-track span {
+        display: block;
+      }
+
+      .yuzhu-track span {
+        color: #8a97a7;
+        font-size: 0.82rem;
+      }
+
+      .yuzhu-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        grid-column: 2;
+        color: #111111;
+        font-weight: 900;
+      }
+
+      .yuzhu-play-button {
+        min-height: 30px;
+        padding: 0 10px;
+        border: 1px solid rgba(31, 45, 64, 0.12);
+        border-radius: 6px;
+        background: #ffffff;
+        color: #111111;
+        font-weight: 900;
+      }
+
+      .yuzhu-main {
+        position: relative;
+        z-index: 1;
+        min-width: 0;
+        height: calc(100% - 40px);
+        margin: 20px;
+        padding: 0 20px 34px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        text-align: center;
+      }
+
+      .yuzhu-nav {
+        min-height: 40px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 8px 18px;
+        color: #222222;
+        font-size: 1rem;
+        font-weight: 800;
+      }
+
+      .yuzhu-nav button {
+        min-height: 36px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 12px;
+        border: 0;
+        border-radius: 5px;
+        background: transparent;
+        color: #222222;
+        cursor: pointer;
+        font: inherit;
+        font-weight: 850;
+      }
+
+      .yuzhu-nav button:hover,
+      .yuzhu-nav button.is-active {
+        background: #eeeeee;
+      }
+
+      .yuzhu-hero {
+        min-height: 390px;
+        display: grid;
+        align-content: center;
+        justify-items: center;
+        gap: 16px;
+        padding: 44px 0 24px;
+      }
+
+      .yuzhu-hero h2 {
+        max-width: 760px;
+        color: #000000;
+        font-size: clamp(1.7rem, 3vw, 2.2rem);
+        line-height: 1.25;
+        letter-spacing: 0;
+      }
+
+      .yuzhu-intro-lines {
+        display: grid;
+        gap: 8px;
+        color: #333333;
+        font-size: 1rem;
+        line-height: 1.5;
+      }
+
+      .yuzhu-dot {
+        color: #222222;
+        font-size: 1.2rem;
+      }
+
+      .yuzhu-section,
+      .yuzhu-contact {
+        padding: 42px 0;
+        scroll-margin-top: 16px;
+      }
+
+      .yuzhu-section h3,
+      .yuzhu-contact h3 {
+        color: #000000;
+        font-size: clamp(1.35rem, 2.2vw, 1.7rem);
+        line-height: 1.2;
+      }
+
+      .yuzhu-section-note {
+        max-width: 560px;
+        margin: 8px auto 0;
+        color: #333333;
+        line-height: 1.55;
+      }
+
+      .yuzhu-card-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+        margin-top: 24px;
+      }
+
+      .yuzhu-card {
+        min-height: 74px;
+        padding: 12px 14px;
+        background: #ffffff;
+        box-shadow: #aaaaaa 0 0 5px;
+        text-align: center;
+      }
+
+      .yuzhu-card strong,
+      .yuzhu-card span,
+      .yuzhu-card p {
+        display: block;
+      }
+
+      .yuzhu-card strong {
+        color: #111111;
+        font-size: 1.02rem;
+      }
+
+      .yuzhu-card span {
+        display: none;
+      }
+
+      .yuzhu-card p {
+        margin-top: 6px;
+        color: #333333;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      .yuzhu-susie {
+        display: block;
+        width: 140px;
+        height: auto;
+        margin: 22px auto 4px;
+      }
+
+      .yuzhu-skills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .yuzhu-skills span {
+        min-height: 32px;
+        display: inline-flex;
+        align-items: center;
+        padding: 0 11px;
+        border-radius: 8px;
+          background: rgba(0, 153, 255, 0.1);
+          color: #0077c8;
+          font-size: 0.88rem;
+          font-weight: 850;
+      }
+
+      .yuzhu-contact p {
+        margin-top: 10px;
+        color: #333333;
+        line-height: 1.5;
+      }
+
+      .yuzhu-backtop {
+        position: absolute;
+        right: -18px;
+        bottom: -4px;
+        width: 128px;
+        pointer-events: none;
+        z-index: 2;
+      }
+
+      .yuzhu-backtop img {
+        width: 100%;
+        display: block;
+      }
+
+      .choice-area {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(280px, 0.8fr);
+        gap: 18px;
+        margin-top: 22px;
+      }
+
+      .choice-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .choice-row {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 38px minmax(0, 1fr);
+        gap: 12px;
+        align-items: start;
+        padding: 14px;
+        border: 1px solid rgba(31, 45, 64, 0.1);
+        border-radius: 8px;
+        background: #f8fbfd;
+        color: inherit;
+        text-align: left;
+      }
+
+      .choice-row b {
+        display: grid;
+        width: 38px;
+        height: 38px;
+        place-items: center;
+        border-radius: 8px;
+        background: var(--accent, #1769c2);
+        color: #ffffff;
+      }
+
+      .choice-row strong {
+        display: block;
+      }
+
+      .choice-row p {
+        margin-top: 6px;
+        color: #526174;
+        line-height: 1.55;
+      }
+
+      .result-box {
+        min-height: 210px;
+        padding: 20px;
+        border: 1px solid color-mix(in srgb, var(--accent, #1769c2) 24%, #ffffff);
+        border-radius: 8px;
+        background: color-mix(in srgb, var(--accent, #1769c2) 8%, #ffffff);
+      }
+
+      .result-box strong {
+        display: block;
+        color: #172033;
+        font-size: 1.26rem;
+      }
+
+      .result-box p {
+        margin-top: 10px;
+        color: #526174;
+        line-height: 1.66;
+      }
+
+      .result-actions {
+        margin-top: 16px;
+      }
+
+      @supports not (color: color-mix(in srgb, #000 10%, #fff)) {
+        .preview-kicker,
+        .result-box {
+          background: #eef7ff;
+        }
+      }
+
+      @media (max-width: 860px) {
+        .demo-head,
+        .choice-area,
+        .preview-grid,
+        .yuzhu-card-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .status-box {
+          max-width: none;
+        }
+
+        .yuzhu-stage {
+          grid-template-columns: 1fr;
+        }
+
+        .yuzhu-sidebar {
+          min-height: auto;
+          padding: 36px 20px;
+          border-right: 0;
+          border-bottom: 1px solid rgba(31, 45, 64, 0.14);
+        }
+
+        .yuzhu-main {
+          padding: 20px;
+        }
+      }
+
+      @media (max-width: 620px) {
+        .topbar,
+        .top-actions {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .button {
+          width: 100%;
+        }
+
+        .preview-hero,
+        .preview-section,
+        .yuzhu-hero,
+        .yuzhu-section,
+        .yuzhu-contact {
+          padding: 24px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="./remix-mvp.html">
+        <span class="brand-mark">演</span>
+        <span>前端演示</span>
+      </a>
+      <div class="top-actions">
+        <a class="button" id="sampleLink" href="#">看示例前端</a>
+        <a class="button primary" id="editLink" href="#">修改这个页面</a>
+      </div>
+    </header>
+
+    <main class="demo-shell">
+      <section class="demo-head" aria-labelledby="demoTitle">
+        <div>
+          <span class="eyebrow" id="modeLabel">示例前端</span>
+          <h1 id="demoTitle">打开一个能看的前端页面。</h1>
+          <p class="demo-note" id="demoNote">这是当前改法的网页端演示。</p>
+        </div>
+        <aside class="status-box" id="statusBox">正在读取内容...</aside>
+      </section>
+
+      <section class="demo-stage" aria-label="前端页面演示">
+        <div class="site-preview" id="demoRoot"></div>
+      </section>
+    </main>
+
+    <script>
+      const packCatalog = {
+        'portfolio-page': [
+          { title: '直接改雨竹upon的小站', kind: 'portfolio' },
+          { title: '改成兴趣作品页', kind: 'list' },
+          { title: '改成项目导航页', kind: 'list' }
+        ],
+        'ai-profile-page': [
+          { title: '做一个 AI 个人主页', kind: 'portfolio' },
+          { title: '改成接单服务页', kind: 'list' },
+          { title: '改成内容账号主页', kind: 'list' }
+        ],
+        'choice-tool': [
+          { title: '改成餐厅选择器', kind: 'choice' },
+          { title: '改成礼物推荐器', kind: 'choice' },
+          { title: '改成旅行路线抽签器', kind: 'choice' }
+        ]
+      };
+
+      const projectNames = {
+        'portfolio-page': '中文个人小站模板',
+        'ai-profile-page': 'AI 个人主页模板',
+        'choice-tool': '转盘选择 HTML 小工具'
+      };
+
+      const sourceDemoUrls = {
+        'portfolio-page': './static-sites/yuzhu-upon/index.html',
+        'ai-profile-page': 'https://xiestar.github.io/',
+        'choice-tool': 'https://nikpatil2123.github.io/Spin-wheel-Game/'
+      };
+
+      const sampleDefaults = {
+        'portfolio-page-0': {
+          title: '雨竹upon的小站',
+          subtitle: '海内存知己，天涯若比邻。',
+          intro: '大家好，我是雨竹upon，一个热爱前端的高中生。HTML/CSS/JS 不精但专，喜欢一切可爱的事物！',
+          primary: '联系我',
+          color: '#09a3ff',
+          kicker: '欢迎来到我的小站！',
+          sectionTitle: '代表作',
+          skillsText: 'HTML / CSS / JavaScript / PHP / NodeJS / UI设计 / 视频制作',
+          cards: [
+            { title: 'QUIK 起始页', meta: '浏览器主页', note: '一个简洁、实用、个性化、无广告的浏览器主页。' },
+            { title: '雨竹音乐盒', meta: '兴趣项目', note: '把喜欢的音乐整理成一个在线音乐盒子，方便自己和朋友打开。' },
+            { title: 'Win10online', meta: '网页实验', note: '用标准网页技术复刻 Windows 10 体验，是一个很有记忆点的早期作品。' },
+            { title: '更多项目', meta: '项目入口', note: '这里可以继续放更多已经做过或正在做的网页作品。' }
+          ],
+          friends: [
+            { title: '川上星林', meta: '友链', note: '让生活充满色彩，让梦想更加绚丽。' },
+            { title: 'Alex', meta: '朋友的小站', note: '喜欢各种技术和网页小实验。' },
+            { title: '更多朋友', meta: '友链入口', note: '开发和学习路上，朋友们陪我一同前行。' }
+          ],
+          contactTitle: '联系我',
+          contactNote: '欢迎任何志同道合的小伙伴们与我交流，一起进步！'
+        },
+        'portfolio-page-1': {
+          title: '我的兴趣小站',
+          subtitle: '把我喜欢的内容、正在做的小项目和朋友链接整理在这里，像一个自己的网上房间。',
+          primary: '看看我喜欢什么',
+          color: '#09a3ff',
+          kicker: '兴趣作品页',
+          sectionTitle: '兴趣和作品',
+          cards: [
+            { title: '我喜欢的音乐', meta: '兴趣收藏', note: '可以放歌单、音乐盒或者常听的音乐平台链接。' },
+            { title: '我的小工具', meta: '网页实验', note: '可以放自己做过的小页面、小组件或练习作品。' },
+            { title: '朋友链接', meta: '友链入口', note: '把朋友的小站放在这里，让别人继续逛下去。' }
+          ]
+        },
+        'portfolio-page-2': {
+          title: '我的项目导航',
+          subtitle: '把我做过的网页、小工具、文章和社交主页放在一起，别人打开后能快速找到重点。',
+          primary: '打开项目',
+          color: '#1769c2',
+          kicker: '项目入口',
+          sectionTitle: '项目列表',
+          cards: [
+            { title: '个人主页', meta: '代表项目', note: '别人第一次认识你时，最应该先看的页面。' },
+            { title: '实用小工具', meta: '网页工具', note: '把你做过的选择器、清单页或查询页放在这里。' },
+            { title: '内容主页', meta: '文章 / 视频', note: '放你的公众号、视频号、博客或作品集合。' }
+          ]
+        },
+        'ai-profile-page-0': {
+          title: '流星玩AI',
+          subtitle: '追逐月亮的流星，AI 赛道探索者。这里展示我的经历、AI 作品、专业服务和联系方式。',
+          primary: '查看作品',
+          color: '#4f46e5',
+          kicker: 'AI 个人主页',
+          sectionTitle: '作品和服务',
+          cards: [
+            { title: '个人主页', meta: 'HTML / CSS / JS', note: '展示我的项目、技能和经验，作为别人了解我的入口。' },
+            { title: 'DeepSeek 聊天机器人', meta: 'AI 作品', note: '基于 AI 技术做的聊天机器人，用来展示我的 AI 应用能力。' },
+            { title: '流星玩AI', meta: '内容账号', note: '分享 AI 技术应用和最新动态，帮助更多人了解 AI。' }
+          ]
+        },
+        'ai-profile-page-1': {
+          title: '我的服务介绍',
+          subtitle: '把我能帮别人做的事情写清楚：适合谁、能解决什么问题、怎么联系我。',
+          primary: '联系我',
+          color: '#4f46e5',
+          kicker: '接单服务页',
+          sectionTitle: '我可以帮你做',
+          cards: [
+            { title: 'AI 应用开发', meta: '适合企业和个人', note: '把重复工作整理成 AI 小工具，先从一个简单场景开始。' },
+            { title: '网站开发', meta: '适合个人品牌', note: '做一个能展示介绍、作品和联系方式的网页。' },
+            { title: 'AI 技术培训', meta: '适合团队入门', note: '用实际案例讲清楚 AI 工具怎么帮工作提效。' }
+          ]
+        },
+        'ai-profile-page-2': {
+          title: '我的内容主页',
+          subtitle: '把公众号、视频号、社群和代表内容放在一个页面，方便别人关注和合作。',
+          primary: '关注我',
+          color: '#4f46e5',
+          kicker: '内容账号主页',
+          sectionTitle: '代表内容',
+          cards: [
+            { title: '公众号 / 视频号', meta: '内容入口', note: '放你的账号名称和一句话介绍。' },
+            { title: '代表文章', meta: '精选内容', note: '放最能说明你能力的一篇文章或视频。' },
+            { title: '合作方式', meta: '公开联系方式', note: '写清楚别人可以怎么联系你、适合聊什么。' }
+          ]
+        },
+        'choice-tool-0': {
+          title: '今晚吃什么',
+          subtitle: '选人数、预算和口味后，从候选餐厅里给一个推荐。',
+          primary: '帮我选一个',
+          color: '#1769c2',
+          kicker: '餐厅选择器',
+          question: '今天更适合去哪家？',
+          choices: [
+            { title: '巷口小馆', meta: '人均 48 / 家常菜', note: '近、不用排队，适合临时决定。' },
+            { title: '热辣火锅', meta: '人均 110 / 适合多人', note: '适合 3 人以上，但周末可能要等位。' },
+            { title: '轻食咖啡', meta: '人均 65 / 清淡', note: '适合不想吃太撑的时候，还能聊天。' }
+          ],
+          resultTitle: '推荐：巷口小馆',
+          resultReason: '距离近、价格稳、不用等位，最适合今天快速解决晚饭。'
+        },
+        'choice-tool-1': {
+          title: '礼物推荐器',
+          subtitle: '根据关系、预算和场景，先给出几个不容易踩雷的礼物方向。',
+          primary: '帮我挑礼物',
+          color: '#d94686',
+          kicker: '礼物工具',
+          question: '这次送什么更合适？',
+          choices: [
+            { title: '香薰礼盒', meta: '200 元内 / 朋友', note: '适合乔迁或生日，不太挑尺码。' },
+            { title: '桌面小音箱', meta: '300 元内 / 同事', note: '实用但不太私人，适合感谢礼。' },
+            { title: '手写卡片 + 鲜花', meta: '150 元内 / 重要关系', note: '情绪价值高，适合纪念日。' }
+          ],
+          resultTitle: '推荐：香薰礼盒',
+          resultReason: '预算可控、场景通用，也不需要知道太多私人信息，踩雷概率低。'
+        },
+        'choice-tool-2': {
+          title: '旅行路线抽签器',
+          subtitle: '输入天数、预算和旅行风格后，先给一条轻量路线灵感。',
+          primary: '抽一条路线',
+          color: '#1d6fae',
+          kicker: '旅行小工具',
+          question: '这次可以去哪儿？',
+          choices: [
+            { title: '杭州两日慢逛', meta: '2 天 / 轻松', note: '西湖、茶馆、城市散步，适合不赶路。' },
+            { title: '厦门三日海边', meta: '3 天 / 拍照', note: '海边、老街和咖啡店，适合朋友出游。' },
+            { title: '成都周末吃喝', meta: '2 天 / 美食', note: '火锅、小吃和公园，预算弹性大。' }
+          ],
+          resultTitle: '推荐：杭州两日慢逛',
+          resultReason: '行程轻、不用做太多攻略，适合先把周末旅行跑起来。'
+        }
+      };
+
+      const params = new URLSearchParams(window.location.search);
+      const projectId = packCatalog[params.get('project')] ? params.get('project') : 'portfolio-page';
+      const packIndex = Math.min(Math.max(Number(params.get('pack') || 0), 0), packCatalog[projectId].length - 1);
+      const mode = params.get('mode') === 'mine' ? 'mine' : 'sample';
+      const pack = packCatalog[projectId][packIndex];
+      const storageVersion = 'direct-yuzhu-site-v3';
+      const storageKey = `remix-editor-${storageVersion}-${projectId}-${packIndex}`;
+      const sampleData = clone(sampleDefaults[`${projectId}-${packIndex}`]);
+      const hasSaved = Boolean(localStorage.getItem(storageKey));
+      const data = mode === 'mine' ? loadMineData(sampleData) : sampleData;
+      const demoRoot = document.getElementById('demoRoot');
+      const editUrl = `./remix-editor.html?project=${projectId}&pack=${packIndex}`;
+      const sampleUrl =
+        sourceDemoUrls[projectId] || `./remix-demo.html?project=${projectId}&pack=${packIndex}&mode=sample`;
+
+      if (isYuzhuPack()) {
+        document.body.classList.add('yuzhu-product');
+      }
+
+      function clone(value) {
+        return JSON.parse(JSON.stringify(value));
+      }
+
+      function loadMineData(base) {
+        try {
+          const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
+          if (!saved || typeof saved !== 'object') return base;
+          return {
+            ...base,
+            ...saved,
+            cards: saved.cards || base.cards,
+            choices: saved.choices || base.choices,
+            friends: saved.friends || base.friends
+          };
+        } catch (error) {
+          return base;
+        }
+      }
+
+      function escapeHtml(value) {
+        return String(value || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#039;');
+      }
+
+      function safeColor(value) {
+        return /^#[0-9a-fA-F]{6}$/.test(String(value || '')) ? value : '#1769c2';
+      }
+
+      function isYuzhuPack() {
+        return projectId === 'portfolio-page' && packIndex === 0;
+      }
+
+      function cardHtml(items) {
+        return items
+          .map(
+            (item) => `
+              <article class="preview-card">
+                <strong>${escapeHtml(item.title)}</strong>
+                <span>${escapeHtml(item.meta)}</span>
+                <p>${escapeHtml(item.note)}</p>
+              </article>
+            `
+          )
+          .join('');
+      }
+
+      function renderListPage() {
+        return `
+          <div class="preview-hero">
+            <span class="preview-kicker">${escapeHtml(data.kicker)}</span>
+            <h2>${escapeHtml(data.title)}</h2>
+            <p>${escapeHtml(data.subtitle)}</p>
+            <span class="preview-cta">${escapeHtml(data.primary)}</span>
+          </div>
+          <section class="preview-section">
+            <h3>${escapeHtml(data.sectionTitle)}</h3>
+            <div class="preview-grid">${cardHtml(data.cards)}</div>
+          </section>
+        `;
+      }
+
+      function chipsHtml(text) {
+        return String(text || '')
+          .split('/')
+          .map((item) => item.trim())
+          .filter(Boolean)
+          .map((item) => `<span>${escapeHtml(item)}</span>`)
+          .join('');
+      }
+
+      function shortSiteName() {
+        return String(data.title || '雨竹upon的小站').replace(/的小站$/, '');
+      }
+
+      function introLinesHtml() {
+        const intro = String(data.intro || '')
+          .split(/[。.!！?？]/)
+          .map((item) => item.trim())
+          .filter(Boolean)
+          .slice(0, 4);
+        return intro.map((item) => `<p>${escapeHtml(item)}</p>`).join('');
+      }
+
+      function yuzhuBubblesHtml() {
+        const bubblePoints = [
+          [2, 5],
+          [8, 10],
+          [18, 31],
+          [7, 46],
+          [39, 8],
+          [48, 18],
+          [52, 28],
+          [68, 34],
+          [78, 15],
+          [91, 31],
+          [95, 56],
+          [33, 55],
+          [42, 70],
+          [57, 72],
+          [74, 67],
+          [88, 74],
+          [15, 78],
+          [29, 84],
+          [50, 90],
+          [66, 88],
+          [82, 91],
+          [96, 82]
+        ];
+        return bubblePoints
+          .map(([left, top]) => `<span style="left:${left}%;top:${top}%"></span>`)
+          .join('');
+      }
+
+      function yuzhuCardsHtml(items) {
+        return items
+          .map(
+            (item) => `
+              <article class="yuzhu-card">
+                <strong>${escapeHtml(item.title)}</strong>
+                <span>${escapeHtml(item.meta)}</span>
+                <p>${escapeHtml(item.note)}</p>
+              </article>
+            `
+          )
+          .join('');
+      }
+
+      function renderYuzhuPage() {
+        const name = shortSiteName();
+        return `
+          <div class="yuzhu-site">
+            <div class="yuzhu-stage">
+              <div class="yuzhu-bubbles" aria-hidden="true">${yuzhuBubblesHtml()}</div>
+              <aside class="yuzhu-sidebar">
+                <div class="yuzhu-avatar">
+                  <img src="./static-sites/yuzhu-upon/favicon.ico" alt="">
+                </div>
+                <div class="yuzhu-name">${escapeHtml(name)}</div>
+                <p class="yuzhu-say">${escapeHtml(data.subtitle)}</p>
+                <div class="yuzhu-socials" aria-label="社交入口">
+                  <span class="yuzhu-social"><img src="./static-sites/yuzhu-upon/external/e834d9211aee.ico" alt=""></span>
+                  <span class="yuzhu-social"><img src="./static-sites/yuzhu-upon/external/8f38e1a41a8f.ico" alt=""></span>
+                  <span class="yuzhu-social"><img src="./static-sites/yuzhu-upon/external/b190c051791a.ico" alt=""></span>
+                  <span class="yuzhu-social"><img src="./static-sites/yuzhu-upon/external/e8f1e8d35373.png" alt=""></span>
+                </div>
+                <div class="yuzhu-player" aria-label="静态音乐播放器">
+                  <div class="yuzhu-cover"></div>
+                  <div class="yuzhu-track">
+                    <strong>我的歌单</strong>
+                    <span>静态展示，不接外部音乐服务</span>
+                  </div>
+                  <div class="yuzhu-controls">
+                    <button class="yuzhu-play-button" type="button" data-yuzhu-player>▶ 试听</button>
+                  </div>
+                </div>
+              </aside>
+              <section class="yuzhu-main">
+                <nav class="yuzhu-nav" aria-label="页面导航">
+                  <button class="is-active" type="button" data-yuzhu-section="home">首页</button>
+                  <b>·</b>
+                  <button type="button" data-yuzhu-section="intro">介绍</button>
+                  <b>·</b>
+                  <button type="button" data-yuzhu-section="project">项目</button>
+                  <b>·</b>
+                  <button type="button" data-yuzhu-section="blog">博客</button>
+                  <b>·</b>
+                  <button type="button" data-yuzhu-section="friends">友链</button>
+                  <b>·</b>
+                  <button type="button" data-yuzhu-section="contact">联系我</button>
+                </nav>
+                <section class="yuzhu-hero" data-yuzhu-panel="home">
+                  <h2>👋 ${escapeHtml(data.kicker)}</h2>
+                  <div class="yuzhu-intro-lines">${introLinesHtml()}</div>
+                  <p class="yuzhu-section-note">${escapeHtml(data.subtitle)}</p>
+                  <p class="yuzhu-dot">·</p>
+                </section>
+                <section class="yuzhu-section" data-yuzhu-panel="project">
+                  <h3>${escapeHtml(data.sectionTitle)}</h3>
+                  <p class="yuzhu-section-note">学任何东西最有成就感的时刻，莫过于自己的作品得到他人认可。</p>
+                  <img class="yuzhu-susie" src="./static-sites/yuzhu-upon/assets/susie.png" alt="">
+                  <div class="yuzhu-card-grid">${yuzhuCardsHtml(data.cards)}</div>
+                </section>
+                <section class="yuzhu-section yuzhu-about" data-yuzhu-panel="intro">
+                  <h3>自我介绍</h3>
+                  <p class="yuzhu-section-note">${escapeHtml(data.intro)}</p>
+                  <div class="yuzhu-skills">${chipsHtml(data.skillsText)}</div>
+                </section>
+                <section class="yuzhu-section" data-yuzhu-panel="blog">
+                  <h3>博客</h3>
+                  <p class="yuzhu-section-note">这里可以放最近写过的文章、学习记录或者想公开分享的小想法。</p>
+                  <div class="yuzhu-card-grid">${yuzhuCardsHtml(data.cards.slice(0, 2))}</div>
+                </section>
+                <section class="yuzhu-section" data-yuzhu-panel="friends">
+                  <h3>我的小伙伴们</h3>
+                  <p class="yuzhu-section-note">开发和学习路上，ta 们陪我一同前行。</p>
+                  <div class="yuzhu-card-grid">${yuzhuCardsHtml(data.friends)}</div>
+                </section>
+                <section class="yuzhu-contact" id="contact" data-yuzhu-panel="contact">
+                  <h3>${escapeHtml(data.contactTitle)}</h3>
+                  <p>${escapeHtml(data.contactNote)}</p>
+                </section>
+              </section>
+              <div class="yuzhu-backtop" aria-hidden="true">
+                <img src="./static-sites/yuzhu-upon/assets/backTop.png" alt="">
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      function renderChoicePage() {
+        return `
+          <div class="preview-hero">
+            <span class="preview-kicker">${escapeHtml(data.kicker)}</span>
+            <h2>${escapeHtml(data.title)}</h2>
+            <p>${escapeHtml(data.subtitle)}</p>
+            <button class="preview-cta" type="button" data-random>${escapeHtml(data.primary)}</button>
+          </div>
+          <section class="preview-section">
+            <h3>${escapeHtml(data.question)}</h3>
+            <div class="choice-area">
+              <div class="choice-list">
+                ${data.choices
+                  .map(
+                    (item, index) => `
+                      <button class="choice-row" type="button" data-choice="${index}">
+                        <b>${index + 1}</b>
+                        <div>
+                          <strong>${escapeHtml(item.title)}</strong>
+                          <p>${escapeHtml(item.meta)} · ${escapeHtml(item.note)}</p>
+                        </div>
+                      </button>
+                    `
+                  )
+                  .join('')}
+              </div>
+              <div class="result-box">
+                <strong id="resultTitle">${escapeHtml(data.resultTitle)}</strong>
+                <p id="resultReason">${escapeHtml(data.resultReason)}</p>
+                <div class="result-actions">
+                  <button class="choice-action" type="button" data-random>换一个推荐</button>
+                </div>
+              </div>
+            </div>
+          </section>
+        `;
+      }
+
+      function showChoice(index) {
+        const choice = data.choices[index] || data.choices[0];
+        document.getElementById('resultTitle').textContent = `推荐：${choice.title}`;
+        document.getElementById('resultReason').textContent = choice.note;
+      }
+
+      const sampleLink = document.getElementById('sampleLink');
+      sampleLink.href = sampleUrl;
+      if (sourceDemoUrls[projectId]) {
+        sampleLink.target = '_blank';
+        sampleLink.rel = 'noreferrer';
+      }
+      document.getElementById('editLink').href = editUrl;
+      document.getElementById('modeLabel').textContent = mode === 'mine' ? '我的前端' : '示例前端';
+      document.getElementById('demoTitle').textContent =
+        mode === 'mine' ? `我的版本：${pack.title}` : `示例：${pack.title}`;
+      document.getElementById('demoNote').textContent =
+        mode === 'mine'
+          ? '这里会显示你在编辑页保存过的内容。'
+          : '这是这个改造方向先给出的前端样子。';
+      document.getElementById('statusBox').textContent =
+        mode === 'mine' && !hasSaved
+          ? '你还没有保存过自己的内容。现在先显示示例内容，点“修改这个页面”后就能改成你的版本。'
+          : `${projectNames[projectId]} · 第 ${packIndex + 1} 个改法`;
+
+      demoRoot.style.setProperty('--accent', safeColor(data.color));
+      demoRoot.innerHTML = isYuzhuPack()
+        ? renderYuzhuPage()
+        : pack.kind === 'choice'
+          ? renderChoicePage()
+          : renderListPage();
+
+      demoRoot.addEventListener('click', (event) => {
+        const sectionButton = event.target.closest('[data-yuzhu-section]');
+        if (sectionButton) {
+          const section = sectionButton.dataset.yuzhuSection;
+          demoRoot
+            .querySelectorAll('[data-yuzhu-section]')
+            .forEach((button) => button.classList.toggle('is-active', button === sectionButton));
+          demoRoot
+            .querySelector(`[data-yuzhu-panel="${section}"]`)
+            ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          return;
+        }
+        const playerButton = event.target.closest('[data-yuzhu-player]');
+        if (playerButton) {
+          const player = playerButton.closest('.yuzhu-player');
+          const isPlaying = !player.classList.contains('is-playing');
+          player.classList.toggle('is-playing', isPlaying);
+          playerButton.textContent = isPlaying ? 'Ⅱ 暂停' : '▶ 试听';
+          const note = player.querySelector('.yuzhu-track span');
+          note.textContent = isPlaying ? '播放中，静态演示' : '静态展示，不接外部音乐服务';
+          return;
+        }
+        const choiceButton = event.target.closest('[data-choice]');
+        if (choiceButton) {
+          showChoice(Number(choiceButton.dataset.choice));
+          return;
+        }
+        if (event.target.closest('[data-random]')) {
+          showChoice(Math.floor(Math.random() * data.choices.length));
+        }
+      });
+    </script>
+  </body>
+</html>
