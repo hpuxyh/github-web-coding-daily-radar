@@ -2,11 +2,17 @@
 
 这个项目复制自 `github-web-coding-radar`，页面外观基本保持一致，新的重点是“按天留档、按天查看”。
 
-它每天从公开 GitHub 项目里抓取 AI 编程、Agent、MCP、网页编辑器、低代码、开发者工具等方向的早期项目，生成中文榜单和小红书草稿，并把每一天的数据保存成独立快照。
+它每天从公开 GitHub 项目里抓取各种有用、有趣的新应用和小工具：职业提效、生活学习办公、创作内容、知识管理、自动化、AI 工具、浏览器插件、低代码等方向都会覆盖，并把每一天的数据保存成独立快照。
 
 ## 在线页面
 
 主页面：
+
+```text
+https://github-web-coding-daily-radar.pages.dev/radar.html
+```
+
+备用 GitHub Pages：
 
 ```text
 https://hpuxyh.github.io/github-web-coding-daily-radar/radar.html
