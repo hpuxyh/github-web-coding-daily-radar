@@ -855,24 +855,21 @@ def summary_kind_from_docs(repo: dict[str, Any], text: str) -> tuple[str, str, s
             "纯 LLM 容易算错日柱、格局、紫微宫位和流年，普通排盘工具又缺少两套体系交叉验证",
             "用确定性算法完成八字四柱、紫微十二宫、大运流年和格局补层，再把结构化结果交给 LLM 分析，并可生成 Markdown 长文或水墨风 HTML 命盘海报。",
         )
-    if re.search(
-        r"\b(orange book|ebook|e-book|book|complete guide|handbook|manual|course|tutorial|field guide|learning guide)\b|橙皮书|电子书|实战手册|实战指南|完整指南|教程|课程",
-        text,
-    ):
+    if re.search(r"\b(live caption|caption|subtitle translation|speech recognition|audio translation)\b|实时字幕|字幕翻译|语音识别", text):
         return (
-            "AI 工具实战指南",
-            "想系统学习 Codex、Claude Code、AI Agent 或相关工具的新手、产品同学和开发者",
-            "工具形态、入口和最佳实践变化太快，只看零散帖子很难建立完整使用路线",
-            "把安装入口、使用场景、工作流、案例和注意事项整理成一本可按章节查阅的实战指南。",
+            "实时字幕翻译工具",
+            "需要给会议、网页音频或本地视频加双语字幕的人",
+            "听音频、识别字幕和翻译要跨多个工具，实时性和隐私都难兼顾",
+            "在本机完成语音识别和翻译，把音视频内容转成可读字幕。",
         )
-    if re.search(r"\b(chrome extension|browser extension|firefox extension|edge extension|extension)\b|浏览器扩展|浏览器插件", text):
+    if re.search(r"\b(chrome extension|browser extension|firefox extension|edge extension)\b|浏览器扩展|浏览器插件", text):
         return (
             "浏览器扩展/插件工具",
             "希望在浏览器里直接增强网页、AI 对话或日常工作流的用户",
             "很多任务发生在浏览器里，但普通网页和外部工具之间来回切换很割裂",
             "把侧边栏、右键操作、网页读取、自动化或 AI 能力接进浏览器扩展，让网页内任务直接完成。",
         )
-    if re.search(r"\b(vibe coding|prd|product management|planning toolkit|requirements doc|requirements planning)\b|产品人|规划工具包|需求规划|需求澄清", text):
+    if re.search(r"\b(vibe coding|prd|product management|planning toolkit|requirements doc|requirements planning|buildable blueprint|idea validation|product discovery|jobs-to-be-done|jtbd)\b|产品人|规划工具包|需求规划|需求澄清", text):
         return (
             "AI 产品需求规划工具包",
             "想用 AI 做产品原型、但还不熟悉工程实现的产品经理和非技术创作者",
@@ -896,12 +893,96 @@ def summary_kind_from_docs(repo: dict[str, Any], text: str) -> tuple[str, str, s
             "普通 Markdown 文件难以携带批注、审阅意见和 AI 修改建议，来回传文件容易丢上下文",
             "在 Markdown 编辑器里直接写作、预览、批注和调用 AI 润色，并尽量把内容保持在本地文件中。",
         )
+    if re.search(r"\b(novel writing|fiction writing|web fiction|story generator|novel generator)\b|小说|网文|故事生成", text):
+        return (
+            "AI 小说写作工具",
+            "想用 AI 辅助写小说、网文或长篇故事的创作者",
+            "大纲、人物、章节和长文本上下文很难持续维护，写作过程容易断档",
+            "把大纲生成、章节续写、本地模型或 RAG 上下文放到同一个写作界面里。",
+        )
+    if re.search(r"\b(rss reader|feed reader|rss)\b", text):
+        return (
+            "RSS 阅读器 / 信息流工具",
+            "想集中阅读信息流、并让 AI 帮忙搜索或整理内容的人",
+            "信息源分散在多个网站和订阅里，人工翻找、搜索和归档很耗时",
+            "把 RSS 阅读、搜索和面向 Agent 的读取入口放在一起，让人和 AI 都能复用信息流。",
+        )
+    if re.search(r"\b(file organizer|downloads organizer|file management|organize downloads)\b|文件整理|下载目录", text):
+        return (
+            "自动文件整理工具",
+            "下载文件很多、想自动整理本地目录的人",
+            "下载目录容易堆满各种文件，人工分类、改名和移动很重复",
+            "在本地自动识别文件并整理到合适目录，减少手工归档。",
+        )
+    if re.search(r"\b(vla|embodied ai|robot|real-robot|robotics)\b|具身智能|机器人", text):
+        return (
+            "具身智能工程平台",
+            "做机器人、VLA 或具身智能实验的研究者和工程团队",
+            "从数据、训练、评估到真实机器人部署链路长，工具分散",
+            "把数据处理、模型训练、实验管理和部署流程集中成一套工程平台。",
+        )
+    if re.search(r"\b(local ai app|inference engine|open-weight llm|run .*llms? locally|local llm)\b|本地大模型|本地 AI", text):
+        return (
+            "本地 AI 聊天/推理应用",
+            "希望在本机私有运行开源模型和 AI 助手的用户",
+            "在线 AI 工具依赖云端，隐私、成本和模型选择都受限制",
+            "把本地模型运行、聊天界面和 Agent 能力打包成可直接使用的应用。",
+        )
+    if re.search(r"\b(etl|elt|pipeline designer|visual pipeline|duckdb|sql pipeline)\b", text):
+        return (
+            "本地数据管道工具",
+            "需要把文件、数据库或业务数据整理成分析结果的数据/运营团队",
+            "数据清洗和同步常常散在脚本、SQL 和手工表格里，维护成本高",
+            "用可视化管道或 SQL 编排把数据抽取、转换和加载流程固定下来。",
+        )
     if re.search(r"\b(sticky notes?|desktop notes?|todo|to-do|wpf)\b|便签|待办|纸片|胶囊", text):
         return (
             "桌面便签待办工具",
             "想把待办和临时笔记直接放在桌面上的 Windows 用户",
             "传统待办应用层级多、打开成本高，简单事项反而被管理工具打扰",
             "用轻量桌面纸片承载待办和 Markdown 笔记，支持折叠、置顶和自动保存，让记录保持低干扰。",
+        )
+    if re.search(r"\b(markdown reader|markdown viewer|md reader|md-reader)\b|Markdown 阅读器", text):
+        return (
+            "Markdown 阅读器",
+            "需要快速打开和阅读 Markdown 文档的 Windows 或桌面用户",
+            "普通编辑器启动重、阅读体验不够轻，查看笔记或文档不够顺手",
+            "提供轻量 Markdown 阅读、目录和本地文件浏览能力。",
+        )
+    if re.search(r"\b(markdown filesystem|filesystem for agents|agent filesystem)\b", text):
+        return (
+            "Agent 文件系统工具",
+            "想让 AI Agent 和团队更稳定读写 Markdown 项目资料的人",
+            "普通文件目录缺少面向 Agent 的结构化约定，协作和上下文复用容易混乱",
+            "把 Markdown 文件组织成更适合 Agent 读取、搜索和协作的文件系统。",
+        )
+    if re.search(r"\b(marketing skills?|business skills?|sales skills?)\b|营销技能|销售技能", text):
+        return (
+            "AI 营销技能包",
+            "想让 AI 辅助做营销、销售、运营内容的团队",
+            "营销话术、渠道内容和运营动作分散，重复写提示词效率低",
+            "把常用营销和业务场景整理成可复用技能，让 AI 更快进入具体岗位语境。",
+        )
+    if re.search(r"\b(developer productivity dashboard|github stats|pr metrics|streaks|goals)\b", text):
+        return (
+            "开发者效率仪表盘",
+            "想跟踪 GitHub 贡献、PR 指标和个人开发节奏的开发者",
+            "贡献、PR、连续提交和目标分散在多个页面里，很难快速复盘",
+            "把 GitHub 统计、PR 指标、连续记录和目标放进一个生产力看板。",
+        )
+    if re.search(r"\b(office|vibeofficing|spreadsheets|documents workspace|office documents)\b|办公文档|办公套件", text):
+        return (
+            "AI 办公文档工具",
+            "需要快速处理文档、幻灯片和表格的职场用户",
+            "办公内容散在文档、表格和演示稿里，人工改写和整理效率低",
+            "把 AI 生成、编辑和整理能力接到办公文档工作流里。",
+        )
+    if re.search(r"\b(markdown vault|obsidian|logseq|wiki|second brain|knowledge wiki|knowledge-base|note-taking|webdav|knowledge compilation)\b|知识库|双向链接|知识图谱|全文搜索", text):
+        return (
+            "个人知识库增强工具",
+            "长期用 Markdown、Obsidian 或 Logseq 记录资料的人",
+            "笔记越积越多后，AI 很难持续理解关联和复用历史上下文",
+            "把本地笔记整理成可增长的知识系统，让 AI 能读、关联和复用长期资料。",
         )
     if re.search(r"\b(design|wireframe|mockup|ui generator|html artifacts|slides|deck|poster)\b", text):
         return (
@@ -937,6 +1018,16 @@ def summary_kind_from_docs(repo: dict[str, Any], text: str) -> tuple[str, str, s
             "已经在用 Claude Code、Codex、Cursor 等 AI 编程工具的开发者或团队",
             "AI 做任务时容易忘上下文、流程不稳定、代码风格和安全边界不一致",
             "把提示词、流程、记忆、安全检查或开发习惯整理成可复用规则，让 AI 更稳定地完成开发任务。",
+        )
+    if re.search(
+        r"\b(orange book|ebook|e-book|book|complete guide|handbook|manual|course|tutorial|field guide|learning guide)\b|橙皮书|电子书|实战手册|实战指南|完整指南|教程|课程",
+        text,
+    ):
+        return (
+            "AI 工具实战指南",
+            "想系统学习 Codex、Claude Code、AI Agent 或相关工具的新手、产品同学和开发者",
+            "工具形态、入口和最佳实践变化太快，只看零散帖子很难建立完整使用路线",
+            "把安装入口、使用场景、工作流、案例和注意事项整理成一本可按章节查阅的实战指南。",
         )
     if re.search(r"\b(awesome|curated list|resources|roadmap|collection of)\b", text):
         return (
@@ -979,13 +1070,6 @@ def summary_kind_from_docs(repo: dict[str, Any], text: str) -> tuple[str, str, s
             "想在 Microsoft 365 里快速落地 Copilot Agent 的企业用户",
             "业务部门想试智能体，但从零写配置和接办公流程门槛高",
             "提供可复制的声明式智能体配置，让办公场景能更快试用 Copilot Agent。",
-        )
-    if re.search(r"\b(markdown vault|obsidian|logseq|wiki|second brain|knowledge wiki|knowledge-base|note-taking|webdav)\b|知识库|双向链接|知识图谱|全文搜索", text):
-        return (
-            "个人知识库增强工具",
-            "长期用 Markdown、Obsidian 或 Logseq 记录资料的人",
-            "笔记越积越多后，AI 很难持续理解关联和复用历史上下文",
-            "把本地笔记整理成可增长的知识系统，让 AI 能读、关联和复用长期资料。",
         )
     if re.search(r"\b(desktop workbench|desktop app|multiple .*agent sessions?|session management)\b|桌面工作台|会话管理|多项目工作区", text):
         return (
@@ -1184,10 +1268,34 @@ def savings_text_from_docs(kind: str, text: str) -> str:
         return "它省掉的是人工翻邮件、判断优先级、起草回复和把邮件事项搬到其他工具里的步骤。"
     if kind == "Markdown 写作/审阅编辑器":
         return "它省掉的是在 Markdown、批注工具和 AI 对话之间来回复制片段、整理修改意见的步骤。"
+    if kind == "AI 小说写作工具":
+        return "它省掉的是手工维护大纲、人物设定、章节上下文和反复复制给 AI 的步骤。"
+    if kind == "RSS 阅读器 / 信息流工具":
+        return "它省掉的是在多个网站之间来回打开、搜索、筛选和复制信息流内容的步骤。"
+    if kind == "自动文件整理工具":
+        return "它省掉的是手动查看下载文件、改名、分类和移动到不同文件夹的重复劳动。"
+    if kind == "具身智能工程平台":
+        return "它省掉的是在数据处理、训练脚本、评估工具和真实机器人部署之间反复拼接工程链路的时间。"
+    if kind == "本地 AI 聊天/推理应用":
+        return "它省掉的是单独安装推理后端、找模型、接聊天界面和处理隐私顾虑的步骤。"
+    if kind == "本地数据管道工具":
+        return "它省掉的是手写零散脚本、复制 SQL、手工搬数据和维护临时表格流程的时间。"
     if kind == "桌面便签待办工具":
         return "它省掉的是打开复杂任务管理器、分类归档和维护层级结构的负担，让临时事项直接停在桌面上。"
+    if kind == "Markdown 阅读器":
+        return "它省掉的是打开重型编辑器、切换预览模式和手动找目录结构的步骤。"
+    if kind == "Agent 文件系统工具":
+        return "它省掉的是为 AI 反复解释文件结构、手动整理上下文和维护协作约定的成本。"
+    if kind == "AI 营销技能包":
+        return "它省掉的是每次重新写营销提示词、整理渠道模板和人工套岗位场景的时间。"
+    if kind == "开发者效率仪表盘":
+        return "它省掉的是在 GitHub 多个页面之间查看 PR、贡献、连续记录和目标进展的时间。"
     if kind == "AI 视频/内容流水线":
         return "它省掉的是手动拆脚本、搬运素材、生成字幕、转录内容和逐步检查视频产物的重复劳动。"
+    if kind == "实时字幕翻译工具":
+        return "它省掉的是先录音、再转写、再翻译和手工对齐字幕的步骤。"
+    if kind == "AI 办公文档工具":
+        return "它省掉的是在文档、表格、幻灯片和 AI 对话之间来回复制内容、调整格式的时间。"
     if kind == "AI Agent 桌面工作台":
         return "它省掉的是在多个终端窗口、项目目录和 Agent 会话之间来回切换、手动找历史上下文的步骤。"
     if kind == "终端里的 AI 编程助手":
