@@ -855,6 +855,16 @@ def summary_kind_from_docs(repo: dict[str, Any], text: str) -> tuple[str, str, s
             "纯 LLM 容易算错日柱、格局、紫微宫位和流年，普通排盘工具又缺少两套体系交叉验证",
             "用确定性算法完成八字四柱、紫微十二宫、大运流年和格局补层，再把结构化结果交给 LLM 分析，并可生成 Markdown 长文或水墨风 HTML 命盘海报。",
         )
+    if re.search(
+        r"\b(orange book|ebook|e-book|book|complete guide|handbook|manual|course|tutorial|field guide|learning guide)\b|橙皮书|电子书|实战手册|实战指南|完整指南|教程|课程",
+        text,
+    ):
+        return (
+            "AI 工具实战指南",
+            "想系统学习 Codex、Claude Code、AI Agent 或相关工具的新手、产品同学和开发者",
+            "工具形态、入口和最佳实践变化太快，只看零散帖子很难建立完整使用路线",
+            "把安装入口、使用场景、工作流、案例和注意事项整理成一本可按章节查阅的实战指南。",
+        )
     if re.search(r"\b(chrome extension|browser extension|firefox extension|edge extension|extension)\b|浏览器扩展|浏览器插件", text):
         return (
             "浏览器扩展/插件工具",
@@ -1166,6 +1176,8 @@ def savings_text_from_docs(kind: str, text: str) -> str:
         return "它省掉的是人工清理冗长命令输出、反复压缩上下文和事后追查 token 消耗的步骤，收益主要体现在少花模型额度和少花钱。"
     if kind == "浏览器扩展/插件工具":
         return "它省掉的是在网页、聊天窗口和外部工具之间来回复制内容、手动触发操作和整理结果的步骤。"
+    if kind == "AI 工具实战指南":
+        return "它省掉的是到处翻公告、教程、案例和零散经验帖的时间，让学习路径、上手步骤和适用场景集中在一处。"
     if kind == "AI 产品需求规划工具包":
         return "它省掉的是开工前反复解释想法、手写 PRD、人工拆验收标准和事后返工纠偏的时间。"
     if kind == "AI 邮件客户端":

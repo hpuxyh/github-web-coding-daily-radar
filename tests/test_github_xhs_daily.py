@@ -163,6 +163,28 @@ Instead of manually tracking applications in a spreadsheet, you get an AI-powere
         self.assertNotIn("只看 stars", summary)
         self.assertNotIn("终端里的 AI 编程助手", summary)
 
+    def test_codex_orange_book_summary_is_guide_not_extension(self):
+        repo = {
+            "full_name": "alchaincyf/codex-orange-book",
+            "name": "codex-orange-book",
+            "description": "OpenAI Codex: The Complete Guide · 橙皮书系列 · AI 编程实战手册",
+            "readme_excerpt": (
+                "OpenAI Codex: The Complete Guide. The definitive guide to OpenAI Codex — "
+                "covering CLI, Desktop App, Cloud, IDE Extension, Chrome Extension and mobile companion. "
+                "From installation to shipping products, this book takes you from zero to building independently."
+            ),
+            "topics": ["codex", "openai", "orange-book", "ai-coding"],
+            "examples": [{"title": "项目截图 / 演示图", "body": "book cover", "code": ""}],
+        }
+
+        summary = daily.summarize_repo_docs_zh(repo)
+
+        self.assertIn("AI 工具实战指南", summary)
+        self.assertIn("实战指南", summary)
+        self.assertIn("完整上手路线", summary)
+        self.assertNotIn("浏览器扩展/插件工具", summary)
+        self.assertNotIn("视频", summary)
+
     def test_select_rankings_keeps_tabs_exclusive(self):
         shared = self.ranked_repo(
             "demo/shared",
