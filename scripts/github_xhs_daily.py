@@ -64,7 +64,7 @@ PAYLOAD_REPO_SECTIONS = ("all_repos", *NEW_RANKING_SECTIONS, *LEGACY_RANKING_SEC
 PAYLOAD_IMAGE_SECTIONS = (*NEW_RANKING_SECTIONS, *LEGACY_RANKING_SECTIONS, "xhs_repos", "all_repos")
 EARLY_FOCUS_PREFERRED_STAR_CAP = 500
 EARLY_FOCUS_MAX_STAR_CAP = 1000
-EARLY_FOCUS_MAX_AGE_DAYS = 180
+EARLY_FOCUS_MAX_AGE_DAYS = 90
 
 
 FEATURE_RULES = [
@@ -845,6 +845,54 @@ def summary_kind_from_docs(repo: dict[str, Any], text: str) -> tuple[str, str, s
             "命令输出太长、上下文被无效内容塞满，导致 token 和费用浪费",
             "压缩命令输出、减少无效上下文或统计模型消耗，让同样的开发任务少花 token 和费用。",
         )
+    if re.search(
+        r"\b(bazi|ziwei|ziwei-doushu|chinese astrology|fortune-telling|metaphysics)\b|八字|紫微|斗数|命理|排盘|命盘|综合印证",
+        text,
+    ):
+        return (
+            "八字紫微综合印证 Skill",
+            "想让 AI Agent 做八字、紫微斗数排盘和综合印证分析的用户",
+            "纯 LLM 容易算错日柱、格局、紫微宫位和流年，普通排盘工具又缺少两套体系交叉验证",
+            "用确定性算法完成八字四柱、紫微十二宫、大运流年和格局补层，再把结构化结果交给 LLM 分析，并可生成 Markdown 长文或水墨风 HTML 命盘海报。",
+        )
+    if re.search(r"\b(chrome extension|browser extension|firefox extension|edge extension|extension)\b|浏览器扩展|浏览器插件", text):
+        return (
+            "浏览器扩展/插件工具",
+            "希望在浏览器里直接增强网页、AI 对话或日常工作流的用户",
+            "很多任务发生在浏览器里，但普通网页和外部工具之间来回切换很割裂",
+            "把侧边栏、右键操作、网页读取、自动化或 AI 能力接进浏览器扩展，让网页内任务直接完成。",
+        )
+    if re.search(r"\b(vibe coding|prd|product management|planning toolkit|requirements doc|requirements planning)\b|产品人|规划工具包|需求规划|需求澄清", text):
+        return (
+            "AI 产品需求规划工具包",
+            "想用 AI 做产品原型、但还不熟悉工程实现的产品经理和非技术创作者",
+            "想法交给 AI 之前没有被拆清楚，容易出现需求跑偏、方案看不懂、demo 越改越乱",
+            "把需求澄清、PRD、开发纪律和验收步骤整理成可照着走的规划工具包，让 AI 开工前先对齐目标和边界。",
+        )
+    if re.search(r"\b(email client|inbox|mail client|draft emails?|prioriti[sz]e)\b|邮件|收件箱", text):
+        return (
+            "AI 邮件客户端",
+            "每天要处理大量邮件、希望自动分拣和辅助回复的个人或团队",
+            "收件箱里重要邮件、待办、草稿和回复优先级混在一起，人工整理耗时",
+            "把 AI 分析、优先级判断、草稿生成和邮件处理界面放进同一个桌面客户端里。",
+        )
+    if re.search(
+        r"\b(markdown editor|wysiwyg markdown|review notes?|inline edits?|writing tool|prosemirror)\b|Markdown 编辑器|行内批注|审阅",
+        text,
+    ):
+        return (
+            "Markdown 写作/审阅编辑器",
+            "经常写 Markdown、需要和 AI 或他人一起审稿改文的人",
+            "普通 Markdown 文件难以携带批注、审阅意见和 AI 修改建议，来回传文件容易丢上下文",
+            "在 Markdown 编辑器里直接写作、预览、批注和调用 AI 润色，并尽量把内容保持在本地文件中。",
+        )
+    if re.search(r"\b(sticky notes?|desktop notes?|todo|to-do|wpf)\b|便签|待办|纸片|胶囊", text):
+        return (
+            "桌面便签待办工具",
+            "想把待办和临时笔记直接放在桌面上的 Windows 用户",
+            "传统待办应用层级多、打开成本高，简单事项反而被管理工具打扰",
+            "用轻量桌面纸片承载待办和 Markdown 笔记，支持折叠、置顶和自动保存，让记录保持低干扰。",
+        )
     if re.search(r"\b(design|wireframe|mockup|ui generator|html artifacts|slides|deck|poster)\b", text):
         return (
             "设计/原型生成工具",
@@ -858,6 +906,13 @@ def summary_kind_from_docs(repo: dict[str, Any], text: str) -> tuple[str, str, s
             "要快速产出网页、报告或社交媒体物料的创作者和产品同学",
             "普通文档不够直观，自己写 HTML 又慢",
             "把文字草稿或需求变成可预览、可发布的网页、报告、海报或社交媒体内容。",
+        )
+    if re.search(r"\b(short ?video|video pipeline|video generation|subtitle|transcription)\b|短视频|视频|字幕|转录", text):
+        return (
+            "AI 视频/内容流水线",
+            "要批量做视频、字幕、内容改写或素材处理的内容创作者和运营团队",
+            "视频内容从脚本、素材、字幕到发布要跨多个工具，人工搬运和检查很耗时",
+            "把视频生成、字幕、转录、素材处理或发布前检查串成自动化流水线。",
         )
     if re.search(r"\b(deepseek|terminal|cli|coding agent|code agent|agentic coding)\b", text):
         return (
@@ -915,12 +970,19 @@ def summary_kind_from_docs(repo: dict[str, Any], text: str) -> tuple[str, str, s
             "业务部门想试智能体，但从零写配置和接办公流程门槛高",
             "提供可复制的声明式智能体配置，让办公场景能更快试用 Copilot Agent。",
         )
-    if re.search(r"\b(markdown vault|obsidian|logseq|wiki|second brain|knowledge wiki)\b", text):
+    if re.search(r"\b(markdown vault|obsidian|logseq|wiki|second brain|knowledge wiki|knowledge-base|note-taking|webdav)\b|知识库|双向链接|知识图谱|全文搜索", text):
         return (
             "个人知识库增强工具",
             "长期用 Markdown、Obsidian 或 Logseq 记录资料的人",
             "笔记越积越多后，AI 很难持续理解关联和复用历史上下文",
             "把本地笔记整理成可增长的知识系统，让 AI 能读、关联和复用长期资料。",
+        )
+    if re.search(r"\b(desktop workbench|desktop app|multiple .*agent sessions?|session management)\b|桌面工作台|会话管理|多项目工作区", text):
+        return (
+            "AI Agent 桌面工作台",
+            "同时在多个项目里使用 AI 编程 Agent 的开发者",
+            "多个项目、多个 Agent 会话和历史记录分散在终端里，切换和追踪成本高",
+            "用桌面应用统一管理项目、会话、对话区、终端和配置，让多个 Agent 工作流并行但不混乱。",
         )
     if re.search(r"\b(workflow|automation|visual canvas|rag|human-in-the-loop|n8n alternative)\b", text):
         return (
@@ -1102,6 +1164,20 @@ def savings_text_from_docs(kind: str, text: str) -> str:
         return "它省掉的是反复复制 JD、人工筛岗位、手改简历和求职信、维护申请表、逐个导出 PDF 这些重复步骤。"
     if kind == "AI 编程成本优化工具":
         return "它省掉的是人工清理冗长命令输出、反复压缩上下文和事后追查 token 消耗的步骤，收益主要体现在少花模型额度和少花钱。"
+    if kind == "浏览器扩展/插件工具":
+        return "它省掉的是在网页、聊天窗口和外部工具之间来回复制内容、手动触发操作和整理结果的步骤。"
+    if kind == "AI 产品需求规划工具包":
+        return "它省掉的是开工前反复解释想法、手写 PRD、人工拆验收标准和事后返工纠偏的时间。"
+    if kind == "AI 邮件客户端":
+        return "它省掉的是人工翻邮件、判断优先级、起草回复和把邮件事项搬到其他工具里的步骤。"
+    if kind == "Markdown 写作/审阅编辑器":
+        return "它省掉的是在 Markdown、批注工具和 AI 对话之间来回复制片段、整理修改意见的步骤。"
+    if kind == "桌面便签待办工具":
+        return "它省掉的是打开复杂任务管理器、分类归档和维护层级结构的负担，让临时事项直接停在桌面上。"
+    if kind == "AI 视频/内容流水线":
+        return "它省掉的是手动拆脚本、搬运素材、生成字幕、转录内容和逐步检查视频产物的重复劳动。"
+    if kind == "AI Agent 桌面工作台":
+        return "它省掉的是在多个终端窗口、项目目录和 Agent 会话之间来回切换、手动找历史上下文的步骤。"
     if kind == "终端里的 AI 编程助手":
         return "它省掉的是在聊天窗口、编辑器和终端之间来回切换、手动复制报错、再手动执行测试的步骤，把读代码、改代码、跑命令集中到一个流程里。"
     if kind == "AI 编程技能/规则包":
@@ -1588,8 +1664,9 @@ def early_focus_stage(stars: int, preferred_cap: int, max_cap: int) -> str:
 
 
 def is_early_focus_repo(repo: dict[str, Any], config: dict[str, Any] | None = None) -> bool:
-    _, max_cap, _ = early_focus_settings(config)
-    return int(repo.get("stars") or 0) <= max_cap
+    _, max_cap, max_age_days = early_focus_settings(config)
+    age_days = int(repo.get("age_days") or 9999)
+    return int(repo.get("stars") or 0) <= max_cap and age_days <= max_age_days
 
 
 def score_repo(
@@ -1634,8 +1711,11 @@ def score_repo(
     total_star_weight = min(math.log10(max(stars, 1)) * 35, 190)
     preferred_star_cap, max_star_cap, early_max_age_days = early_focus_settings(config)
     trend_stage = early_focus_stage(stars, preferred_star_cap, max_star_cap)
-    early_star_bonus = 130 if trend_stage == "seed" else 70 if trend_stage == "emerging" else 0
+    early_age_eligible = age_days <= early_max_age_days
+    early_star_bonus = (130 if trend_stage == "seed" else 70 if trend_stage == "emerging" else 0) if early_age_eligible else 0
     early_star_penalty = 0 if trend_stage != "mature" else min(math.log1p(stars / max_star_cap) * 420, 980)
+    if not early_age_eligible:
+        early_star_penalty += min(math.log1p((age_days - early_max_age_days) / 30) * 180, 360)
     early_age_bonus = (
         70
         if age_days <= 30
@@ -1754,11 +1834,12 @@ def score_repo(
     repo["pushed_today"] = pushed_today
     repo["recent_expert_signals"] = recent_expert_signals
     repo["early_focus"] = {
-        "eligible": trend_stage != "mature",
+        "eligible": trend_stage != "mature" and early_age_eligible,
         "stage": trend_stage,
         "preferred_star_cap": preferred_star_cap,
         "max_star_cap": max_star_cap,
         "max_age_days": early_max_age_days,
+        "age_days": age_days,
     }
     repo["expert_score"] = round(expert_raw_score, 3)
     repo["scores"] = {
@@ -1856,11 +1937,15 @@ def early_focus_text(repo: dict[str, Any]) -> str:
     stars = int(repo.get("stars") or 0)
     preferred_cap = int(focus.get("preferred_star_cap") or EARLY_FOCUS_PREFERRED_STAR_CAP)
     max_cap = int(focus.get("max_star_cap") or EARLY_FOCUS_MAX_STAR_CAP)
+    max_age_days = int(focus.get("max_age_days") or EARLY_FOCUS_MAX_AGE_DAYS)
+    age_days = int(repo.get("age_days") or focus.get("age_days") or 0)
+    if age_days > max_age_days:
+        return f"创建 {age_days} 天，已过 {max_age_days} 天早期窗口。"
     stage = focus.get("stage") or early_focus_stage(stars, preferred_cap, max_cap)
     if stage == "seed":
-        return f"收藏仍在早期区间，低于 {compact_int(max_cap)} 的观察上限。"
+        return f"创建 {age_days} 天，收藏仍在早期区间，低于 {compact_int(max_cap)} 的观察上限。"
     if stage == "emerging":
-        return f"收藏接近起量但还没过 {compact_int(max_cap)}，适合看增长斜率。"
+        return f"创建 {age_days} 天，收藏接近起量但还没过 {compact_int(max_cap)}，适合看增长斜率。"
     return f"收藏已超过 {compact_int(max_cap)}，只保留在历史数据里作参照。"
 
 
@@ -2022,7 +2107,7 @@ def build_markdown(
             "",
             f"- GitHub 搜索每个查询最多抓取 {config.get('per_page', 50)} 条，默认只抓第 {config.get('pages', 1)} 页。",
             "- 人物/专家观察源：只读取公开 GitHub star、配置里的公开推文链接和项目引用，不采集私信、私有收藏或登录后内容。",
-            f"- 新趋势口径：默认偏好 stars <= {config.get('early_focus_preferred_star_cap', EARLY_FOCUS_PREFERRED_STAR_CAP)}，硬上限 stars <= {config.get('early_focus_max_star_cap', EARLY_FOCUS_MAX_STAR_CAP)}；超过上限的成熟项目只保留在全量历史里。",
+            f"- 新趋势口径：创建时间 <= {config.get('early_focus_max_age_days', EARLY_FOCUS_MAX_AGE_DAYS)} 天，默认偏好 stars <= {config.get('early_focus_preferred_star_cap', EARLY_FOCUS_PREFERRED_STAR_CAP)}，硬上限 stars <= {config.get('early_focus_max_star_cap', EARLY_FOCUS_MAX_STAR_CAP)}；超龄或超过上限的成熟项目只保留在全量历史里。",
             "- 热度榜：优先看今天新增收藏、fork、issue、今天更新和近期人物信号，并先过滤到早期项目池。",
             "- 大家都在用榜：看 fork、README、截图示例、官网、维护状态和可直接试用程度。",
             "- 早期潜力榜：看低收藏区间、创建时间、日增长、文档和趋势关键词。",
@@ -2526,7 +2611,7 @@ def embed_latest_json(args: argparse.Namespace) -> int:
     summary_count = attach_payload_doc_summaries(payload)
     if summary_count:
         print(f"Refreshed Chinese README summaries: {summary_count}")
-    localized = localize_payload_images(payload)
+    localized = 0 if args.skip_localize_images else localize_payload_images(payload)
     if localized:
         print(f"Localized README images: {localized}")
     if payload.get("date"):
@@ -2539,6 +2624,22 @@ def embed_latest_json(args: argparse.Namespace) -> int:
         html_text = html_path.read_text(encoding="utf-8")
         html_path.write_text(embed_radar_payload(html_text, payload), encoding="utf-8")
         print(f"Embedded radar data: {html_path}")
+    return 0
+
+
+def refresh_json_payloads(args: argparse.Namespace) -> int:
+    for data_file in args.files:
+        data_path = Path(data_file).resolve()
+        payload = json.loads(data_path.read_text(encoding="utf-8"))
+        if not isinstance(payload, dict):
+            raise ValueError(f"{data_path} must contain a JSON object")
+        summary_count = attach_payload_doc_summaries(payload)
+        localized = localize_payload_images(payload) if args.localize_images else 0
+        data_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        print(
+            f"Refreshed JSON: {data_path} "
+            f"(summaries={summary_count}, localized_images={localized})"
+        )
     return 0
 
 
@@ -2793,6 +2894,62 @@ def restore_previous_readme_assets(
     return restored
 
 
+def enrich_repo_readme_assets(
+    client: GitHubClient,
+    repo: dict[str, Any],
+    readme_chars: int,
+    force: bool = False,
+) -> bool:
+    if not force and (repo.get("readme_excerpt") or repo.get("examples")):
+        return False
+
+    readme_text = client.get_readme_text(repo["full_name"], repo.get("default_branch") or "main")
+    if not readme_text:
+        return False
+
+    repo["readme_excerpt"] = first_readme_excerpt(readme_text, readme_chars)
+    repo["examples"] = extract_readme_examples(
+        readme_text,
+        full_name=repo["full_name"],
+        default_branch=repo.get("default_branch") or "main",
+    )
+    return True
+
+
+def unique_ranked_repos(*groups: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    selected: list[dict[str, Any]] = []
+    seen: set[str] = set()
+    for group in groups:
+        for repo in group:
+            full_name = repo.get("full_name")
+            if not full_name or full_name in seen:
+                continue
+            seen.add(full_name)
+            selected.append(repo)
+    return selected
+
+
+def enrich_ranked_repositories(
+    client: GitHubClient,
+    ranked_repos: list[dict[str, Any]],
+    config: dict[str, Any],
+    history: dict[str, Any],
+    run_date: dt.date,
+) -> int:
+    readme_chars = int(config.get("readme_excerpt_chars", 700))
+    updated = 0
+    for repo in ranked_repos:
+        changed = enrich_repo_readme_assets(client, repo, readme_chars, force=True)
+        summary_before = repo.get("readme_summary_zh")
+        features_before = list(repo.get("features") or [])
+        repo["features"] = infer_features(repo)
+        attach_repo_doc_summary(repo)
+        score_repo(repo, history, run_date, config)
+        if changed or summary_before != repo.get("readme_summary_zh") or features_before != repo.get("features"):
+            updated += 1
+    return updated
+
+
 def enrich_repositories(
     client: GitHubClient,
     repos: list[dict[str, Any]],
@@ -2818,13 +2975,7 @@ def enrich_repositories(
 
     for repo in repos:
         if repo["full_name"] in readme_targets:
-            readme_text = client.get_readme_text(repo["full_name"], repo.get("default_branch") or "main")
-            repo["readme_excerpt"] = first_readme_excerpt(readme_text, readme_chars)
-            repo["examples"] = extract_readme_examples(
-                readme_text,
-                full_name=repo["full_name"],
-                default_branch=repo.get("default_branch") or "main",
-            )
+            enrich_repo_readme_assets(client, repo, readme_chars, force=True)
         repo["features"] = infer_features(repo)
         attach_repo_doc_summary(repo)
         score_repo(repo, history, run_date, config)
@@ -3018,6 +3169,15 @@ def run(args: argparse.Namespace) -> int:
         run_date,
         config,
     )
+    ranked_readme_updates = 0
+    ranked_enrichment_passes = int(config.get("ranked_readme_enrichment_passes", 2))
+    for _ in range(max(1, ranked_enrichment_passes)):
+        hot, used, starred, discussion, xhs_repos = select_rankings(repos, config)
+        selected = unique_ranked_repos(hot, used, starred, discussion, xhs_repos)
+        updated = enrich_ranked_repositories(client, selected, config, history, run_date)
+        ranked_readme_updates += updated
+        if not updated:
+            break
     hot, used, starred, discussion, xhs_repos = select_rankings(repos, config)
     update_history(paths.data_path, history, repos, run_date)
     markdown_path, json_path = write_outputs(
@@ -3034,6 +3194,8 @@ def run(args: argparse.Namespace) -> int:
     print(f"XHS drafts: {len(xhs_repos)}")
     if restored_readme_assets:
         print(f"Restored README assets from previous run: {restored_readme_assets}")
+    if ranked_readme_updates:
+        print(f"Refreshed README summaries for ranked repos: {ranked_readme_updates}")
     expert_summary = summarize_expert_sources(repos, config)
     if expert_summary["enabled"]:
         print(
@@ -3089,12 +3251,18 @@ def build_parser() -> argparse.ArgumentParser:
 
     embed_parser = subparsers.add_parser("embed", help="embed generated latest JSON into static radar pages")
     embed_parser.add_argument("--data", default=str(PROJECT_ROOT / "output" / "latest.json"))
+    embed_parser.add_argument("--skip-localize-images", action="store_true")
     embed_parser.add_argument(
         "files",
         nargs="*",
         default=[str(PROJECT_ROOT / "radar.html"), str(PROJECT_ROOT / "public" / "radar.html")],
     )
     embed_parser.set_defaults(func=embed_latest_json)
+
+    refresh_parser = subparsers.add_parser("refresh-json", help="refresh README summaries/images inside existing JSON payloads")
+    refresh_parser.add_argument("--localize-images", action="store_true")
+    refresh_parser.add_argument("files", nargs="+")
+    refresh_parser.set_defaults(func=refresh_json_payloads)
 
     return parser
 

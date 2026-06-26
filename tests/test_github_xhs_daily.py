@@ -135,6 +135,34 @@ Instead of manually tracking applications in a spreadsheet, you get an AI-powere
         self.assertIn("省掉的是先写需求", summary)
         self.assertNotIn("终端里的 AI 编程助手", summary)
 
+    def test_astrology_skill_summary_uses_readme_meaning(self):
+        repo = {
+            "full_name": "demo/bazi-ziwei-skill",
+            "name": "bazi-ziwei-skill",
+            "description": (
+                "AI 八字 + 紫微斗数排盘与综合印证 Skill：算法精准排盘（不靠 LLM 猜），"
+                "三种分析模式，一键生成水墨风 HTML 命盘海报。"
+            ),
+            "readme_excerpt": (
+                "一个遵循 SKILL.md 开放标准的命理分析 Skill。它做三件大模型单独做不好的事："
+                "精准排盘、格局补层、综合印证。八字四柱、紫微十二宫、大运流年由内置算法库计算，"
+                "不让 LLM 自己排。"
+            ),
+            "topics": ["bazi", "ziwei", "ziwei-doushu", "chinese-astrology", "metaphysics"],
+            "examples": [{"title": "综合印证海报示例", "body": "水墨风命盘海报", "code": ""}],
+        }
+
+        summary = daily.summarize_repo_docs_zh(repo)
+
+        self.assertIn("八字紫微综合印证 Skill", summary)
+        self.assertIn("确定性算法", summary)
+        self.assertIn("八字四柱", summary)
+        self.assertIn("紫微十二宫", summary)
+        self.assertIn("命盘海报", summary)
+        self.assertNotIn("开发者工具项目", summary)
+        self.assertNotIn("只看 stars", summary)
+        self.assertNotIn("终端里的 AI 编程助手", summary)
+
     def test_select_rankings_keeps_tabs_exclusive(self):
         shared = self.ranked_repo(
             "demo/shared",
@@ -444,6 +472,58 @@ MIT
         self.assertIn("demo/early", shown)
         self.assertNotIn("demo/mature", shown)
 
+    def test_select_rankings_filters_old_low_star_repos_for_trend_lists(self):
+        old_low_star = self.ranked_repo(
+            "demo/old-low-star",
+            ["rising"],
+            scores={"hot": 9999, "used": 9999, "starred": 9999, "discussion": 9999},
+            age_days=140,
+        )
+        old_low_star.update(
+            {
+                "stars": 120,
+                "forks": 40,
+                "open_issues": 12,
+                "daily_stars": 30,
+                "daily_forks": 4,
+                "daily_open_issues": 2,
+                "pushed_today": True,
+            }
+        )
+        early = self.ranked_repo(
+            "demo/early",
+            ["rising"],
+            scores={"hot": 100, "used": 100, "starred": 100, "discussion": 100},
+            age_days=30,
+        )
+        early.update(
+            {
+                "stars": 160,
+                "forks": 8,
+                "open_issues": 2,
+                "daily_stars": 3,
+                "daily_forks": 1,
+                "daily_open_issues": 0,
+                "pushed_today": True,
+            }
+        )
+
+        hot, used, starred, discussion, _ = daily.select_rankings(
+            [old_low_star, early],
+            {
+                "hot_limit": 5,
+                "used_limit": 5,
+                "starred_limit": 5,
+                "discussion_limit": 5,
+                "xhs_count": 5,
+                "early_focus_max_age_days": 90,
+            },
+        )
+
+        shown = [repo["full_name"] for repo in hot + used + starred + discussion]
+        self.assertIn("demo/early", shown)
+        self.assertNotIn("demo/old-low-star", shown)
+
     def test_restore_previous_readme_assets_preserves_images(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             latest_path = Path(tmpdir) / "latest.json"
@@ -499,6 +579,66 @@ MIT
         self.assertIn("AI Coding / Agent", repo["features"])
         self.assertGreater(repo["scores"]["hot"], 0)
         self.assertGreater(repo["scores"]["frontier"], 0)
+
+    def test_ranked_repos_are_forced_to_read_readme_before_output(self):
+        class FakeClient:
+            def __init__(self):
+                self.calls = []
+
+            def get_readme_text(self, full_name, default_branch="main"):
+                self.calls.append(full_name)
+                return (
+                    "# bazi-ziwei-skill\n"
+                    "AI 八字 + 紫微斗数排盘与综合印证 Skill。精准排盘（不靠 LLM 猜），"
+                    "三种分析模式，一键生成水墨风 HTML 命盘海报。\n\n"
+                    "## 综合印证海报示例\n"
+                    "水墨风命盘海报，包含八字四柱盘、紫微十二宫盘和六维交叉对账。"
+                )
+
+        repo = {
+            "full_name": "demo/bazi-ziwei-skill",
+            "name": "bazi-ziwei-skill",
+            "html_url": "https://github.com/demo/bazi-ziwei-skill",
+            "default_branch": "main",
+            "description": "",
+            "language": "TypeScript",
+            "stars": 485,
+            "forks": 20,
+            "watchers": 485,
+            "open_issues": 1,
+            "topics": ["bazi", "ziwei", "ziwei-doushu"],
+            "homepage": "",
+            "license": "MIT",
+            "created_at": "2026-06-01T00:00:00Z",
+            "updated_at": "2026-06-24T00:00:00Z",
+            "pushed_at": "2026-06-24T00:00:00Z",
+            "sources": ["product"],
+            "queries": [],
+            "readme_excerpt": "",
+            "examples": [],
+            "features": [],
+            "expert_signals": [],
+            "expert_score": 0,
+            "scores": {},
+            "notes": [],
+        }
+
+        updated = daily.enrich_ranked_repositories(
+            FakeClient(),
+            [repo],
+            {"readme_excerpt_chars": 500, "early_focus_max_age_days": 90},
+            {"repos": {}},
+            dt.date(2026, 6, 26),
+        )
+
+        self.assertEqual(updated, 1)
+        self.assertIn("demo/bazi-ziwei-skill", repo["full_name"])
+        self.assertIn("八字紫微综合印证 Skill", repo["readme_summary_zh"])
+        self.assertIn("八字四柱", repo["readme_summary_zh"])
+        self.assertIn("紫微十二宫", repo["readme_summary_zh"])
+        self.assertNotIn("开发者工具项目", repo["readme_summary_zh"])
+        self.assertTrue(repo["readme_excerpt"])
+        self.assertIn("hot", repo["scores"])
 
     def test_embed_radar_payload_escapes_script_end(self):
         html = (

@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>GitHub 热榜流程图</title>
+  <style>
+    :root {
+      --bg: #f7f4ec;
+      --card: #ffffff;
+      --ink: #202622;
+      --muted: #66716b;
+      --line: #d7ddd1;
+      --green: #176b4d;
+      --blue: #2e5d91;
+      --gold: #a66f16;
+      --red: #a74336;
+      --shadow: 0 14px 32px rgba(38, 44, 36, .08);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.58;
+    }
+
+    header {
+      padding: 34px 6vw 24px;
+      background: #fffdf8;
+      border-bottom: 1px solid var(--line);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(30px, 5vw, 52px);
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    header p {
+      max-width: 900px;
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 17px;
+    }
+
+    main {
+      padding: 26px 6vw 50px;
+    }
+
+    section {
+      margin-bottom: 26px;
+    }
+
+    h2 {
+      margin: 0 0 14px;
+      font-size: 24px;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+
+    p { margin: 0; }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-note {
+      border-left: 6px solid var(--green);
+      background: #edf7f0;
+      font-size: 19px;
+      font-weight: 760;
+    }
+
+    .diagram {
+      display: grid;
+      grid-template-columns: 1.1fr 1.05fr 1.1fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .lane {
+      min-height: 520px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+
+    .lane.search { border-top: 6px solid var(--blue); }
+    .lane.filter { border-top: 6px solid var(--gold); }
+    .lane.output { border-top: 6px solid var(--green); }
+
+    .lane h2 {
+      margin-bottom: 6px;
+    }
+
+    .lane-subtitle {
+      margin-bottom: 14px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .box {
+      position: relative;
+      margin: 0 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: #fbfaf6;
+    }
+
+    .box strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 16px;
+    }
+
+    .box p,
+    .box li {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    ul {
+      margin: 8px 0 0;
+      padding-left: 18px;
+    }
+
+    .arrow-down {
+      height: 22px;
+      margin: -2px 0 10px;
+      color: var(--muted);
+      text-align: center;
+      font-weight: 900;
+    }
+
+    .big-arrow {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 12px;
+      align-items: center;
+      margin: 18px 0;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .big-arrow::before,
+    .big-arrow::after {
+      content: "";
+      height: 2px;
+      background: var(--line);
+    }
+
+    .logic-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .logic-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+
+    .logic-card.search-logic { border-left: 6px solid var(--blue); }
+    .logic-card.filter-logic { border-left: 6px solid var(--gold); }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 29px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 5px 10px;
+      background: #fff;
+      color: #35433e;
+      font-size: 13px;
+      font-weight: 720;
+      white-space: nowrap;
+    }
+
+    .bad-good {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .bad {
+      border-left: 6px solid var(--red);
+      background: #fff1ef;
+    }
+
+    .good {
+      border-left: 6px solid var(--green);
+      background: #edf7f0;
+    }
+
+    .board-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .board {
+      min-height: 126px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 15px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+
+    .board b {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--green);
+      font-size: 16px;
+    }
+
+    .board span {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .note {
+      border-left: 6px solid var(--green);
+      background: #edf7f0;
+    }
+
+    .rules-map {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .rule-column {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+    }
+
+    .rule-column.in {
+      border-top: 6px solid var(--green);
+    }
+
+    .rule-column.out {
+      border-top: 6px solid var(--red);
+    }
+
+    .rule-column.assist {
+      border-top: 6px solid var(--blue);
+    }
+
+    .rule-column h3 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      color: #fff;
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .in .mark { background: var(--green); }
+    .out .mark { background: var(--red); }
+    .assist .mark { background: var(--blue); }
+
+    .rule-column li {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 7px;
+    }
+
+    .formula {
+      margin-top: 14px;
+      padding: 14px;
+      border: 1px dashed rgba(46, 93, 145, .45);
+      border-radius: 8px;
+      background: #eef5ff;
+      color: #304b68;
+      font-size: 15px;
+      font-weight: 720;
+    }
+
+    code {
+      padding: 2px 5px;
+      border-radius: 5px;
+      background: #eef1ec;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: .92em;
+    }
+
+    footer {
+      padding: 0 6vw 34px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    @media (max-width: 1100px) {
+      .diagram,
+      .logic-grid,
+      .bad-good,
+      .board-grid,
+      .rules-map {
+        grid-template-columns: 1fr;
+      }
+
+      .lane {
+        min-height: auto;
+      }
+    }
+
+    @media (max-width: 640px) {
+      header, main, footer {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>GitHub 热榜流程图</h1>
+    <p>小白版：这个系统每天帮你在 GitHub 上找新项目，先按规则筛一遍，再读项目说明，最后写成中文榜单。</p>
+  </header>
+
+  <main>
+    <section class="card hero-note">
+      核心原则：不能只看项目名和 stars。最终出现在榜单里的项目，必须读 README，再总结成人话。
+    </section>
+
+    <section>
+      <div class="diagram">
+        <div class="lane search">
+          <h2>第一步：搜索</h2>
+          <p class="lane-subtitle">先把可能有价值的新项目找出来。</p>
+
+          <div class="box">
+            <strong>搜哪些项目？</strong>
+            <p>主要搜最近 90 天内出现、还处在早期阶段的项目。</p>
+          </div>
+          <div class="arrow-down">↓</div>
+
+          <div class="box">
+            <strong>搜索方向</strong>
+            <ul>
+              <li>各种有用、有趣的新应用和小工具</li>
+              <li>各职业的效率优化：产品、运营、设计、销售、研究、写作、教育、财务等</li>
+              <li>生活、学习、办公、创作、内容生产、知识管理、自动化工具</li>
+              <li>AI 工具、浏览器插件、桌面应用、低代码工具也会继续覆盖</li>
+            </ul>
+          </div>
+          <div class="arrow-down">↓</div>
+
+          <div class="box">
+            <strong>可选辅助信号</strong>
+            <p>专家收藏或引用只作为辅助来源，默认不混入主榜。</p>
+          </div>
+        </div>
+
+        <div class="lane filter">
+          <h2>第二步：筛选</h2>
+          <p class="lane-subtitle">从一堆候选里挑出更值得看的项目。</p>
+
+          <div class="box">
+            <strong>先看基础热度</strong>
+            <ul>
+              <li>stars 有没有增长</li>
+              <li>fork 有没有增长</li>
+              <li>最近有没有更新</li>
+              <li>issue / 讨论是否活跃</li>
+            </ul>
+          </div>
+          <div class="arrow-down">↓</div>
+
+          <div class="box">
+            <strong>再看项目质量</strong>
+            <ul>
+              <li>README 是否说清楚</li>
+              <li>有没有截图或 Demo</li>
+              <li>有没有官网或使用入口</li>
+              <li>项目是否还在维护</li>
+            </ul>
+          </div>
+          <div class="arrow-down">↓</div>
+
+          <div class="box">
+            <strong>最终入榜前必须读 README</strong>
+            <p>只要它会展示在页面上，就重新读项目说明，避免把项目讲错。</p>
+          </div>
+        </div>
+
+        <div class="lane output">
+          <h2>第三步：展示</h2>
+          <p class="lane-subtitle">把技术项目翻译成普通人能看懂的榜单。</p>
+
+          <div class="box">
+            <strong>写成中文项目画像</strong>
+            <ul>
+              <li>它是什么</li>
+              <li>给谁用</li>
+              <li>解决什么问题</li>
+              <li>怎么解决</li>
+              <li>省掉什么时间</li>
+            </ul>
+          </div>
+          <div class="arrow-down">↓</div>
+
+          <div class="box">
+            <strong>放进 4 个榜单</strong>
+            <p>今日新增、大家都在用、早期潜力、参与讨论。</p>
+          </div>
+          <div class="arrow-down">↓</div>
+
+          <div class="box">
+            <strong>生成当天页面</strong>
+            <p>每天保存一个快照，页面可以按日期查看。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="big-arrow">搜索逻辑和筛选逻辑</div>
+
+    <section class="logic-grid">
+      <div class="logic-card search-logic">
+        <h2>搜索逻辑</h2>
+        <p>不是随机搜，而是围绕“最近可能冒出来的新工具”去搜。</p>
+        <div class="tag-row">
+          <span class="tag">最近 90 天</span>
+          <span class="tag">早期项目</span>
+          <span class="tag">有用应用</span>
+          <span class="tag">有趣工具</span>
+          <span class="tag">职业效率</span>
+          <span class="tag">办公自动化</span>
+          <span class="tag">内容创作</span>
+          <span class="tag">学习研究</span>
+          <span class="tag">生活工具</span>
+          <span class="tag">AI / 插件 / 桌面应用</span>
+        </div>
+      </div>
+
+      <div class="logic-card filter-logic">
+        <h2>筛选逻辑</h2>
+        <p>不是 stars 越高越好，而是看它现在是不是正在变热、能不能看懂、能不能上手。</p>
+        <div class="tag-row">
+          <span class="tag">新增 stars</span>
+          <span class="tag">fork 增长</span>
+          <span class="tag">最近更新</span>
+          <span class="tag">README 完整</span>
+          <span class="tag">有截图/Demo</span>
+          <span class="tag">可选专家关注</span>
+          <span class="tag">issue 活跃</span>
+          <span class="tag">早期潜力</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="bad-good">
+      <div class="card bad">
+        <h2>之前为什么会错</h2>
+        <p>之前有时只看标题、topics 和少量 README，就会猜错项目用途。比如项目其实是八字紫微工具，却被写成 AI 编程助手。</p>
+      </div>
+      <div class="card good">
+        <h2>现在怎么避免</h2>
+        <p>现在最终入榜前会强制读 README 和截图，再按项目真实内容分类。浏览器插件写成浏览器插件，知识库写成知识库，八字紫微工具写成八字紫微工具。</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>口径限制图</h2>
+      <div class="rules-map">
+        <div class="rule-column in">
+          <h3><span class="mark">入</span>什么项目会进候选池</h3>
+          <ul>
+            <li>优先看最近 90 天创建的新项目。</li>
+            <li>优先看 stars 还在 1000 以内的早期项目。</li>
+            <li>方向要接近“有用或有趣的应用”：职业效率、生活工具、学习研究、内容创作、知识管理、办公自动化等都可以。</li>
+            <li>AI 工具、浏览器插件、知识库、写作工具、桌面应用、低代码只是例子，不是边界。</li>
+            <li>专家收藏或引用只作为可选辅助来源，默认不混入主榜。</li>
+          </ul>
+        </div>
+
+        <div class="rule-column out">
+          <h3><span class="mark">限</span>什么项目会被限制</h3>
+          <ul>
+            <li>太老、太成熟的大项目，不默认进“早期趋势”榜。</li>
+            <li>超过 1000 stars 的项目，一般只做历史参考或辅助信号参考。</li>
+            <li>没有 README、没有说明、看不出用途的项目，会降低排序。</li>
+            <li>同一个项目不会反复出现在多个榜单里，会尽量只放到最合适的一个榜。</li>
+          </ul>
+        </div>
+
+        <div class="rule-column assist">
+          <h3><span class="mark">辅</span>哪些信号只是辅助</h3>
+          <ul>
+            <li>stars 高不等于一定上榜，只是参考。</li>
+            <li>可选辅助信号不是直接保送，只是加权参考。</li>
+            <li>截图和 Demo 不决定排名，但能帮助判断能不能上手。</li>
+            <li>README 摘要不是照抄，而是读完后翻译成普通人能懂的话。</li>
+          </ul>
+        </div>
+      </div>
+      <div class="formula">
+        简单口径：新 + 早期 + 有用或有趣 + 对某类人能提效 + 最近有增长 + README 讲得清楚，才更容易进入榜单。
+      </div>
+    </section>
+
+    <section>
+      <h2>4 个榜单怎么理解</h2>
+      <div class="board-grid">
+        <div class="board">
+          <b>今日新增</b>
+          <span>今天增长快、刚冒出来的新项目。</span>
+        </div>
+        <div class="board">
+          <b>大家都在用</b>
+          <span>fork、截图、说明更完整，看起来更能上手。</span>
+        </div>
+        <div class="board">
+          <b>早期潜力</b>
+          <span>还不大，但方向有意思、增长不错。</span>
+        </div>
+        <div class="board">
+          <b>参与讨论</b>
+          <span>issue、更新、协作比较活跃。</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card note">
+      <h2>最后产物</h2>
+      <p>每天会生成一个当天快照，比如 <code>public/daily/2026-06-26.json</code>，再嵌入到 <code>radar.html</code> 里。你打开页面看到的，就是这套流程整理后的结果。</p>
+    </section>
+  </main>
+
+  <footer>
+    这个页面只是图解说明；真正跑榜单的是 scripts/github_xhs_daily.py。
+  </footer>
+</body>
+</html>

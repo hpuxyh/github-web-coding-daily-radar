@@ -1,4 +1,5 @@
 {
   "palmier-io/palmier-pro": "palmier-pro 是一个面向 macOS 的 AI 视频编辑器，主要给想用 AI 生成、剪辑或改造视频素材的创作者和开发者用。它解决的是 AI 视频生成后还要在多个工具里手工整理片段、剪辑和预览的问题，做法是把视频编辑器、AI 生成能力和 MCP/Claude 工作流放到一个桌面应用里。它省掉的是在提示词工具、素材目录和传统剪辑软件之间反复切换的步骤，适合观察 AI 视频工具如何从生成走向可编辑工作台。",
-  "ComposioHQ/awesome-claude-skills": "awesome-claude-skills 是一个 Claude Skills 资源集合，主要给正在搭建 Claude Code、Codex、Cursor、Gemini CLI 等 AI 工作流的开发者和团队用。它解决的是技能、规则和工作流散落在不同仓库里，难以快速找到可复用方案的问题，做法是把 Claude Skills、自动化资源和相关工具整理成清单。它省掉的是到处搜索技能包、逐个判断用途和手动整理参考案例的时间，适合用来观察 AI agent 技能生态正在长出哪些标准做法。"
+  "ComposioHQ/awesome-claude-skills": "awesome-claude-skills 是一个 Claude Skills 资源集合，主要给正在搭建 Claude Code、Codex、Cursor、Gemini CLI 等 AI 工作流的开发者和团队用。它解决的是技能、规则和工作流散落在不同仓库里，难以快速找到可复用方案的问题，做法是把 Claude Skills、自动化资源和相关工具整理成清单。它省掉的是到处搜索技能包、逐个判断用途和手动整理参考案例的时间，适合用来观察 AI agent 技能生态正在长出哪些标准做法。",
+  "dzcmemory-web/bazi-ziwei-skill": "bazi-ziwei-skill 是一个八字紫微综合印证 Skill，主要给想用 AI Agent 做八字、紫微斗数排盘和综合印证分析的人用。它解决的是纯 LLM 容易把日柱、格局、紫微宫位和流年算错，普通排盘工具又缺少两套体系交叉验证的问题，做法是用确定性算法完成八字四柱、紫微十二宫、大运流年和格局补层，再把结构化结果交给 LLM 分析，并可生成 Markdown 长文或水墨风 HTML 命盘海报。它省掉的是让 LLM 凭空排盘、再人工核对四柱/宫位/格局和重复整理海报内容的步骤。"
 }

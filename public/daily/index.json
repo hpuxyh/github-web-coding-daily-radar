@@ -1,7 +1,17 @@
 {
-  "updated_at": "2026-06-23T18:00:11Z",
-  "latest_date": "2026-06-24",
+  "updated_at": "2026-06-26T15:23:33Z",
+  "latest_date": "2026-06-26",
   "dates": [
+    {
+      "date": "2026-06-26",
+      "path": "2026-06-26.json",
+      "repo_count": 306,
+      "hot_count": 15,
+      "used_count": 15,
+      "starred_count": 15,
+      "discussion_count": 15,
+      "draft_count": 5
+    },
     {
       "date": "2026-06-24",
       "path": "2026-06-24.json",
