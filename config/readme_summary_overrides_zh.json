@@ -1,5 +1,6 @@
 {
   "alchaincyf/codex-orange-book": "codex-orange-book 是一本 OpenAI Codex 实战橙皮书/AI 工具实战指南，主要给想系统学习 Codex、AI 编程工作流和不同使用入口的新手、产品同学和开发者用。它解决的是 Codex 的命令行、桌面端、云端、IDE、网页和移动端等形态变化很快，零散信息很难串成完整上手路线的问题，做法是把形态说明、安装使用、真实案例和常见问题整理成一本可按章节查阅的实战手册。它省掉的是到处翻公告、教程、案例和经验帖的时间，让读者更快判断自己该从哪种 Codex 形态开始、怎么用它完成真实产品或内容创作。",
+  "brycewang-stanford/Awesome-Journal-Skills": "Awesome-Journal-Skills 是一个学术期刊投稿技能库，主要给做论文写作、投稿、审稿回复和研究方法整理的学生、研究者和高校团队用。它解决的是不同期刊、会议和学科的投稿要求、表格规范、复制包准备和审稿回复分散难查的问题，做法是按期刊和学科整理 Claude Code/Codex 可用的 Skill 包，覆盖选题、识别策略、图表规范、投稿和修改回复等环节。它省掉的是逐个查期刊要求、手工整理投稿模板和反复向 AI 解释学术场景的时间。",
   "ayuayue/PiDeck": "PiDeck 是一个 AI Agent 桌面工作台，主要给同时在多个项目里使用 Claude Code、Codex 等编程 Agent 的开发者用。它解决的是多个项目、多个 Agent 会话和历史记录分散在终端里，切换、追踪和恢复上下文很麻烦的问题，做法是用桌面应用统一管理项目目录、会话、对话区、终端和配置。它省掉的是在多个终端窗口、项目目录和 Agent 会话之间来回切换、手动找历史上下文的步骤。",
   "Eynzof/Hermes-CN-Desktop": "Hermes-CN-Desktop 是一个中文桌面 AI Agent 工作台，主要给想在 Windows 桌面上集中使用 Hermes Agent、Claude Code、Codex 等工具的用户用。它解决的是命令行 Agent 门槛高、会话和工具配置分散的问题，做法是用 Tauri 桌面应用把 Agent 会话、项目配置和本地运行环境包到一个界面里。它省掉的是手动配置命令行、切换窗口和维护多套 Agent 会话的步骤。",
   "basionwang-bot/HermesPet": "HermesPet 是一个 macOS 桌面 AI 伴侣，主要给想在 Mac 上随时唤起多个 AI 引擎、做轻量问答和任务辅助的人用。它解决的是 AI 助手常常藏在浏览器或独立窗口里，临时使用要来回切换的问题，做法是把多引擎 AI 伴侣放在 MacBook 刘海/桌面入口附近，开箱即可使用。它省掉的是打开多个 AI 网页、复制问题和手动切换模型入口的步骤。",
